@@ -13,6 +13,8 @@ public class BrowserPilotProperties {
 
     private Debug debug = new Debug();
 
+    private Capture capture = new Capture();
+
     public String getRuntimeDir() {
         return runtimeDir;
     }
@@ -65,6 +67,27 @@ public class BrowserPilotProperties {
 
         public void setPort(int port) {
             this.port = port;
+        }
+    }
+
+    public Capture getCapture() {
+        return capture;
+    }
+
+    public void setCapture(Capture capture) {
+        this.capture = capture;
+    }
+
+    public static class Capture {
+
+        private String dir = "captures";
+
+        public String getDir() {
+            return dir;
+        }
+
+        public void setDir(String dir) {
+            this.dir = dir;
         }
     }
 }

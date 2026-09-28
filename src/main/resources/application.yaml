@@ -11,6 +11,9 @@ browserpilot:
     persistent: true
     port: 9222
 
+  capture:
+    dir: ./page-captures
+
 management:
   endpoints:
     web:
