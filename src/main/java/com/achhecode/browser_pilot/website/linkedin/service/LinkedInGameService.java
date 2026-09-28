@@ -20,7 +20,7 @@ public class LinkedInGameService {
     private MyNetworkPage getMyNetworkPage() {
 
         Page page = pageResolver.findPage(
-                "https://www.linkedin.com/"
+                LinkedInUrls.HOME
         );
 
         MyNetworkPage myNetworkPage =
