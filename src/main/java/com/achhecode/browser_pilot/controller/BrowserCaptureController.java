@@ -3,8 +3,6 @@ package com.achhecode.browser_pilot.controller;
 import com.achhecode.browser_pilot.capture.PageCaptureResult;
 import com.achhecode.browser_pilot.capture.PageCaptureService;
 
-import java.io.IOException;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
