@@ -1,14 +1,25 @@
 package com.achhecode.browser_pilot.config;
 
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "browserpilot")
 public class BrowserPilotProperties {
 
+    private String runtimeDir = "./runtime";
+
     private boolean headless = false;
 
     private int browserCount = 1;
+
+    private Debug debug = new Debug();
+
+    public String getRuntimeDir() {
+        return runtimeDir;
+    }
+
+    public void setRuntimeDir(String runtimeDir) {
+        this.runtimeDir = runtimeDir;
+    }
 
     public boolean isHeadless() {
         return headless;
@@ -24,5 +35,36 @@ public class BrowserPilotProperties {
 
     public void setBrowserCount(int browserCount) {
         this.browserCount = browserCount;
+    }
+
+    public Debug getDebug() {
+        return debug;
+    }
+
+    public void setDebug(Debug debug) {
+        this.debug = debug;
+    }
+
+    public static class Debug {
+
+        private boolean persistent = true;
+
+        private int port = 9222;
+
+        public boolean isPersistent() {
+            return persistent;
+        }
+
+        public void setPersistent(boolean persistent) {
+            this.persistent = persistent;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
+        }
     }
 }

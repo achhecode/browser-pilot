@@ -7,6 +7,10 @@ browserpilot:
   headless: false
   browser-count: 1
 
+  debug:
+    persistent: true
+    port: 9222
+
 management:
   endpoints:
     web:

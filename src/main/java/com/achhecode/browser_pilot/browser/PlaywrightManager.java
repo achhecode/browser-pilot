@@ -3,14 +3,11 @@ package com.achhecode.browser_pilot.browser;
 import com.achhecode.browser_pilot.config.BrowserPilotProperties;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class PlaywrightManager {
@@ -19,9 +16,11 @@ public class PlaywrightManager {
 
     private Playwright playwright;
 
-    private final List<Browser> browsers = new ArrayList<>();
+    private Browser browser;
 
-    public PlaywrightManager(BrowserPilotProperties properties) {
+    public PlaywrightManager(
+            BrowserPilotProperties properties
+    ) {
         this.properties = properties;
     }
 
@@ -30,60 +29,116 @@ public class PlaywrightManager {
 
         playwright = Playwright.create();
 
-        for (int i = 0; i < properties.getBrowserCount(); i++) {
+        if (properties.getDebug().isPersistent()) {
 
-            Browser browser = playwright.chromium().launch(
-                    new BrowserType.LaunchOptions()
-                            .setHeadless(properties.isHeadless())
-            );
+            connectToPersistentBrowser();
 
-            browsers.add(browser);
+        } else {
+
+            launchManagedBrowser();
         }
     }
 
-    public Browser getBrowser(int index) {
+    private void connectToPersistentBrowser() {
 
-        if (index < 0 || index >= browsers.size()) {
-            throw new IllegalArgumentException(
-                    "Invalid browser index: " + index
-            );
-        }
+        String endpoint =
+                "http://127.0.0.1:"
+                        + properties.getDebug().getPort();
 
-        return browsers.get(index);
-    }
+        System.out.println(
+                "Connecting to Chromium at " + endpoint
+        );
 
-    public BrowserContext createContext() {
-        return getBrowser(0).newContext();
-    }
+        browser = playwright.chromium()
+                .connectOverCDP(endpoint);
 
-    public PageHandle createPage() {
-
-        BrowserContext context = createContext();
-
-        return new PageHandle(
-                context,
-                context.newPage()
+        System.out.println(
+                "Connected to existing Chromium."
         );
     }
 
-    public int browserCount() {
-        return browsers.size();
+    private void launchManagedBrowser() {
+
+        browser = playwright.chromium().launch(
+                new com.microsoft.playwright.BrowserType.LaunchOptions()
+                        .setHeadless(properties.isHeadless())
+        );
+
+        System.out.println(
+                "Started managed Chromium."
+        );
+    }
+
+    public Browser getBrowser() {
+
+        if (browser == null) {
+            throw new IllegalStateException(
+                    "Browser is not connected."
+            );
+        }
+
+        return browser;
+    }
+
+    public BrowserContext getDefaultContext() {
+
+        if (browser.contexts().isEmpty()) {
+
+            throw new IllegalStateException(
+                    "No browser context available."
+            );
+        }
+
+        return browser.contexts().get(0);
+    }
+
+    public Page getOrCreateDebugPage() {
+
+        BrowserContext context = getDefaultContext();
+
+        if (!context.pages().isEmpty()) {
+
+            return context.pages().get(0);
+        }
+
+        return context.newPage();
     }
 
     @PreDestroy
     public void shutdown() {
 
-        for (Browser browser : browsers) {
+        System.out.println(
+                "Disconnecting Playwright..."
+        );
 
-            if (browser.isConnected()) {
-                browser.close();
-            }
-        }
+        /*
+         * IMPORTANT:
+         *
+         * When using connectOverCDP(), we don't want
+         * BrowserPilot to own the Chromium process.
+         *
+         * Therefore we do NOT call browser.close().
+         */
 
-        browsers.clear();
+        browser = null;
 
         if (playwright != null) {
-            playwright.close();
+
+            try {
+                playwright.close();
+            } catch (Exception e) {
+
+                System.err.println(
+                        "Error while closing Playwright: "
+                                + e.getMessage()
+                );
+            }
+
+            playwright = null;
         }
+
+        System.out.println(
+                "Playwright disconnected."
+        );
     }
 }

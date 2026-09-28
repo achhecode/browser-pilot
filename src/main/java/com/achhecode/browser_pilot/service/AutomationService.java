@@ -1,6 +1,5 @@
 package com.achhecode.browser_pilot.service;
 
-import com.achhecode.browser_pilot.browser.PageHandle;
 import com.achhecode.browser_pilot.browser.PlaywrightManager;
 import com.achhecode.browser_pilot.dto.AutomationRequest;
 import com.achhecode.browser_pilot.dto.AutomationResponse;
@@ -22,17 +21,14 @@ public class AutomationService {
             AutomationRequest request
     ) {
 
-        try (PageHandle handle =
-                     playwrightManager.createPage()) {
+        Page page =
+                playwrightManager.getOrCreateDebugPage();
 
-            Page page = handle.page();
+        page.navigate(request.url());
 
-            page.navigate(request.url());
-
-            return new AutomationResponse(
-                    request.url(),
-                    page.title()
-            );
-        }
+        return new AutomationResponse(
+                request.url(),
+                page.title()
+        );
     }
 }
