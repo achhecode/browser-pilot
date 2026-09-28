@@ -1,5 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "terminal.integrated.env.osx": {
         "PLAYWRIGHT_BROWSERS_PATH": "${workspaceFolder}/runtime/browsers"
     }
