@@ -31,12 +31,13 @@ public class ZipCommandService {
      * UP,UP,LEFT,RIGHT
      */
     public void executeCommand(
-            String instruction
+            ZipRequest zipRequest
     ) {
 
         String executionId = UUID.randomUUID().toString();
 
         long startTime = System.currentTimeMillis();
+        String instruction = zipRequest.instructions();
 
         log.info(
                 "Keyboard automation request received. executionId={}, instructionLength={}",

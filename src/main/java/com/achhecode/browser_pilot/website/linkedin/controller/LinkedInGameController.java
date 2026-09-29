@@ -34,13 +34,13 @@ public class LinkedInGameController {
     }
 
     @PostMapping("/zip")
-    public ResponseEntity<Void> enterZip(@RequestParam ZipRequest zipRequest) {
-        linkedInGameService.enterZip();
+    public ResponseEntity<Void> enterZip(@RequestBody ZipRequest zipRequest) {
+        linkedInGameService.enterZip(zipRequest);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/mini-sudoku")
-    public ResponseEntity<Void> enterMiniSudoku(@RequestParam SudokuRequest sudokuRequest) {
+    public ResponseEntity<Void> enterMiniSudoku(@RequestBody SudokuRequest sudokuRequest) {
         linkedInGameService.enterMiniSudoku();
         return ResponseEntity.ok().build();
     }
@@ -52,7 +52,7 @@ public class LinkedInGameController {
     }
 
     @PostMapping("/tango")
-    public ResponseEntity<Void> enterTango(@RequestParam TangoRequest tangoRequest) {
+    public ResponseEntity<Void> enterTango(@RequestBody TangoRequest tangoRequest) {
         linkedInGameService.enterTango();
         return ResponseEntity.ok().build();
     }

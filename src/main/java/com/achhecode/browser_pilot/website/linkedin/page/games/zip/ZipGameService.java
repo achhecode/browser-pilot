@@ -1,0 +1,26 @@
+package com.achhecode.browser_pilot.website.linkedin.page.games.zip;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class ZipGameService {
+
+    private final ZipCommandService commandService;
+
+    public ZipGameService(
+            ZipCommandService commandService
+    ) {
+        this.commandService = commandService;
+    }
+
+    public void solve(
+            ZipPage zipPage,
+            ZipRequest request
+    ) {
+        zipPage.waitUntilReady();
+
+        commandService.executeCommand(
+                request
+        );
+    }
+}
