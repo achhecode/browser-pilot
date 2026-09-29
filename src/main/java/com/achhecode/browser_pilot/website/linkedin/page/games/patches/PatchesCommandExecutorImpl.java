@@ -26,7 +26,7 @@ public class PatchesCommandExecutorImpl implements PatchesCommandExecutor {
     }
 
     @Override
-    public synchronized void execute(List<PatchesCommandInput.Patch> patches,
+    public synchronized void execute(List<PatchesRequest.Patch> patches,
                                      Integer gridWidth, Integer gridHeight, String executionId) {
         long start = System.nanoTime();
         int rows = gridHeight;
@@ -39,7 +39,7 @@ public class PatchesCommandExecutorImpl implements PatchesCommandExecutor {
         try {
 
             int index = 0;
-            for (PatchesCommandInput.Patch patch : patches) {
+            for (PatchesRequest.Patch patch : patches) {
                 int targetRow = patch.position().get(0);
                 int targetCol = patch.position().get(1);
 

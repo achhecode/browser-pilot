@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface PatchesCommandExecutor {
 
-    void execute(List<PatchesCommandInput.Patch> patches, Integer gridWidth, Integer gridHeight, String executionId);
+    void execute(List<PatchesRequest.Patch> patches, Integer gridWidth, Integer gridHeight, String executionId);
 }

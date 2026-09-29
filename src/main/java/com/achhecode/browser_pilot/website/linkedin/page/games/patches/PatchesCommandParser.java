@@ -7,8 +7,8 @@ import java.util.List;
 @Component
 public class PatchesCommandParser {
 
-    public List<PatchesCommandInput.Patch> parse(
-            PatchesCommandInput input
+    public List<PatchesRequest.Patch> parse(
+            PatchesRequest input
     ) {
 
         if (input == null ||
@@ -25,7 +25,7 @@ public class PatchesCommandParser {
             throw new IllegalArgumentException("gridWidth and gridHeight are required and must be >= 1");
         }
 
-        for (PatchesCommandInput.Patch patch : input.patches()) {
+        for (PatchesRequest.Patch patch : input.patches()) {
 
             if (patch == null) {
                 throw new IllegalArgumentException(

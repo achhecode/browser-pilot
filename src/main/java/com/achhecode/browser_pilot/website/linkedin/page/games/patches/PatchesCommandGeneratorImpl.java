@@ -19,11 +19,11 @@ public class PatchesCommandGeneratorImpl implements PatchesCommandGenerator {
     private int gridHeight;
 
     @Override
-public List<PatchesCommand> generate(List<PatchesCommandInput.Patch> patches) {
+public List<PatchesCommand> generate(List<PatchesRequest.Patch> patches) {
     List<PatchesCommand> out = new ArrayList<>();
     int x = 0, y = 0;
 
-    for (PatchesCommandInput.Patch patch : patches) {
+    for (PatchesRequest.Patch patch : patches) {
         int targetX = patch.position().get(0);
         int targetY = patch.position().get(1);
 

@@ -19,10 +19,10 @@ public class PatchesCommandServiceImpl
         }
 
         @Override
-        public int executeCommand(PatchesCommandInput input, String executionId) {
+        public int executeCommand(PatchesRequest input, String executionId) {
                 long start = System.currentTimeMillis();
 
-                List<PatchesCommandInput.Patch> patches = parser.parse(input);
+                List<PatchesRequest.Patch> patches = parser.parse(input);
                 commandExecutor.execute(patches, input.gridWidth(), input.gridHeight(), executionId);
 
                 log.info("Patches automation completed. executionId={}, patchCount={}, durationMs={}",
