@@ -24,7 +24,6 @@ public class TestGameController {
     public ResponseEntity<Void> run(
             @Valid @RequestBody ZipRequest request
     ) {
-        System.out.println("Request received!");
         zipCommandService.executeCommand(request);
         return ResponseEntity.ok().build();
     }

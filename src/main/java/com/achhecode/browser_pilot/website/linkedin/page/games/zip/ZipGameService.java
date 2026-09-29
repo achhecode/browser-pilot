@@ -19,6 +19,8 @@ public class ZipGameService {
     ) {
         zipPage.waitUntilReady();
 
+        // later execute using playwright only
+        
         commandService.executeCommand(
                 request
         );

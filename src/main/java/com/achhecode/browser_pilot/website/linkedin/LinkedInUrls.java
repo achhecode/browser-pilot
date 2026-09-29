@@ -5,6 +5,9 @@ public final class LinkedInUrls {
     private LinkedInUrls() {
     }
 
+    public static final String LINKEDIN_URL_PREFIX =
+            "https://www.linkedin.com/";
+
     public static final String HOME =
             "https://www.linkedin.com";
 

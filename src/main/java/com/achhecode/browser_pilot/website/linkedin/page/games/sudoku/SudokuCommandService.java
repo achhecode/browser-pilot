@@ -16,6 +16,7 @@ public class SudokuCommandService {
     private final SudokuCommandExecutor sudokuCommandExecutor;
 
     public void executeCommand(
+            Integer gridSize,
             String instruction,
             String executionId
     ) {
@@ -24,6 +25,7 @@ public class SudokuCommandService {
                 sudokuCommandParser.parse(instruction);
 
         sudokuCommandExecutor.execute(
+                gridSize,
                 commands,
                 executionId
         );

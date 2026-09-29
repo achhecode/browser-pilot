@@ -25,12 +25,13 @@ public class MyNetworkPage extends WebsitePage {
     }
 
     public void openGame(LinkedInGame game) {
-
-    page.locator("a[href$='" + game.path() + "']")
-                .first()
-                .click(
-                        new Locator.ClickOptions()
-                                .setTimeout(ACTION_TIMEOUT)
-                );
+        page.locator(
+                "a[href$='" + game.path() + "']"
+        )
+        .first()
+        .click(
+                new Locator.ClickOptions()
+                        .setTimeout(ACTION_TIMEOUT)
+        );
     }
 }

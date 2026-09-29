@@ -6,5 +6,5 @@ import com.achhecode.browser_pilot.keyboard.Digit;
 
 public interface SudokuCommandExecutor {
 
-    void execute(List<Digit> commands, String executionId);
+    void execute(Integer gridSize, List<Digit> commands, String executionId);
 }

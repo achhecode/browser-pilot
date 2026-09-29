@@ -46,6 +46,7 @@ public class TangoCommandExecutorImpl
             int gridSize =
                     (int) Math.ceil(Math.sqrt(commands.size()));
 
+            gridTraversal.reset();
             for (int index = 0; index < commands.size(); index++) {
 
                 TangoCommand command = commands.get(index);
@@ -63,9 +64,7 @@ public class TangoCommandExecutorImpl
                 if (index < commands.size() - 1) {
 
                     gridTraversal.move(
-                            index,
-                            gridSize,
-                            SnakeTraversalStrategy.LEFT_TO_RIGHT_SNAKE
+                            gridSize
                     );
                 }
             }

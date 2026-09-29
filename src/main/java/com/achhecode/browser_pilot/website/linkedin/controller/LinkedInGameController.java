@@ -1,8 +1,8 @@
 package com.achhecode.browser_pilot.website.linkedin.controller;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.NQueenRequest;
-import com.achhecode.browser_pilot.website.linkedin.page.games.sudoku.SudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipRequest;
 import com.achhecode.browser_pilot.website.linkedin.service.LinkedInGameService;
@@ -40,8 +40,8 @@ public class LinkedInGameController {
     }
 
     @PostMapping("/mini-sudoku")
-    public ResponseEntity<Void> enterMiniSudoku(@RequestBody SudokuRequest sudokuRequest) {
-        linkedInGameService.enterMiniSudoku();
+    public ResponseEntity<Void> enterMiniSudoku(@RequestBody MiniSudokuRequest sudokuRequest) {
+        linkedInGameService.enterMiniSudoku(sudokuRequest);
         return ResponseEntity.ok().build();
     }
 
