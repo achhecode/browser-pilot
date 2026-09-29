@@ -4,6 +4,7 @@ public interface KeyboardService {
 
     void press(int keyCode);
     void switchTab();                 // Command + Tab
+    void shiftTab();                 // Shift + Tab
     void pressEnter();
     void addDelay(long ms);
 

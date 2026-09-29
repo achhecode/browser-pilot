@@ -7,27 +7,37 @@ import com.achhecode.browser_pilot.website.linkedin.page.MyNetworkPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensGameService;
+import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensPage;
+import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipRequest;
 import com.microsoft.playwright.Page;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
+@Slf4j 
 @Service
 public class LinkedInGameService {
 
     private final BrowserPageResolver pageResolver;
     private final ZipGameService zipGameService;
     private final MiniSudokuGameService sudokuGameService;
+    private final QueensGameService queensGameService;
 
     public LinkedInGameService(
             BrowserPageResolver pageResolver,
             ZipGameService zipGameService,
-            MiniSudokuGameService sudokuGameService
+            MiniSudokuGameService sudokuGameService,
+            QueensGameService queensGameService
     ) {
         this.pageResolver = pageResolver;
         this.zipGameService = zipGameService;
         this.sudokuGameService = sudokuGameService;
+        this.queensGameService = queensGameService;
     }
 
     private MyNetworkPage getMyNetworkPage() {
@@ -43,12 +53,15 @@ public class LinkedInGameService {
 
         Page page = pageResolver.findPage(LinkedInUrls.HOME);
 
+        log.info("Currently at page {}", page.url());
+
         if (page.url().contains(game.path())) {
             return new MyNetworkPage(page);
         }
 
         MyNetworkPage myNetworkPage = getMyNetworkPage();
 
+        log.info("Navigating to game");
         myNetworkPage.openGame(game);
 
         return myNetworkPage;
@@ -92,7 +105,14 @@ public class LinkedInGameService {
         openGame(LinkedInGame.TANGO);
     }
 
-    public void enterQueens() {
-        openGame(LinkedInGame.QUEENS);
+    public void enterQueens(QueensRequest queensRequest) {
+        MyNetworkPage page = openGame(LinkedInGame.QUEENS);
+
+        QueensPage queensPage = new QueensPage(page.page());
+
+        queensGameService.solve(
+                queensPage,
+                queensRequest
+        );
     }
 }

@@ -44,9 +44,14 @@ public class NQueenCommandExecutorImpl
 
         try {
 
+            keyboard.addDelay(2000);
+            for(int i=0; i<0;i++){
+                keyboard.shiftTab();
+            }
+            keyboard.pressEnter();
+
             int n = positions.size();
 
-            gridTraversal.reset();
             for (int index = 0; index < n * n; index++) {
 
                 int row = index / n;
@@ -68,7 +73,9 @@ public class NQueenCommandExecutorImpl
                 if (index < n * n - 1) {
 
                     gridTraversal.move(
-                            n
+                            index,
+                            n,
+                            SnakeTraversalStrategy.LEFT_TO_RIGHT_SNAKE
                     );
                 }
             }

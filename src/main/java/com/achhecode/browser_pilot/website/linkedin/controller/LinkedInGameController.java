@@ -2,10 +2,13 @@ package com.achhecode.browser_pilot.website.linkedin.controller;
 
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesRequest;
-import com.achhecode.browser_pilot.website.linkedin.page.games.queen.NQueenRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipRequest;
 import com.achhecode.browser_pilot.website.linkedin.service.LinkedInGameService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,19 +31,19 @@ public class LinkedInGameController {
     }
 
     @PostMapping("/patches")
-    public ResponseEntity<Void> enterPatches(@RequestBody PatchesRequest patchesRequest) {
+    public ResponseEntity<Void> enterPatches(@Valid @RequestBody PatchesRequest patchesRequest) {
         linkedInGameService.enterPatches();
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/zip")
-    public ResponseEntity<Void> enterZip(@RequestBody ZipRequest zipRequest) {
+    public ResponseEntity<Void> enterZip(@Valid @RequestBody ZipRequest zipRequest) {
         linkedInGameService.enterZip(zipRequest);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/mini-sudoku")
-    public ResponseEntity<Void> enterMiniSudoku(@RequestBody MiniSudokuRequest sudokuRequest) {
+    public ResponseEntity<Void> enterMiniSudoku(@Valid @RequestBody MiniSudokuRequest sudokuRequest) {
         linkedInGameService.enterMiniSudoku(sudokuRequest);
         return ResponseEntity.ok().build();
     }
@@ -52,14 +55,14 @@ public class LinkedInGameController {
     }
 
     @PostMapping("/tango")
-    public ResponseEntity<Void> enterTango(@RequestBody TangoRequest tangoRequest) {
+    public ResponseEntity<Void> enterTango(@Valid @RequestBody TangoRequest tangoRequest) {
         linkedInGameService.enterTango();
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/queens")
-    public ResponseEntity<Void> enterQueens(@RequestBody NQueenRequest request) {
-        linkedInGameService.enterQueens();
+    public ResponseEntity<Void> enterQueens(@Valid @RequestBody QueensRequest queensRequest) {
+        linkedInGameService.enterQueens(queensRequest);
         return ResponseEntity.ok().build();
     }
 }

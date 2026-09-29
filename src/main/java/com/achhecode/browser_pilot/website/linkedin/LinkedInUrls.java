@@ -11,6 +11,11 @@ public final class LinkedInUrls {
     public static final String HOME =
             "https://www.linkedin.com";
 
+
+    public static final String FEED =
+            "https://www.linkedin.com/feed/";
+
+
     public static final String MY_NETWORK =
             "https://www.linkedin.com/mynetwork";
 }

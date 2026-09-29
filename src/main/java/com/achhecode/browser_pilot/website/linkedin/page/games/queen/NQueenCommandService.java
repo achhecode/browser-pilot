@@ -18,6 +18,7 @@ public class NQueenCommandService {
     }
 
     public int executeCommand(
+            Integer gridSize,
             List<Integer> positions,
             String executionId
     ) {

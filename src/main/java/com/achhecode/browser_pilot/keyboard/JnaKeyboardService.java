@@ -61,6 +61,14 @@ public class JnaKeyboardService implements KeyboardService {
         post(COMMAND, false, FLAG_NONE);
     }
 
+    @Override
+    public void shiftTab() {
+        post(SHIFT, true, FLAG_COMMAND);
+        post(TAB, true, FLAG_COMMAND);
+        post(TAB, false, FLAG_COMMAND);
+        post(SHIFT, false, FLAG_NONE);
+    }
+
     @Override public void pressEnter()      { tap(RETURN, FLAG_NONE); }
     @Override public void pressTab(int n)   { repeat(TAB, n); }
     @Override public void pressSpace(int n) { repeat(SPACE, n); }

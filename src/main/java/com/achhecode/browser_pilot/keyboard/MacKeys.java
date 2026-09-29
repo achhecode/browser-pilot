@@ -9,6 +9,8 @@ public final class MacKeys {
 
     // Virtual key codes
     public static final short COMMAND = 55;
+    public static final short SHIFT = 56; // Left Shift
+    public static final short RIGHT_SHIFT = 60; // Right Shift
     public static final short RETURN = 36;
     public static final short TAB = 48;
     public static final short SPACE = 49;
@@ -17,6 +19,7 @@ public final class MacKeys {
     public static final short DOWN = 125;
     public static final short UP = 126;
     public static final short V = 9;
+
 
     // Modifier flags
     public static final long FLAG_NONE = 0L;

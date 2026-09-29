@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import com.achhecode.browser_pilot.keyboard.GridTraversal;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
-import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
 
 import java.util.List;
 
