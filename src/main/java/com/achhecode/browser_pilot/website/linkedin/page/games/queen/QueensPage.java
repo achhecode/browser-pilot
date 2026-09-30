@@ -45,9 +45,9 @@ public class QueensPage extends WebsitePage {
 
     public void setCellValue(int index) {
 
-        Locator cell = page.locator(
-                String.format("//div[@data-cell-idx='%d']", index)
-        );
+        // Locator cell = page.locator(
+        //         String.format("//div[@data-cell-idx='%d']", index)
+        // );
 
         // press two space at index
     }

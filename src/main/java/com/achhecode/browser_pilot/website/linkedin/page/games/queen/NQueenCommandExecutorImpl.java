@@ -77,7 +77,9 @@ public class NQueenCommandExecutorImpl
                 if (index < n * n - 1) {
 
                     gridTraversal.move(
-                            n
+                        index,
+                        n,
+                        SnakeTraversalStrategy.LEFT_TO_RIGHT_SNAKE
                     );
                 }
             }
