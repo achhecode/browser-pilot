@@ -20,6 +20,7 @@ public class NQueenCommandService {
     public int executeCommand(
             Integer gridSize,
             List<Integer> positions,
+            boolean onlyKey,
             String executionId
     ) {
 
@@ -31,6 +32,7 @@ public class NQueenCommandService {
 
             commandExecutor.execute(
                     positions,
+                    onlyKey,
                     executionId
             );
 

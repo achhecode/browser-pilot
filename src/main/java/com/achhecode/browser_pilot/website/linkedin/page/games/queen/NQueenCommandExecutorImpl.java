@@ -29,6 +29,7 @@ public class NQueenCommandExecutorImpl
     @Override
     public synchronized void execute(
             List<Integer> positions,
+            boolean switchTab,
             String executionId
     ) {
 
@@ -44,11 +45,14 @@ public class NQueenCommandExecutorImpl
 
         try {
 
-            keyboard.addDelay(2000);
-            for(int i=0; i<0;i++){
-                keyboard.shiftTab();
+            if(switchTab){
+                keyboard.switchTab();
+            }else{
+                for(int i=0; i<0;i++){
+                    keyboard.shiftTab();
+                }
+                keyboard.pressEnter();
             }
-            keyboard.pressEnter();
 
             int n = positions.size();
 
@@ -73,9 +77,7 @@ public class NQueenCommandExecutorImpl
                 if (index < n * n - 1) {
 
                     gridTraversal.move(
-                            index,
-                            n,
-                            SnakeTraversalStrategy.LEFT_TO_RIGHT_SNAKE
+                            n
                     );
                 }
             }

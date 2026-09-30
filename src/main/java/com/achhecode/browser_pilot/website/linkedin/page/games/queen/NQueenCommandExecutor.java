@@ -6,6 +6,7 @@ public interface NQueenCommandExecutor {
 
     void execute(
             List<Integer> positions,
+            boolean onlyKey,
             String executionId
     );
 }
