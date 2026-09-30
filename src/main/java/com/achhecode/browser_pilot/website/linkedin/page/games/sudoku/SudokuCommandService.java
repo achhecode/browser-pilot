@@ -18,6 +18,7 @@ public class SudokuCommandService {
     public void executeCommand(
             Integer gridSize,
             String instruction,
+            boolean switchTab,
             String executionId
     ) {
 
@@ -27,6 +28,7 @@ public class SudokuCommandService {
         sudokuCommandExecutor.execute(
                 gridSize,
                 commands,
+                switchTab,
                 executionId
         );
     }

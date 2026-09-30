@@ -25,4 +25,13 @@ public class ZipGameService {
                 request
         );
     }
+
+
+    public void solve(
+            ZipRequest request
+    ) {
+        commandService.executeCommand(
+                request
+        );
+    }
 }

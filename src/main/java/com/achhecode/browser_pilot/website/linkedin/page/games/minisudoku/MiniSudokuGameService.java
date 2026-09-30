@@ -56,10 +56,9 @@ public class MiniSudokuGameService {
 
         String executionId =
                 UUID.randomUUID().toString();
-
-
-        sudokuCommandService.executeCommand(gridSize, instructions, executionId);
-
+        
+        boolean switchTab = miniSudokuRequest.onlyKey();
+        sudokuCommandService.executeCommand(gridSize, instructions, switchTab, executionId);
 
     }
 

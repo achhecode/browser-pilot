@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/zip/command/track")
+@RequestMapping("api/linkedin/games/zip/track")
 public class ZipCommandMonitorController {
 
     private final ZipCommandMonitorService zipCommandMonitorService;

@@ -8,6 +8,7 @@ import com.achhecode.browser_pilot.keyboard.ArrowDirection;
 public interface ZipCommandExecutor {
     void execute(
         List<ArrowDirection> commands,
+        boolean switchTab,
         String executionId
     );
 }

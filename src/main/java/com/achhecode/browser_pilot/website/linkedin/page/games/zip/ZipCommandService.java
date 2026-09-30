@@ -89,8 +89,11 @@ public class ZipCommandService {
             /*
              * Execute commands.
              */
+
+            boolean switchTab = zipRequest.onlyKey();
             zipCommandExecutor.execute(
                     commands,
+                    switchTab,
                     executionId
             );
 

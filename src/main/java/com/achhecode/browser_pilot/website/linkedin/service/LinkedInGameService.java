@@ -76,14 +76,21 @@ public class LinkedInGameService {
     }
 
     public void enterZip(ZipRequest zipRequest) {
-        MyNetworkPage page = openGame(LinkedInGame.ZIP);
+        if(zipRequest.onlyKey()){
+            zipGameService.solve(
+                    zipRequest
+            );
+        }else{
+            MyNetworkPage page = openGame(LinkedInGame.ZIP);
 
-        ZipPage zipPage = new ZipPage(page.page());
+            ZipPage zipPage = new ZipPage(page.page());
 
-        zipGameService.solve(
-                zipPage,
-                zipRequest
-        );
+            zipGameService.solve(
+                    zipPage,
+                    zipRequest
+            );
+        }
+        
     }
 
     public void enterMiniSudoku(MiniSudokuRequest miniSudokuRequest) {
@@ -106,13 +113,20 @@ public class LinkedInGameService {
     }
 
     public void enterQueens(QueensRequest queensRequest) {
-        MyNetworkPage page = openGame(LinkedInGame.QUEENS);
+        if(queensRequest.onlyKey()){
+            queensGameService.solve(
+                    queensRequest
+            );
+        }else{
+            MyNetworkPage page = openGame(LinkedInGame.QUEENS);
 
-        QueensPage queensPage = new QueensPage(page.page());
+            QueensPage queensPage = new QueensPage(page.page());
 
-        queensGameService.solve(
-                queensPage,
-                queensRequest
-        );
+            queensGameService.solve(
+                    queensPage,
+                    queensRequest
+            );
+        }
+        
     }
 }

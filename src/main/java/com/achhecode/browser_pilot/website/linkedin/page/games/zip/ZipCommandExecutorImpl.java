@@ -53,7 +53,7 @@ public class ZipCommandExecutorImpl implements ZipCommandExecutor {
     }
 
     @Override
-    public synchronized void execute(List<ArrowDirection> commands, String executionId) {
+    public synchronized void execute(List<ArrowDirection> commands, boolean switchTab, String executionId) {
         if (commands == null || commands.isEmpty()) {
             log.warn("No keyboard commands to execute. executionId={}", executionId);
             return;
@@ -62,6 +62,10 @@ public class ZipCommandExecutorImpl implements ZipCommandExecutor {
         long totalStart = System.nanoTime();
 
         try {
+
+            if(switchTab){
+                keyboard.switchTab();
+            }
 
             for (int i = 0; i < commands.size(); i++) {
                 int macKey = commands.get(i).getKeyCode();
