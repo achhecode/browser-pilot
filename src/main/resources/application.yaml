@@ -2,9 +2,20 @@ spring:
   application:
     name: browser-pilot
 
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
 browserpilot:
   runtime-dir: ./runtime
+
   headless: false
+
   browser-count: 1
 
   debug:
