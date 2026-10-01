@@ -10,6 +10,9 @@ import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSu
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoGameService;
+import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoPage;
+import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipRequest;
@@ -27,17 +30,20 @@ public class LinkedInGameService {
     private final ZipGameService zipGameService;
     private final MiniSudokuGameService sudokuGameService;
     private final QueensGameService queensGameService;
+    private final TangoGameService tangoGameService;
 
     public LinkedInGameService(
             BrowserPageResolver pageResolver,
             ZipGameService zipGameService,
             MiniSudokuGameService sudokuGameService,
-            QueensGameService queensGameService
+            QueensGameService queensGameService,
+            TangoGameService tangoGameService
     ) {
         this.pageResolver = pageResolver;
         this.zipGameService = zipGameService;
         this.sudokuGameService = sudokuGameService;
         this.queensGameService = queensGameService;
+        this.tangoGameService = tangoGameService;
     }
 
     private MyNetworkPage getMyNetworkPage() {
@@ -108,8 +114,21 @@ public class LinkedInGameService {
         openGame(LinkedInGame.WEND);
     }
 
-    public void enterTango() {
-        openGame(LinkedInGame.TANGO);
+    public void enterTango(TangoRequest tangoRequest) {
+        if(tangoRequest.onlyKey()){
+            tangoGameService.solve(
+                    tangoRequest
+            );
+        }else{
+            MyNetworkPage page = openGame(LinkedInGame.TANGO);
+
+            TangoPage tangoPage = new TangoPage(page.page());
+
+            tangoGameService.solve(
+                    tangoPage,
+                    tangoRequest
+            );
+        }
     }
 
     public void enterQueens(QueensRequest queensRequest) {

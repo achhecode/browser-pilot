@@ -56,7 +56,7 @@ public class LinkedInGameController {
 
     @PostMapping("/tango")
     public ResponseEntity<Void> enterTango(@Valid @RequestBody TangoRequest tangoRequest) {
-        linkedInGameService.enterTango();
+        linkedInGameService.enterTango(tangoRequest);
         return ResponseEntity.ok().build();
     }
 

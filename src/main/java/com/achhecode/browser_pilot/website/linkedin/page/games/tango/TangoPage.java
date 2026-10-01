@@ -25,6 +25,10 @@ public class TangoPage extends WebsitePage {
                 );
     }
 
+    public int totalCellIndex() {
+        return page.locator("[data-cell-idx]").count();
+    }
+
     public String getBoardState() {
         // Read board from DOM here.
         return "";

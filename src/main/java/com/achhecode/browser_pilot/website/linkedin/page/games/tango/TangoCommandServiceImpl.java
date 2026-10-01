@@ -3,54 +3,46 @@ package com.achhecode.browser_pilot.website.linkedin.page.games.tango;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Slf4j
 @Service
 public class TangoCommandServiceImpl
         implements TangoCommandService {
 
-    private final TangoCommandGenerator commandGenerator;
     private final TangoCommandExecutor commandExecutor;
 
     public TangoCommandServiceImpl(
-            TangoCommandGenerator commandGenerator,
             TangoCommandExecutor commandExecutor
     ) {
-        this.commandGenerator = commandGenerator;
         this.commandExecutor = commandExecutor;
     }
 
     @Override
     public int executeCommand(
-            String instruction,
+            TangoRequest tangoRequest,
             String executionId
     ) {
 
-        long startTime = System.currentTimeMillis();
-
         try {
 
-            List<TangoCommand> commands =
-                    commandGenerator.generate(instruction);
-
+            long startTime = System.currentTimeMillis();
             commandExecutor.execute(
-                    commands,
+                    tangoRequest,
                     executionId
             );
-
+            
             long duration =
                     System.currentTimeMillis() - startTime;
 
             log.info(
-                    "Tango automation completed. " +
-                    "executionId={}, commandCount={}, durationMs={}",
+                    "N-Queen automation completed. " +
+                    "executionId={}, n={}, durationMs={}",
                     executionId,
-                    commands.size(),
+                    tangoRequest.instructions().length(),
                     duration
             );
 
-            return commands.size();
+            return tangoRequest.instructions().length();
 
         } catch (Exception e) {
 

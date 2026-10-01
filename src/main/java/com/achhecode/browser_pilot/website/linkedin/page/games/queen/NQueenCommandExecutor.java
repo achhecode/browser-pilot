@@ -1,12 +1,9 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.queen;
 
-import java.util.List;
-
 public interface NQueenCommandExecutor {
 
     void execute(
-            List<Integer> positions,
-            boolean onlyKey,
+            QueensRequest queensRequest,
             String executionId
     );
 }

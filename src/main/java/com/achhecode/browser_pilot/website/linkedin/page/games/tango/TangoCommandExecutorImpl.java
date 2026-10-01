@@ -1,15 +1,20 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.tango;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
+import com.achhecode.browser_pilot.keyboard.GridPosition;
 import com.achhecode.browser_pilot.keyboard.GridTraversal;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
+import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
+import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Component
+@Slf4j 
+@Component 
 public class TangoCommandExecutorImpl
         implements TangoCommandExecutor {
 
@@ -26,73 +31,100 @@ public class TangoCommandExecutorImpl
 
     @Override
     public synchronized void execute(
-            List<TangoCommand> commands,
+            TangoRequest request,
             String executionId
     ) {
-
-        if (commands == null || commands.isEmpty()) {
-            log.warn(
-                    "No Tango commands to execute. executionId={}",
-                    executionId
-            );
-            return;
-        }
-
-        long startTime = System.nanoTime();
-
         try {
 
-            int gridSize =
-                    (int) Math.ceil(Math.sqrt(commands.size()));
-
-            gridTraversal.reset();
-            for (int index = 0; index < commands.size(); index++) {
-
-                TangoCommand command = commands.get(index);
-
-                if (command == TangoCommand.S) {
-
-                    keyboard.pressSpace();
-
-                } else if (command == TangoCommand.M) {
-
-                    keyboard.pressSpace();
-                    keyboard.pressSpace();
-                }
-
-                if (index < commands.size() - 1) {
-
-                    gridTraversal.move(
-                            gridSize
-                    );
-                }
+            if(request.onlyKey()){
+                keyboard.switchTab();
+                keyboard.addDelay(200); // for switching tab
             }
+            
+            TangoPositions positions =
+                    TangoPositionMapper.from(
+                            request.instructions()
+                    );
 
-            long totalMs =
-                    (System.nanoTime() - startTime) / 1_000_000;
+            List<GridPosition> traversal =
+                    SnakeGridTraversal.create(
+                            positions.gridSize(),
+                            SnakeTraversalStrategy.LEFT_TO_RIGHT_SNAKE
+                    );
+
+            executeTraversal(
+                    traversal,
+                    positions.suns(),
+                    positions.moons(),
+                    request.keySpeed()
+            );
 
             log.info(
-                    "Tango keyboard automation completed. " +
-                    "executionId={}, commandCount={}, totalMs={}",
+                    "Tango completed. executionId={}, gridSize={}",
                     executionId,
-                    commands.size(),
-                    totalMs
+                    positions.gridSize()
             );
 
         } catch (Exception e) {
-
-            log.error(
-                    "Tango keyboard automation failed. " +
-                    "executionId={}",
-                    executionId,
-                    e
-            );
-
             throw new TangoCommandExecutionException(
                     "Tango keyboard automation failed",
                     executionId,
                     e
             );
+        }
+    }
+
+    private void pressSun(GridPosition position) {
+        keyboard.pressSpace();
+
+        log.info(
+                "Pressed space once for SUN at {}",
+                position
+        );
+    }
+
+    private void pressMoon(GridPosition position) {
+        keyboard.pressSpace();
+        keyboard.pressSpace();
+
+        log.info(
+                "Pressed space twice for MOON at {}",
+                position
+        );
+    }
+
+    private void executeTraversal(
+        List<GridPosition> traversal,
+        Set<GridPosition> suns,
+        Set<GridPosition> moons,
+        int keySpeed
+    ) {
+        log.info(
+                "Traversal={}, suns={}, moons={}",
+                traversal,
+                suns,
+                moons
+        );
+
+        for (int index = 0; index < traversal.size(); index++) {
+
+            GridPosition current = traversal.get(index);
+
+            if (suns.contains(current)) {
+                pressSun(current);
+            } else if (moons.contains(current)) {
+                pressMoon(current);
+            }
+
+            if (index + 1 < traversal.size()) {
+
+                gridTraversal.move(
+                        current,
+                        traversal.get(index + 1)
+                );
+
+                keyboard.addDelay(keySpeed);
+            }
         }
     }
 }

@@ -18,21 +18,19 @@ public class NQueenCommandService {
     }
 
     public int executeCommand(
-            Integer gridSize,
-            List<Integer> positions,
-            boolean onlyKey,
-            String executionId
+        QueensRequest queensRequest,    
+        String executionId
     ) {
 
         long startTime = System.currentTimeMillis();
 
         try {
 
-            validate(positions);
+            
+            validate(queensRequest.positions());
 
             commandExecutor.execute(
-                    positions,
-                    onlyKey,
+                    queensRequest,
                     executionId
             );
 
@@ -43,11 +41,11 @@ public class NQueenCommandService {
                     "N-Queen automation completed. " +
                     "executionId={}, n={}, durationMs={}",
                     executionId,
-                    positions.size(),
+                    queensRequest.positions().size(),
                     duration
             );
 
-            return positions.size();
+            return queensRequest.positions().size();
 
         } catch (Exception e) {
 

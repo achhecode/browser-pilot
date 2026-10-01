@@ -1,79 +1,56 @@
 package com.achhecode.browser_pilot.keyboard;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 
-@Component
-@RequiredArgsConstructor
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
-public class GridTraversal {
+@Component
+public final class GridTraversal {
 
-    private final KeyboardService keyboardService;
+    private final KeyboardService keyboard;
 
-    private int row;
-    private int column;
-
-    public void reset() {
-        row = 0;
-        column = 0;
+    public GridTraversal(KeyboardService keyboard) {
+        this.keyboard = keyboard;
     }
 
     public void move(
-            int index,
-            int gridSize,
-            SnakeTraversalStrategy strategy
+        GridPosition current,
+        GridPosition next
     ) {
-        int row = index / gridSize;
-        int column = index % gridSize;
+        validateAdjacent(current, next);
 
-        boolean reverse = strategy == SnakeTraversalStrategy.RIGHT_TO_LEFT_SNAKE;
-        boolean leftToRight = (row % 2 == 0) != reverse;
-
-        boolean endOfRow = leftToRight
-                ? column == gridSize - 1
-                : column == 0;
-
-        if (endOfRow) {
-            keyboardService.pressDown();
-        } else if (leftToRight) {
-            keyboardService.pressRight();
+        if (next.row() > current.row()) {
+            keyboard.pressDown();
+        } else if (next.column() > current.column()) {
+            keyboard.pressRight();
         } else {
-            keyboardService.pressLeft();
-        }
-    }
-
-    public void move(
-            int gridSize
-    ) {
-        boolean leftToRight = (row % 2 == 0);
-
-        if (leftToRight) {
-
-            if (column < gridSize - 1) {
-                keyboardService.pressRight();
-                column++;
-            } else {
-                keyboardService.pressDown();
-                row++;
-            }
-
-        } else {
-
-            if (column > 0) {
-                keyboardService.pressLeft();
-                column--;
-            } else {
-                keyboardService.pressDown();
-                row++;
-            }
+            keyboard.pressLeft();
         }
 
         log.info(
-                "Cursor now at [{},{}]",
-                row,
-                column
+                "Moved: {} -> {}",
+                current,
+                next
         );
+    }
+
+
+    private static void validateAdjacent(
+            GridPosition current,
+            GridPosition next
+    ) {
+        int rowDelta =
+                Math.abs(next.row() - current.row());
+
+        int columnDelta =
+                Math.abs(next.column() - current.column());
+
+        if (rowDelta + columnDelta != 1) {
+            throw new IllegalArgumentException(
+                    "Non-adjacent grid positions: "
+                            + current + " -> " + next
+            );
+        }
     }
 }

@@ -2,13 +2,17 @@ package com.achhecode.browser_pilot.website.linkedin.page.games.queen;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import com.achhecode.browser_pilot.keyboard.GridTraversal;
-import com.achhecode.browser_pilot.keyboard.KeyboardService;
-import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
 
 import java.util.List;
+import java.util.Set;
+
+import org.springframework.stereotype.Component;
+
+import com.achhecode.browser_pilot.keyboard.GridPosition;
+import com.achhecode.browser_pilot.keyboard.GridTraversal;
+import com.achhecode.browser_pilot.keyboard.KeyboardService;
+import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
+import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
 
 @Slf4j
 @Component
@@ -28,88 +32,81 @@ public class NQueenCommandExecutorImpl
 
     @Override
     public synchronized void execute(
-            List<Integer> positions,
-            boolean switchTab,
+            QueensRequest request,
             String executionId
     ) {
 
-        if (positions == null || positions.isEmpty()) {
-            log.warn(
-                    "No N-Queen positions to execute. executionId={}",
-                    executionId
-            );
-            return;
-        }
-
-        long startTime = System.nanoTime();
-
         try {
 
-            if(switchTab){
+            if(request.onlyKey()){
                 keyboard.switchTab();
-            }else{
-                // for(int i=0; i<0;i++){
-                //     keyboard.shiftTab();
-                // }
-                // keyboard.pressEnter();
-                keyboard.addDelay(1000); // because if solve in 1 sec then not accepted 
+                keyboard.addDelay(1000);
             }
-
-            int n = positions.size();
-
-            for (int index = 0; index < n * n; index++) {
-
-                int row = index / n;
-                int column = index % n;
-
-                /*
-                 * positions[row] contains
-                 * the queen's column.
-                 */
-                if (positions.get(row) == column) {
-
-                    keyboard.pressSpace();
-                    keyboard.pressSpace();
-                }
-
-                /*
-                 * Move to the next grid cell.
-                 */
-                if (index < n * n - 1) {
-
-                    gridTraversal.move(
-                        index,
-                        n,
-                        SnakeTraversalStrategy.LEFT_TO_RIGHT_SNAKE
+            
+            Set<GridPosition> queens =
+                    QueenPositionMapper.from(
+                            request.positions()
                     );
-                }
-            }
 
-            long totalMs =
-                    (System.nanoTime() - startTime) / 1_000_000;
+            List<GridPosition> traversal =
+                    SnakeGridTraversal.create(
+                            request.positions().size(),
+                            SnakeTraversalStrategy.LEFT_TO_RIGHT_SNAKE
+                    );
+
+            executeTraversal(
+                    traversal,
+                    queens,
+                    request.keySpeed()
+            );
 
             log.info(
-                    "N-Queen keyboard automation completed. " +
-                    "executionId={}, n={}, totalMs={}",
-                    executionId,
-                    n,
-                    totalMs
+                    "N-Queen completed. executionId={}",
+                    executionId
             );
 
         } catch (Exception e) {
-
-            log.error(
-                    "N-Queen keyboard automation failed. " +
-                    "executionId={}",
-                    executionId,
-                    e
-            );
-
             throw new NQueenCommandExecutionException(
                     "N-Queen keyboard automation failed",
                     executionId,
                     e
             );
+        }
+    }
+
+    private void pressQueen(GridPosition position) {
+        keyboard.pressSpace();
+        keyboard.pressSpace();
+
+        log.info(
+                "Pressed space twice at grid position: {}",position
+        );
+    }
+
+    private void executeTraversal(
+        List<GridPosition> traversal,
+        Set<GridPosition> queens,
+        int keySpeed
+    ) {
+
+        log.info("Traversal {}, queens {}", traversal, queens);
+
+        for (int index = 0; index < traversal.size(); index++) {
+
+            GridPosition current = traversal.get(index);
+
+            if (queens.contains(current)) {
+                pressQueen(current);
+            }
+
+            if (index + 1 < traversal.size()) {
+                gridTraversal.move(
+                        current,
+                        traversal.get(index + 1)
+                );
+
+                keyboard.addDelay(keySpeed);
+            }
         }
     }
 }

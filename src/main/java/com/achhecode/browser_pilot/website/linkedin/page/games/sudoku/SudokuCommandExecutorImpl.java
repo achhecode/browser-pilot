@@ -36,8 +36,8 @@ public class SudokuCommandExecutorImpl
                 keyboardService.addDelay(commandDelayMs);
             }
 
-            gridTraversal.reset();
-            gridTraversal.reset();
+            // gridTraversal.reset();
+            // gridTraversal.reset();
 
             for (int i = 0; i < commands.size(); i++) {
 
@@ -50,9 +50,9 @@ public class SudokuCommandExecutorImpl
                 }
 
                 if (i < commands.size() - 1) {
-                    gridTraversal.move(
-                            gridSize
-                    );
+                    // gridTraversal.move(
+                    //         gridSize
+                    // );
                 }
             }
 

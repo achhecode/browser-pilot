@@ -42,7 +42,7 @@ public class QueensGameService {
                 UUID.randomUUID().toString();
 
 
-        nQueenCommandService.executeCommand(gridSize, queensRequest.positions(), queensRequest.onlyKey(), executionId);
+        nQueenCommandService.executeCommand(queensRequest, executionId);
 
 
     }
@@ -51,13 +51,13 @@ public class QueensGameService {
     public void solve(
             QueensRequest queensRequest
     ) {
-        int gridSize = queensRequest.positions().size();
+        
 
         String executionId =
                 UUID.randomUUID().toString();
 
 
-        nQueenCommandService.executeCommand(gridSize, queensRequest.positions(), queensRequest.onlyKey(), executionId);
+        nQueenCommandService.executeCommand(queensRequest, executionId);
 
     }
 }
