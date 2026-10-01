@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <!-- ============================================================
+         Common properties
+         ============================================================ -->
+
+    <property name="LOG_DIR" value="./logs"/>
+    <property name="AUTOMATION_LOG_DIR" value="${LOG_DIR}/automation"/>
+
+    <property name="MAX_FILE_SIZE" value="50MB"/>
+    <property name="MAX_HISTORY" value="30"/>
+    <property name="TOTAL_SIZE_CAP" value="1GB"/>
+
+
+    <!-- ============================================================
+         Console
+         ============================================================ -->
+
+    <appender name="CONSOLE"
+              class="ch.qos.logback.core.ConsoleAppender">
+
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+
+    </appender>
+
+
+    <!-- ============================================================
+         General application log
+         ============================================================ -->
+
+    <appender name="APPLICATION_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${LOG_DIR}/browser-pilot.log</file>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${LOG_DIR}/browser-pilot.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+
+        </rollingPolicy>
+
+    </appender>
+
+
+    <!-- ============================================================
+         Error log
+         ============================================================ -->
+
+    <appender name="ERROR_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${LOG_DIR}/browser-pilot-error.log</file>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${LOG_DIR}/browser-pilot-error.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+
+        </rollingPolicy>
+
+    </appender>
+
+
+    <!-- ============================================================
+         QUEENS
+         ============================================================ -->
+
+    <appender name="QUEENS_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${AUTOMATION_LOG_DIR}/queens.log</file>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${AUTOMATION_LOG_DIR}/queens.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+
+        </rollingPolicy>
+
+    </appender>
+
+
+    <!-- ============================================================
+         TANGO
+         ============================================================ -->
+
+    <appender name="TANGO_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${AUTOMATION_LOG_DIR}/tango.log</file>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${AUTOMATION_LOG_DIR}/tango.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+
+        </rollingPolicy>
+
+    </appender>
+
+
+    <!-- ============================================================
+         PATCHES
+         ============================================================ -->
+
+    <appender name="PATCHES_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${AUTOMATION_LOG_DIR}/patches.log</file>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${AUTOMATION_LOG_DIR}/patches.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+
+        </rollingPolicy>
+
+    </appender>
+
+
+    <!-- ============================================================
+         ZIP
+         ============================================================ -->
+
+    <appender name="ZIP_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${AUTOMATION_LOG_DIR}/zip.log</file>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${AUTOMATION_LOG_DIR}/zip.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+
+        </rollingPolicy>
+
+    </appender>
+
+
+    <!-- ============================================================
+         MINI SUDOKU
+         ============================================================ -->
+
+    <appender name="MINI_SUDOKU_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${AUTOMATION_LOG_DIR}/mini-sudoku.log</file>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${AUTOMATION_LOG_DIR}/mini-sudoku.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+
+        </rollingPolicy>
+
+    </appender>
+
+
+    <!-- ============================================================
+         Root application logger
+         ============================================================ -->
+
+    <root level="INFO">
+
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="APPLICATION_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+
+    </root>
+
+
+    <!-- ============================================================
+         Automation loggers
+         ============================================================ -->
+
+    <logger name="automation.queens"
+            level="INFO"
+            additivity="false">
+
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="QUEENS_FILE"/>
+
+    </logger>
+
+
+    <logger name="automation.tango"
+            level="INFO"
+            additivity="false">
+
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="TANGO_FILE"/>
+
+    </logger>
+
+
+    <logger name="automation.patches"
+            level="INFO"
+            additivity="false">
+
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="PATCHES_FILE"/>
+
+    </logger>
+
+
+    <logger name="automation.zip"
+            level="INFO"
+            additivity="false">
+
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ZIP_FILE"/>
+
+    </logger>
+
+
+    <logger name="automation.mini-sudoku"
+            level="INFO"
+            additivity="false">
+
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="MINI_SUDOKU_FILE"/>
+
+    </logger>
+
+</configuration>
