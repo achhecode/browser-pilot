@@ -30,3 +30,26 @@ management:
     web:
       exposure:
         include: health,info
+
+
+
+
+logging:
+  file:
+    name: ./logs/browser-pilot.log
+
+  level:
+    root: INFO
+    com.achhecode.browser_pilot: INFO
+
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n"
+
+  logback:
+    rollingpolicy:
+      file-name-pattern: ./logs/browser-pilot.%d{yyyy-MM-dd}.%i.log.gz
+      max-file-size: 50MB
+      total-size-cap: 1GB
+      max-history: 30
+      clean-history-on-start: true
