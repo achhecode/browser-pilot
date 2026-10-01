@@ -32,7 +32,7 @@ public class LinkedInGameController {
 
     @PostMapping("/patches")
     public ResponseEntity<Void> enterPatches(@Valid @RequestBody PatchesRequest patchesRequest) {
-        linkedInGameService.enterPatches();
+        linkedInGameService.enterPatches(patchesRequest);
         return ResponseEntity.ok().build();
     }
 

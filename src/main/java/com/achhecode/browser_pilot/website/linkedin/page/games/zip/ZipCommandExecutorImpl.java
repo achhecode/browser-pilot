@@ -1,95 +1,111 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.zip;
 
-import com.achhecode.browser_pilot.keyboard.ArrowDirection;
+import com.achhecode.browser_pilot.grid.GridDirection;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
 @Component
-public class ZipCommandExecutorImpl implements ZipCommandExecutor {
-
-    public interface CoreGraphics extends Library {
-        CoreGraphics INSTANCE = Native.load("CoreGraphics", CoreGraphics.class);
-
-        Pointer CGEventSourceCreate(int stateID);
-        Pointer CGEventCreateKeyboardEvent(Pointer source, short virtualKey, boolean keyDown);
-        void CGEventPost(int tap, Pointer event);
-        void CFRelease(Pointer obj);
-    }
-
-    /**
-     * Delay in milliseconds after each arrow command, so the target
-     * application has time to actually process the keystroke before the
-     * next one arrives. Override via application.properties/yml or an
-     * env var, e.g.:
-     *   automation.keyboard.command-delay-ms=20
-     */
-    @Value("${automation.keyboard.command-delay-ms:20}")
-    private long commandDelayMs;
-
-    /**
-     * Delay in milliseconds after the Cmd+Tab application switch, before
-     * the first arrow command is sent — gives the target app time to
-     * actually gain focus. Override via:
-     *   automation.keyboard.post-switch-delay-ms=200
-     */
-    @Value("${automation.keyboard.post-switch-delay-ms:200}")
-    private long postSwitchDelayMs;
-
-    @Value("${automation.keyboard.combo-delay-ms:50}")
-    private long comboDelayMs;
+public class ZipCommandExecutorImpl
+        implements ZipCommandExecutor {
 
     private final KeyboardService keyboard;
+    private final ZipValidator validator;
 
-    public ZipCommandExecutorImpl(KeyboardService keyboard) {
+    public ZipCommandExecutorImpl(
+            KeyboardService keyboard,
+            ZipValidator validator
+    ) {
         this.keyboard = keyboard;
+        this.validator = validator;
     }
 
     @Override
-    public synchronized void execute(List<ArrowDirection> commands, boolean switchTab, String executionId) {
-        if (commands == null || commands.isEmpty()) {
-            log.warn("No keyboard commands to execute. executionId={}", executionId);
-            return;
-        }
-
-        long totalStart = System.nanoTime();
+    public synchronized void execute(
+            ZipRequest request,
+            String executionId
+    ) {
+        long startTime = System.nanoTime();
 
         try {
+            List<GridDirection> directions =
+                    validator.validateAndMap(
+                            request.instructions()
+                    );
 
-            if(switchTab){
-                keyboard.switchTab();
-            }else{
-                keyboard.addDelay(1000); // because if solve in 1 sec then not accepted 
-            }
+            prepare(request);
 
+            executeDirections(
+                    directions,
+                    request.keySpeed()
+            );
 
-            for (int i = 0; i < commands.size(); i++) {
-                int macKey = commands.get(i).getKeyCode();
-                keyboard.press(macKey);
+            long totalMs =
+                    (System.nanoTime() - startTime) / 1_000_000;
 
-                boolean isLastCommand = i == commands.size() - 1;
-                if (commandDelayMs > 0 && !isLastCommand) {
-                    keyboard.addDelay(commandDelayMs);
-                }
-            }
-
-            long totalMs = (System.nanoTime() - totalStart) / 1_000_000;
             log.info(
-                "Fast keyboard automation completed. executionId={}, commandCount={}, totalMs={}",
-                executionId, commands.size(), totalMs
+                    "Zip completed. executionId={}, " +
+                    "commands={}, keySpeed={}, totalMs={}",
+                    executionId,
+                    directions.size(),
+                    request.keySpeed(),
+                    totalMs
             );
 
         } catch (Exception e) {
-            log.error("Fast keyboard automation failed. executionId={}", executionId, e);
-            throw new ZipCommandExecutionException("Keyboard automation failed", executionId, e);
+
+            log.error(
+                    "Zip execution failed. executionId={}",
+                    executionId,
+                    e
+            );
+
+            throw new ZipCommandExecutionException(
+                    "Zip keyboard automation failed",
+                    executionId,
+                    e
+            );
         }
     }
-    
+
+    private void prepare(
+            ZipRequest request
+    ) {
+        if (request.onlyKey()) {
+            keyboard.switchTab();
+            return;
+        }
+
+        /*
+         * LinkedIn needs enough time before
+         * keyboard automation starts.
+         */
+        keyboard.addDelay(1000);
+    }
+
+    private void executeDirections(
+            List<GridDirection> directions,
+            int keySpeed
+    ) {
+        for (GridDirection direction : directions) {
+
+            press(direction);
+
+            keyboard.addDelay(keySpeed);
+        }
+    }
+
+    private void press(
+            GridDirection direction
+    ) {
+        switch (direction) {
+            case UP -> keyboard.pressUp();
+            case DOWN -> keyboard.pressDown();
+            case LEFT -> keyboard.pressLeft();
+            case RIGHT -> keyboard.pressRight();
+        }
+    }
 }

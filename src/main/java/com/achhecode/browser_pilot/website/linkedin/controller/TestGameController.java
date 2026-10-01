@@ -24,7 +24,18 @@ public class TestGameController {
     public ResponseEntity<Void> run(
             @Valid @RequestBody ZipRequest request
     ) {
-        zipCommandService.executeCommand(request);
+        zipCommandService.execute(request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reverse")
+    public ResponseEntity<String> reverse(
+            @RequestBody String instruction
+    ) {
+        return ResponseEntity.ok(
+                zipCommandService.reverseInstruction(
+                        instruction
+                )
+        );
     }
 }

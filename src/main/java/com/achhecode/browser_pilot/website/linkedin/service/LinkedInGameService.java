@@ -7,6 +7,9 @@ import com.achhecode.browser_pilot.website.linkedin.page.MyNetworkPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesGameService;
+import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesPage;
+import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensRequest;
@@ -31,19 +34,22 @@ public class LinkedInGameService {
     private final MiniSudokuGameService sudokuGameService;
     private final QueensGameService queensGameService;
     private final TangoGameService tangoGameService;
+    private final PatchesGameService patchesGameService;
 
     public LinkedInGameService(
             BrowserPageResolver pageResolver,
             ZipGameService zipGameService,
             MiniSudokuGameService sudokuGameService,
             QueensGameService queensGameService,
-            TangoGameService tangoGameService
+            TangoGameService tangoGameService,
+            PatchesGameService patchesGameService
     ) {
         this.pageResolver = pageResolver;
         this.zipGameService = zipGameService;
         this.sudokuGameService = sudokuGameService;
         this.queensGameService = queensGameService;
         this.tangoGameService = tangoGameService;
+        this.patchesGameService = patchesGameService;
     }
 
     private MyNetworkPage getMyNetworkPage() {
@@ -77,8 +83,22 @@ public class LinkedInGameService {
         openGame(LinkedInGame.CROSSCLIMB);
     }
 
-    public void enterPatches() {
+    public void enterPatches(PatchesRequest patchesRequest) {
         openGame(LinkedInGame.PATCHES);
+        if(patchesRequest.onlyKey()){
+            patchesGameService.solve(
+                    patchesRequest
+            );
+        }else{
+            MyNetworkPage page = openGame(LinkedInGame.TANGO);
+
+            PatchesPage patchesPage = new PatchesPage(page.page());
+
+            patchesGameService.solve(
+                    patchesPage,
+                    patchesRequest
+            );
+        }
     }
 
     public void enterZip(ZipRequest zipRequest) {

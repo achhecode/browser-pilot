@@ -21,7 +21,7 @@ public class ZipGameService {
 
         // later execute using playwright only
         
-        commandService.executeCommand(
+        commandService.execute(
                 request
         );
     }
@@ -30,7 +30,7 @@ public class ZipGameService {
     public void solve(
             ZipRequest request
     ) {
-        commandService.executeCommand(
+        commandService.execute(
                 request
         );
     }

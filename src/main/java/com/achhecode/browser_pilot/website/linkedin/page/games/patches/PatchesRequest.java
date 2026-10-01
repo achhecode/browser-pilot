@@ -1,32 +1,48 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.patches;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
-public record PatchesRequest(Integer gridWidth, Integer gridHeight, List<Patch> patches) {
+import com.achhecode.browser_pilot.grid.GridDirection;
 
-    public int width()  { return gridWidth  == null ? 6 : gridWidth; }
-    public int height() { return gridHeight == null ? 6 : gridHeight; }
+public record PatchesRequest(
 
-    public record Patch(List<Integer> position, List<PatchesCommand> move) {}
-}
+        @Min(1)
+        int gridWidth,
 
-/*        
-        
-{
-  "patches": [
-    {
-      "position": [0, 0],
-      "move": ["LEFT", "LEFT"]
-    },
-    {
-      "position": [2, 0],
-      "move": ["LEFT", "LEFT", "DOWN", "DOWN", "DOWN"]
-    },
-    {
-      "position": [5, 0],
-      "move": ["DOWN", "DOWN", "DOWN", "DOWN", "DOWN"]
+        @Min(1)
+        int gridHeight,
+
+        PatchRouteStrategy routeStrategy,
+
+        @NotEmpty
+        List<@Valid Patch> patches,
+
+        boolean onlyKey,
+        @Min(1)
+        @Max(1000)
+        Integer keySpeed
+) {
+
+    public record Patch(
+            @NotNull
+            @Size(min = 2, max = 2)
+            List<@NotNull Integer> position,
+
+            @NotEmpty
+            List<GridDirection> move
+    ) {
     }
-  ]
-}
 
-*/
+    public PatchesRequest {
+        if (keySpeed == null) {
+        keySpeed = 10;
+        }
+    }
+}
