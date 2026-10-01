@@ -11,7 +11,7 @@ public record QueensRequest(
         boolean onlyKey,
 
         // @NotNull
-        @Min(1)
+        @Min(10)
         @Max(1000)
         Integer keySpeed
 ) {

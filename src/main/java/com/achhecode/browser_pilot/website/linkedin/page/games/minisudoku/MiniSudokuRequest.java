@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Min;
 public record MiniSudokuRequest (
     String instructions,
     boolean onlyKey,
-    @Min (1)
+    @Min (10)
     @Max(1000)
     Integer keySpeed
 ) {

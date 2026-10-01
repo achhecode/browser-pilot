@@ -25,7 +25,7 @@ public record PatchesRequest(
         List<@Valid Patch> patches,
 
         boolean onlyKey,
-        @Min(1)
+        @Min(10)
         @Max(1000)
         Integer keySpeed
 ) {

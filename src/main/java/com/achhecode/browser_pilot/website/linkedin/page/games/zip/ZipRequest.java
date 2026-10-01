@@ -27,7 +27,7 @@ public record ZipRequest(
                 minimum = "1",
                 maximum = "1000"
         )
-        @Min(value = 1, message = "keySpeed must be at least 1")
+        @Min(value = 10, message = "keySpeed must be at least 10")
         @Max(value = 1000, message = "keySpeed must not exceed 1000")
         Integer keySpeed
 
