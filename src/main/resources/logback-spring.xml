@@ -3,7 +3,7 @@
 <configuration>
 
     <!-- ============================================================
-         Common properties
+         Properties
          ============================================================ -->
 
     <property name="LOG_DIR" value="./logs"/>
@@ -98,6 +98,8 @@
 
     <!-- ============================================================
          QUEENS
+         Package:
+         com.achhecode.browser_pilot.website.linkedin.page.games.queen
          ============================================================ -->
 
     <appender name="QUEENS_FILE"
@@ -252,23 +254,11 @@
 
 
     <!-- ============================================================
-         Root application logger
+         GAME PACKAGE ROUTING
          ============================================================ -->
 
-    <root level="INFO">
-
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="APPLICATION_FILE"/>
-        <appender-ref ref="ERROR_FILE"/>
-
-    </root>
-
-
-    <!-- ============================================================
-         Automation loggers
-         ============================================================ -->
-
-    <logger name="automation.queens"
+    <logger
+            name="com.achhecode.browser_pilot.website.linkedin.page.games.queen"
             level="INFO"
             additivity="false">
 
@@ -278,7 +268,8 @@
     </logger>
 
 
-    <logger name="automation.tango"
+    <logger
+            name="com.achhecode.browser_pilot.website.linkedin.page.games.tango"
             level="INFO"
             additivity="false">
 
@@ -288,7 +279,8 @@
     </logger>
 
 
-    <logger name="automation.patches"
+    <logger
+            name="com.achhecode.browser_pilot.website.linkedin.page.games.patches"
             level="INFO"
             additivity="false">
 
@@ -298,7 +290,8 @@
     </logger>
 
 
-    <logger name="automation.zip"
+    <logger
+            name="com.achhecode.browser_pilot.website.linkedin.page.games.zip"
             level="INFO"
             additivity="false">
 
@@ -308,7 +301,8 @@
     </logger>
 
 
-    <logger name="automation.mini-sudoku"
+    <logger
+            name="com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku"
             level="INFO"
             additivity="false">
 
@@ -316,5 +310,18 @@
         <appender-ref ref="MINI_SUDOKU_FILE"/>
 
     </logger>
+
+
+    <!-- ============================================================
+         ROOT
+         ============================================================ -->
+
+    <root level="INFO">
+
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="APPLICATION_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+
+    </root>
 
 </configuration>
