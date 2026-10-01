@@ -65,7 +65,10 @@ public class ZipCommandExecutorImpl implements ZipCommandExecutor {
 
             if(switchTab){
                 keyboard.switchTab();
+            }else{
+                keyboard.addDelay(1000); // because if solve in 1 sec then not accepted 
             }
+
 
             for (int i = 0; i < commands.size(); i++) {
                 int macKey = commands.get(i).getKeyCode();

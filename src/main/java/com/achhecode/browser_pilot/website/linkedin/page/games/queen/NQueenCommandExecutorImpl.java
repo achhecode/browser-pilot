@@ -48,10 +48,11 @@ public class NQueenCommandExecutorImpl
             if(switchTab){
                 keyboard.switchTab();
             }else{
-                for(int i=0; i<0;i++){
-                    keyboard.shiftTab();
-                }
-                keyboard.pressEnter();
+                // for(int i=0; i<0;i++){
+                //     keyboard.shiftTab();
+                // }
+                // keyboard.pressEnter();
+                keyboard.addDelay(1000); // because if solve in 1 sec then not accepted 
             }
 
             int n = positions.size();

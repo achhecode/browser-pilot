@@ -26,7 +26,11 @@ public class SudokuCommandExecutorImpl
     @Override
     public void execute(Integer gridSize, List<Digit> commands, boolean switchTab, String executionId) {
         try {
-            if(switchTab) keyboardService.switchTab();
+            if(switchTab) {
+                keyboardService.switchTab();
+            }else{
+                keyboardService.addDelay(1000); // because if solve in 1 sec then not accepted 
+            }
             keyboardService.pressLeft();
             if (commandDelayMs > 0) {
                 keyboardService.addDelay(commandDelayMs);
