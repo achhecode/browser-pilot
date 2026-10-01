@@ -1,6 +1,8 @@
-package com.achhecode.browser_pilot.keyboard;
+package com.achhecode.browser_pilot.grid;
 
 import org.springframework.stereotype.Component;
+
+import com.achhecode.browser_pilot.keyboard.KeyboardService;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -38,8 +38,6 @@ public class CrossLimbCommandExecutor {
 
     private void enterGame(){
         keyboard.switchTab();
-        keyboard.addDelay(100);
         keyboard.pressEnter();
-        keyboard.addDelay(500); // wait for activating the game
     }
 }

@@ -1,4 +1,4 @@
-package com.achhecode.browser_pilot.keyboard;
+package com.achhecode.browser_pilot.grid;
 
 import java.util.ArrayList;
 import java.util.List;

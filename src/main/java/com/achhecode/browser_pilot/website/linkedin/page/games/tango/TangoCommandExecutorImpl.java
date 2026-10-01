@@ -5,8 +5,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.achhecode.browser_pilot.keyboard.GridPosition;
-import com.achhecode.browser_pilot.keyboard.GridTraversal;
+import com.achhecode.browser_pilot.grid.GridPosition;
+import com.achhecode.browser_pilot.grid.GridTraversal;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
 import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
 import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
@@ -38,7 +38,6 @@ public class TangoCommandExecutorImpl
 
             if(request.onlyKey()){
                 keyboard.switchTab();
-                keyboard.addDelay(200); // for switching tab
             }
             
             TangoPositions positions =

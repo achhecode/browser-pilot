@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.achhecode.browser_pilot.website.linkedin.page.games.sudoku.SudokuCommandService;
+import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,8 +58,7 @@ public class MiniSudokuGameService {
         String executionId =
                 UUID.randomUUID().toString();
         
-        boolean switchTab = miniSudokuRequest.onlyKey();
-        sudokuCommandService.executeCommand(gridSize, instructions, switchTab, executionId);
+        sudokuCommandService.executeCommand(miniSudokuRequest, executionId);
 
     }
 
@@ -94,5 +94,18 @@ public class MiniSudokuGameService {
                 );
             }
         }
+    }
+
+
+    public void solve(
+            MiniSudokuRequest miniSudokuRequest
+    ) {
+        
+        String executionId =
+                UUID.randomUUID().toString();
+
+
+        sudokuCommandService.executeCommand(miniSudokuRequest, executionId);
+
     }
 }

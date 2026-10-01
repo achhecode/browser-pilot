@@ -1,73 +1,102 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.sudoku;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
-import com.achhecode.browser_pilot.keyboard.Digit;
-import com.achhecode.browser_pilot.keyboard.GridTraversal;
+import com.achhecode.browser_pilot.grid.GridPosition;
+import com.achhecode.browser_pilot.grid.GridTraversal;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
+import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
+import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
+import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoCommandExecutionException;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class SudokuCommandExecutorImpl
-        implements SudokuCommandExecutor {
+                implements SudokuCommandExecutor {
 
-    private final KeyboardService keyboardService;
-    private final GridTraversal gridTraversal;
+        private final KeyboardService keyboard;
+        private final GridTraversal gridTraversal;
 
-    @Value("${automation.keyboard.command-delay-ms:20}")
-    private long commandDelayMs;
-
-    @Override
-    public void execute(Integer gridSize, List<Digit> commands, boolean switchTab, String executionId) {
-        try {
-            if(switchTab) {
-                keyboardService.switchTab();
-            }else{
-                keyboardService.addDelay(1000); // because if solve in 1 sec then not accepted 
-            }
-            keyboardService.pressLeft();
-            if (commandDelayMs > 0) {
-                keyboardService.addDelay(commandDelayMs);
-            }
-
-            // gridTraversal.reset();
-            // gridTraversal.reset();
-
-            for (int i = 0; i < commands.size(); i++) {
-
-                keyboardService.typeLetter(
-                        commands.get(i).getCharacter()
-                );
-
-                if (commandDelayMs > 0) {
-                    keyboardService.addDelay(commandDelayMs);
-                }
-
-                if (i < commands.size() - 1) {
-                    // gridTraversal.move(
-                    //         gridSize
-                    // );
-                }
-            }
-
-        } catch (Exception e) {
-            log.error(
-                    "Sudoku automation failed. executionId={}",
-                    executionId,
-                    e
-            );
-
-            throw new SudokuCommandExecutionException(
-                    "Sudoku keyboard automation failed",
-                    executionId,
-                    e
-            );
+        public SudokuCommandExecutorImpl(
+                        KeyboardService keyboard,
+                        GridTraversal gridTraversal) {
+                this.keyboard = keyboard;
+                this.gridTraversal = gridTraversal;
         }
-    }
+
+        @Override
+        public synchronized void execute(
+                        MiniSudokuRequest request,
+                        String executionId) {
+                try {
+
+                        if (request.onlyKey()) {
+                                keyboard.switchTab();
+                        }
+
+                        SudokuPositions positions = SudokuPositionMapper.from(
+                                        request.instructions());
+
+                        List<GridPosition> traversal = SnakeGridTraversal.create(
+                                        positions.gridSize(),
+                                        SnakeTraversalStrategy.LEFT_TO_RIGHT_SNAKE);
+
+                        executeTraversal(
+                                        traversal,
+                                        positions.values(),
+                                        request.keySpeed());
+
+                        log.info(
+                                        "Tango completed. executionId={}, gridSize={}",
+                                        executionId,
+                                        positions.gridSize());
+
+                } catch (Exception e) {
+                        throw new TangoCommandExecutionException(
+                                        "Tango keyboard automation failed",
+                                        executionId,
+                                        e);
+                }
+        }
+
+        private void pressValue(
+                        GridPosition position,
+                        int value) {
+                char digit = Character.forDigit(value, 10);
+
+                keyboard.typeLetter(digit);
+
+                log.info(
+                                "Entering Sudoku value {} at grid position {}",
+                                digit,
+                                position);
+        }
+
+        private void executeTraversal(
+                        List<GridPosition> traversal,
+                        Map<GridPosition, Integer> values,
+                        int keySpeed) {
+                for (int index = 0; index < traversal.size(); index++) {
+
+                        GridPosition current = traversal.get(index);
+
+                        int value = values.get(current);
+
+                        pressValue(current, value);
+
+                        if (index + 1 < traversal.size()) {
+                                gridTraversal.move(
+                                                current,
+                                                traversal.get(index + 1));
+
+                                keyboard.addDelay(keySpeed);
+                        }
+                }
+        }
 }

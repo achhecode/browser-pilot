@@ -1,10 +1,8 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.sudoku;
 
-import java.util.List;
-
-import com.achhecode.browser_pilot.keyboard.Digit;
+import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 
 public interface SudokuCommandExecutor {
 
-    void execute(Integer gridSize, List<Digit> commands, boolean switchTab, String executionId);
+    void execute(MiniSudokuRequest miniSudokuRequest, String executionId);
 }

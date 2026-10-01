@@ -3,6 +3,8 @@ package com.achhecode.browser_pilot.keyboard;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.achhecode.browser_pilot.grid.GridPosition;
+
 public final class SnakeGridTraversal {
 
     private SnakeGridTraversal() {

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.achhecode.browser_pilot.keyboard.GridPosition;
+import com.achhecode.browser_pilot.grid.GridPosition;
 
 public final class QueenPositionMapper {
 

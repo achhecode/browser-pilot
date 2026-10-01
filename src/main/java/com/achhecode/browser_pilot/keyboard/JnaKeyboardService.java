@@ -17,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class JnaKeyboardService implements KeyboardService {
 
+    private static final int TAB_DELAY_MS = 200;
+
     public interface CoreGraphics extends Library {
         CoreGraphics INSTANCE = Native.load("CoreGraphics", CoreGraphics.class);
 
@@ -59,6 +61,9 @@ public class JnaKeyboardService implements KeyboardService {
         post(TAB, true, FLAG_COMMAND);
         post(TAB, false, FLAG_COMMAND);
         post(COMMAND, false, FLAG_NONE);
+
+        // ideal delay for switching tabs
+        addDelay(TAB_DELAY_MS);
     }
 
     @Override

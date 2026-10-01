@@ -100,14 +100,20 @@ public class LinkedInGameService {
     }
 
     public void enterMiniSudoku(MiniSudokuRequest miniSudokuRequest) {
-        MyNetworkPage page = openGame(LinkedInGame.MINI_SUDOKU);
+        if(miniSudokuRequest.onlyKey()){
+            sudokuGameService.solve(
+                    miniSudokuRequest
+            );
+        }else{
+            MyNetworkPage page = openGame(LinkedInGame.MINI_SUDOKU);
 
-        MiniSudokuPage miniSudokuPage = new MiniSudokuPage(page.page());
+            MiniSudokuPage miniSudokuPage = new MiniSudokuPage(page.page());
 
-        sudokuGameService.solve(
-                miniSudokuPage,
-                miniSudokuRequest
-        );
+            sudokuGameService.solve(
+                    miniSudokuPage,
+                    miniSudokuRequest
+            );
+        }
     }
 
     public void enterWend() {
