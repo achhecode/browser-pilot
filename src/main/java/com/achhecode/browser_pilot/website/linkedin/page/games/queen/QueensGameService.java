@@ -8,13 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class QueensGameService {
 
-    private final NQueenCommandService nQueenCommandService;
+    private final QueensCommandService queensCommandService;
 
 
     public QueensGameService(
-            NQueenCommandService nQueenCommandService
+            QueensCommandService queensCommandService
     ) {
-        this.nQueenCommandService = nQueenCommandService;
+        this.queensCommandService = queensCommandService;
     }
 
 
@@ -42,7 +42,7 @@ public class QueensGameService {
                 UUID.randomUUID().toString();
 
 
-        nQueenCommandService.executeCommand(queensRequest, executionId);
+        queensCommandService.executeCommand(queensRequest, executionId);
 
 
     }
@@ -57,7 +57,7 @@ public class QueensGameService {
                 UUID.randomUUID().toString();
 
 
-        nQueenCommandService.executeCommand(queensRequest, executionId);
+        queensCommandService.executeCommand(queensRequest, executionId);
 
     }
 }

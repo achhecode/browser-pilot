@@ -1,11 +1,11 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.queen;
 
-public class NQueenCommandExecutionException
+public class QueensCommandExecutionException
         extends RuntimeException {
 
     private final String executionId;
 
-    public NQueenCommandExecutionException(
+    public QueensCommandExecutionException(
             String message,
             String executionId,
             Throwable cause

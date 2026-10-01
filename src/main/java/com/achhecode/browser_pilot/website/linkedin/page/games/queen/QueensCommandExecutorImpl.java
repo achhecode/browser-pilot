@@ -16,13 +16,13 @@ import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
 
 @Slf4j
 @Component
-public class NQueenCommandExecutorImpl
-        implements NQueenCommandExecutor {
+public class QueensCommandExecutorImpl
+        implements QueensCommandExecutor {
 
     private final KeyboardService keyboard;
     private final GridTraversal gridTraversal;
 
-    public NQueenCommandExecutorImpl(
+    public QueensCommandExecutorImpl(
             KeyboardService keyboard,
             GridTraversal gridTraversal
     ) {
@@ -43,7 +43,7 @@ public class NQueenCommandExecutorImpl
             }
             
             Set<GridPosition> queens =
-                    QueenPositionMapper.from(
+                    QueensPositionMapper.from(
                             request.positions()
                     );
 
@@ -65,7 +65,7 @@ public class NQueenCommandExecutorImpl
             );
 
         } catch (Exception e) {
-            throw new NQueenCommandExecutionException(
+            throw new QueensCommandExecutionException(
                     "N-Queen keyboard automation failed",
                     executionId,
                     e

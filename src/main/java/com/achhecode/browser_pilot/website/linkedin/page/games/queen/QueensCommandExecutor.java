@@ -1,6 +1,6 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.queen;
 
-public interface NQueenCommandExecutor {
+public interface QueensCommandExecutor {
 
     void execute(
             QueensRequest queensRequest,

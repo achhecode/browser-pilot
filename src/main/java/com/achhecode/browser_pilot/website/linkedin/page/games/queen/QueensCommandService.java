@@ -7,12 +7,12 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class NQueenCommandService {
+public class QueensCommandService {
 
-    private final NQueenCommandExecutor commandExecutor;
+    private final QueensCommandExecutor commandExecutor;
 
-    public NQueenCommandService(
-            NQueenCommandExecutor commandExecutor
+    public QueensCommandService(
+            QueensCommandExecutor commandExecutor
     ) {
         this.commandExecutor = commandExecutor;
     }

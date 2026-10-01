@@ -6,9 +6,9 @@ import java.util.Set;
 
 import com.achhecode.browser_pilot.grid.GridPosition;
 
-public final class QueenPositionMapper {
+public final class QueensPositionMapper {
 
-    private QueenPositionMapper() {
+    private QueensPositionMapper() {
     }
 
     public static Set<GridPosition> from(
