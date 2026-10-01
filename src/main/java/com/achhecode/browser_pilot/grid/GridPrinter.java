@@ -2,7 +2,7 @@ package com.achhecode.browser_pilot.grid;
 
 public final class GridPrinter {
 
-    private static final int CELL_WIDTH = 3;
+    // private static final int CELL_WIDTH = 3;
 
     private GridPrinter() {
     }
