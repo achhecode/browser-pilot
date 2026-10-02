@@ -12,26 +12,24 @@ springdoc:
     path: /swagger-ui.html
 
 browserpilot:
-  runtime-dir: ./runtime
 
   browser:
-    mode: launch # launch/attach
+    mode: launch
     headless: false
+    executable-path:
 
     attach:
       host: 127.0.0.1
       port: 9222
 
   capture:
-    dir: ./page-captures
+    dir: ./captures
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info
-
-
 
 
 logging:
