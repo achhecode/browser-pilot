@@ -83,3 +83,25 @@ xattr -dr com.apple.quarantine "/Users/ardanish/Downloads/chrome-mac-arm64/Googl
 Google Chrome for Testing 154.0.8037.92
 
 ```
+
+
+<!-- Fix git issue: File releases/v-1.0.2/browser-pilot-1.0.2.jar is 229.08 MB; this exceeds GitHub's file size limit of 100.00 MB remote: error: GH001: Large files detected. You may want to try Git Large File Storage - 
+https://git-lfs.github.com. To github-ac:achhecode/browser-pilot.git ! [remote rejected] main -> main (pre-receive hook declined) error: failed to push some refs to 'github-ac:achhecode/browser-pilot.git' -->
+
+```bash
+git log --all --oneline -- releases/v-1.0.2/browser-pilot-1.0.2.jar
+git rm --cached releases/v-1.0.2/browser-pilot-1.0.2.jar
+brew install git-filter-repo
+git filter-repo --path releases/v-1.0.2/browser-pilot-1.0.2.jar --invert-paths --force
+echo "releases/v-1.0.2/*.jar" >> .gitignore                    
+git add .gitignore    
+git commit -m "Ignore release JAR files"                       
+git log --all -- releases/v-1.0.2/browser-pilot-1.0.2.jar  
+git remote -v    
+git remote add origin git@github-ac:achhecode/browser-pilot.git
+git push --force-with-lease origin main  
+git fetch origin        
+git push --force-with-lease origin main      
+git push --force origin main  
+git ls-files | grep 'browser-pilot-1.0.2.jar'
+```
