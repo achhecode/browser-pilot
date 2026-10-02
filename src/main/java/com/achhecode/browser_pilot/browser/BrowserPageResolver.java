@@ -18,7 +18,7 @@ public class BrowserPageResolver {
     public Page findPage(String urlPrefix) {
 
         BrowserContext context =
-                playwrightManager.getDefaultContext();
+                playwrightManager.getContext();
 
         return context.pages()
                 .stream()
@@ -34,7 +34,7 @@ public class BrowserPageResolver {
     public Page findLinkedInPage() {
 
         BrowserContext context =
-                playwrightManager.getDefaultContext();
+                playwrightManager.getContext();
 
         return context.pages()
                 .stream()

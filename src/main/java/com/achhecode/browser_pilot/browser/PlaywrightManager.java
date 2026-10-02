@@ -3,6 +3,7 @@ package com.achhecode.browser_pilot.browser;
 import com.achhecode.browser_pilot.config.BrowserPilotProperties;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import jakarta.annotation.PostConstruct;
@@ -18,6 +19,8 @@ public class PlaywrightManager {
 
     private Browser browser;
 
+    private BrowserContext context;
+
     public PlaywrightManager(
             BrowserPilotProperties properties
     ) {
@@ -29,72 +32,109 @@ public class PlaywrightManager {
 
         playwright = Playwright.create();
 
-        if (properties.getDebug().isPersistent()) {
+        if (properties.getBrowser().getMode()
+                == BrowserPilotProperties.Mode.ATTACH) {
 
-            connectToPersistentBrowser();
+            attachToBrowser();
 
         } else {
 
-            launchManagedBrowser();
+            launchBrowser();
         }
     }
 
-    private void connectToPersistentBrowser() {
-
-        String endpoint =
-                "http://127.0.0.1:"
-                        + properties.getDebug().getPort();
+    private void launchBrowser() {
 
         System.out.println(
-                "Connecting to Chromium at " + endpoint
+                "Starting Playwright-managed Chromium..."
+        );
+
+        browser = playwright.chromium().launch(
+                new BrowserType.LaunchOptions()
+                        .setHeadless(
+                                properties.getBrowser().isHeadless()
+                        )
+        );
+
+        context = browser.newContext();
+
+        System.out.println(
+                "Started Playwright-managed Chromium."
+        );
+
+        System.out.println(
+                "Headless: "
+                        + properties.getBrowser().isHeadless()
+        );
+    }
+
+    private void attachToBrowser() {
+
+        String host =
+                properties.getBrowser()
+                        .getAttach()
+                        .getHost();
+
+        int port =
+                properties.getBrowser()
+                        .getAttach()
+                        .getPort();
+
+        String endpoint =
+                "http://" + host + ":" + port;
+
+        System.out.println(
+                "Connecting to existing Chromium at "
+                        + endpoint
         );
 
         browser = playwright.chromium()
                 .connectOverCDP(endpoint);
+
+        context = getExistingContext();
 
         System.out.println(
                 "Connected to existing Chromium."
         );
     }
 
-    private void launchManagedBrowser() {
-
-        browser = playwright.chromium().launch(
-                new com.microsoft.playwright.BrowserType.LaunchOptions()
-                        .setHeadless(properties.isHeadless())
-        );
-
-        System.out.println(
-                "Started managed Chromium."
-        );
-    }
-
-    public Browser getBrowser() {
-
-        if (browser == null) {
-            throw new IllegalStateException(
-                    "Browser is not connected."
-            );
-        }
-
-        return browser;
-    }
-
-    public BrowserContext getDefaultContext() {
+    private BrowserContext getExistingContext() {
 
         if (browser.contexts().isEmpty()) {
 
             throw new IllegalStateException(
-                    "No browser context available."
+                    "Connected to Chromium, but no browser context exists."
             );
         }
 
         return browser.contexts().get(0);
     }
 
-    public Page getOrCreateDebugPage() {
+    public Browser getBrowser() {
 
-        BrowserContext context = getDefaultContext();
+        if (browser == null) {
+
+            throw new IllegalStateException(
+                    "Browser is not available."
+            );
+        }
+
+        return browser;
+    }
+
+    public BrowserContext getContext() {
+
+        if (context == null) {
+
+            throw new IllegalStateException(
+                    "Browser context is not available."
+            );
+        }
+
+        return context;
+    }
+
+    public Page getOrCreatePage() {
 
         if (!context.pages().isEmpty()) {
 
@@ -108,24 +148,34 @@ public class PlaywrightManager {
     public void shutdown() {
 
         System.out.println(
-                "Disconnecting Playwright..."
+                "Shutting down BrowserPilot..."
         );
 
         /*
-         * IMPORTANT:
+         * When ATTACH mode is used, BrowserPilot
+         * does not own the Chromium process.
          *
-         * When using connectOverCDP(), we don't want
-         * BrowserPilot to own the Chromium process.
-         *
-         * Therefore we do NOT call browser.close().
+         * Therefore do not call browser.close().
          */
 
+        if (properties.getBrowser().getMode()
+                == BrowserPilotProperties.Mode.LAUNCH) {
+
+            if (browser != null && browser.isConnected()) {
+
+                browser.close();
+            }
+        }
+
+        context = null;
         browser = null;
 
         if (playwright != null) {
 
             try {
+
                 playwright.close();
+
             } catch (Exception e) {
 
                 System.err.println(
@@ -138,7 +188,7 @@ public class PlaywrightManager {
         }
 
         System.out.println(
-                "Playwright disconnected."
+                "BrowserPilot shutdown complete."
         );
     }
 }

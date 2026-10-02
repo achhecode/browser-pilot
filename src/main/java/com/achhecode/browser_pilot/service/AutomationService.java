@@ -22,7 +22,7 @@ public class AutomationService {
     ) {
 
         Page page =
-                playwrightManager.getOrCreateDebugPage();
+                playwrightManager.getOrCreatePage();
 
         page.navigate(request.url());
 

@@ -7,13 +7,9 @@ public class BrowserPilotProperties {
 
     private String runtimeDir = "./runtime";
 
-    private boolean headless = false;
-
-    private int browserCount = 1;
-
-    private Debug debug = new Debug();
-
     private Capture capture = new Capture();
+
+    private Browser browser = new Browser();
 
     public String getRuntimeDir() {
         return runtimeDir;
@@ -23,42 +19,59 @@ public class BrowserPilotProperties {
         this.runtimeDir = runtimeDir;
     }
 
-    public boolean isHeadless() {
-        return headless;
+    public Browser getBrowser() {
+        return browser;
     }
 
-    public void setHeadless(boolean headless) {
-        this.headless = headless;
+    public void setBrowser(Browser browser) {
+        this.browser = browser;
     }
 
-    public int getBrowserCount() {
-        return browserCount;
+    public static class Browser {
+
+        private Mode mode = Mode.LAUNCH;
+
+        private boolean headless = false;
+
+        private Attach attach = new Attach();
+
+        public Mode getMode() {
+            return mode;
+        }
+
+        public void setMode(Mode mode) {
+            this.mode = mode;
+        }
+
+        public boolean isHeadless() {
+            return headless;
+        }
+
+        public void setHeadless(boolean headless) {
+            this.headless = headless;
+        }
+
+        public Attach getAttach() {
+            return attach;
+        }
+
+        public void setAttach(Attach attach) {
+            this.attach = attach;
+        }
     }
 
-    public void setBrowserCount(int browserCount) {
-        this.browserCount = browserCount;
-    }
+    public static class Attach {
 
-    public Debug getDebug() {
-        return debug;
-    }
-
-    public void setDebug(Debug debug) {
-        this.debug = debug;
-    }
-
-    public static class Debug {
-
-        private boolean persistent = true;
+        private String host = "127.0.0.1";
 
         private int port = 9222;
 
-        public boolean isPersistent() {
-            return persistent;
+        public String getHost() {
+            return host;
         }
 
-        public void setPersistent(boolean persistent) {
-            this.persistent = persistent;
+        public void setHost(String host) {
+            this.host = host;
         }
 
         public int getPort() {
@@ -69,6 +82,7 @@ public class BrowserPilotProperties {
             this.port = port;
         }
     }
+
 
     public Capture getCapture() {
         return capture;
@@ -89,5 +103,10 @@ public class BrowserPilotProperties {
         public void setDir(String dir) {
             this.dir = dir;
         }
+    }
+
+    public enum Mode {
+        LAUNCH,
+        ATTACH
     }
 }

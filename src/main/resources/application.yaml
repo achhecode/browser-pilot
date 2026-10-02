@@ -14,13 +14,13 @@ springdoc:
 browserpilot:
   runtime-dir: ./runtime
 
-  headless: false
+  browser:
+    mode: launch # launch/attach
+    headless: false
 
-  browser-count: 1
-
-  debug:
-    persistent: true
-    port: 9222
+    attach:
+      host: 127.0.0.1
+      port: 9222
 
   capture:
     dir: ./page-captures

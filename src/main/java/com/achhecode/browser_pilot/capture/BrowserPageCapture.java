@@ -17,7 +17,7 @@ public class BrowserPageCapture {
     public CapturedPage capture() {
 
         BrowserContext context =
-                playwrightManager.getDefaultContext();
+                playwrightManager.getContext();
 
         if (context.pages().isEmpty()) {
             throw new IllegalStateException(
