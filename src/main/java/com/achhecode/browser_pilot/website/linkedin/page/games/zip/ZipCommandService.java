@@ -3,7 +3,11 @@ package com.achhecode.browser_pilot.website.linkedin.page.games.zip;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,48 +39,35 @@ public class ZipCommandService {
         );
     }
 
-    public String reverseInstruction(
-            String instruction
-    ) {
+    public String expandInstruction(String instruction) {
+
+        return instruction
+                .toUpperCase()
+                .chars()
+                .mapToObj(c -> switch (c) {
+                    case 'U' -> "UP";
+                    case 'D' -> "DOWN";
+                    case 'L' -> "LEFT";
+                    case 'R' -> "RIGHT";
+                    default -> throw new IllegalArgumentException(
+                            "Invalid instruction: " + (char) c
+                    );
+                })
+                .collect(Collectors.joining(","));
+    }
+
+    public String reverseInstruction(String instruction) {
+
         if (instruction == null || instruction.isBlank()) {
             return "";
         }
 
-        String[] commands =
-                instruction.split(",");
+        String[] commands = instruction.split(",");
 
-        StringBuilder result =
-                new StringBuilder(
-                        instruction.length()
-                );
+        List<String> reversed = Arrays.asList(commands);
 
-        for (int i = commands.length - 1; i >= 0; i--) {
+        Collections.reverse(reversed);
 
-            if (result.length() > 0) {
-                result.append(',');
-            }
-
-            result.append(
-                    reverse(commands[i].trim())
-            );
-        }
-
-        return result.toString();
-    }
-
-    private String reverse(
-            String direction
-    ) {
-        return switch (direction.toUpperCase()) {
-            case "UP" -> "DOWN";
-            case "DOWN" -> "UP";
-            case "LEFT" -> "RIGHT";
-            case "RIGHT" -> "LEFT";
-
-            default -> throw new IllegalArgumentException(
-                    "Unsupported Zip direction: "
-                            + direction
-            );
-        };
+        return String.join(",", reversed);
     }
 }
