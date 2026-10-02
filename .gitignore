@@ -42,3 +42,4 @@ instructions.md
 src/main/java/com/achhecode/browser_pilot/test/
 logs/
 **/.DS_Store
+releases/v-1.0.2/*.jar

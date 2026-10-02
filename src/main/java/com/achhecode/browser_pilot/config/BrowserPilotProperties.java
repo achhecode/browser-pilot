@@ -5,19 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "browserpilot")
 public class BrowserPilotProperties {
 
-    private String runtimeDir = "./runtime";
-
-    private Capture capture = new Capture();
-
     private Browser browser = new Browser();
 
-    public String getRuntimeDir() {
-        return runtimeDir;
-    }
-
-    public void setRuntimeDir(String runtimeDir) {
-        this.runtimeDir = runtimeDir;
-    }
+    private Capture capture = new Capture();
 
     public Browser getBrowser() {
         return browser;
@@ -27,11 +17,26 @@ public class BrowserPilotProperties {
         this.browser = browser;
     }
 
+    public Capture getCapture() {
+        return capture;
+    }
+
+    public void setCapture(Capture capture) {
+        this.capture = capture;
+    }
+
     public static class Browser {
 
         private Mode mode = Mode.LAUNCH;
 
         private boolean headless = false;
+
+        /**
+         * Optional path to Chromium/Chrome executable.
+         *
+         * If empty, Playwright's bundled browser is used.
+         */
+        private String executablePath;
 
         private Attach attach = new Attach();
 
@@ -49,6 +54,14 @@ public class BrowserPilotProperties {
 
         public void setHeadless(boolean headless) {
             this.headless = headless;
+        }
+
+        public String getExecutablePath() {
+            return executablePath;
+        }
+
+        public void setExecutablePath(String executablePath) {
+            this.executablePath = executablePath;
         }
 
         public Attach getAttach() {
@@ -83,18 +96,12 @@ public class BrowserPilotProperties {
         }
     }
 
-
-    public Capture getCapture() {
-        return capture;
-    }
-
-    public void setCapture(Capture capture) {
-        this.capture = capture;
-    }
-
     public static class Capture {
 
-        private String dir = "captures";
+        /**
+         * Directory where captured pages are stored.
+         */
+        private String dir = "./captures";
 
         public String getDir() {
             return dir;

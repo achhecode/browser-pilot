@@ -8,6 +8,10 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,82 +36,100 @@ public class PlaywrightManager {
 
         playwright = Playwright.create();
 
-        if (properties.getBrowser().getMode()
-                == BrowserPilotProperties.Mode.ATTACH) {
+        BrowserPilotProperties.Mode mode =
+                properties.getBrowser().getMode();
 
-            attachToBrowser();
+        switch (mode) {
 
-        } else {
+            case LAUNCH -> launchBrowser();
 
-            launchBrowser();
+            case ATTACH -> attachToBrowser();
+
+            default -> throw new IllegalStateException(
+                    "Unsupported browser mode: " + mode
+            );
         }
     }
 
     private void launchBrowser() {
 
-        System.out.println(
-                "Starting Playwright-managed Chromium..."
-        );
+        BrowserPilotProperties.Browser browserProperties =
+                properties.getBrowser();
 
-        browser = playwright.chromium().launch(
+        BrowserType.LaunchOptions options =
                 new BrowserType.LaunchOptions()
                         .setHeadless(
-                                properties.getBrowser().isHeadless()
-                        )
-        );
+                                browserProperties.isHeadless()
+                        );
+
+        String executablePath =
+                browserProperties.getExecutablePath();
+
+        if (executablePath != null
+                && !executablePath.isBlank()) {
+
+            Path path = Path.of(executablePath);
+
+            if (!Files.isRegularFile(path)) {
+
+                throw new IllegalArgumentException(
+                        "Chromium executable does not exist: "
+                                + executablePath
+                );
+            }
+
+            options.setExecutablePath(path);
+
+            System.out.println(
+                    "Launching custom browser: "
+                            + executablePath
+            );
+
+        } else {
+
+            System.out.println(
+                    "Launching Playwright-managed Chromium."
+            );
+        }
+
+        browser = playwright.chromium()
+                .launch(options);
 
         context = browser.newContext();
-
-        System.out.println(
-                "Started Playwright-managed Chromium."
-        );
-
-        System.out.println(
-                "Headless: "
-                        + properties.getBrowser().isHeadless()
-        );
     }
 
     private void attachToBrowser() {
 
-        String host =
-                properties.getBrowser()
-                        .getAttach()
-                        .getHost();
-
-        int port =
-                properties.getBrowser()
-                        .getAttach()
-                        .getPort();
+        BrowserPilotProperties.Attach attach =
+                properties.getBrowser().getAttach();
 
         String endpoint =
-                "http://" + host + ":" + port;
+                "http://"
+                        + attach.getHost()
+                        + ":"
+                        + attach.getPort();
 
         System.out.println(
-                "Connecting to existing Chromium at "
+                "Connecting to existing Chromium: "
                         + endpoint
         );
 
         browser = playwright.chromium()
                 .connectOverCDP(endpoint);
 
-        context = getExistingContext();
+        if (browser.contexts().isEmpty()) {
+
+            throw new IllegalStateException(
+                    "Connected to Chromium, "
+                            + "but no browser context exists."
+            );
+        }
+
+        context = browser.contexts().get(0);
 
         System.out.println(
                 "Connected to existing Chromium."
         );
-    }
-
-    private BrowserContext getExistingContext() {
-
-        if (browser.contexts().isEmpty()) {
-
-            throw new IllegalStateException(
-                    "Connected to Chromium, but no browser context exists."
-            );
-        }
-
-        return browser.contexts().get(0);
     }
 
     public Browser getBrowser() {
@@ -122,7 +144,11 @@ public class PlaywrightManager {
         return browser;
     }
 
-    public BrowserContext getContext() {
+    /*
+     * Keep this method because your existing
+     * classes already use it.
+     */
+    public BrowserContext getDefaultContext() {
 
         if (context == null) {
 
@@ -134,7 +160,18 @@ public class PlaywrightManager {
         return context;
     }
 
-    public Page getOrCreatePage() {
+    /*
+     * Optional newer name.
+     */
+    public BrowserContext getContext() {
+
+        return getDefaultContext();
+    }
+
+    public Page getOrCreateDebugPage() {
+
+        BrowserContext context =
+                getDefaultContext();
 
         if (!context.pages().isEmpty()) {
 
@@ -144,6 +181,14 @@ public class PlaywrightManager {
         return context.newPage();
     }
 
+    /*
+     * Alias if you want the more generic name.
+     */
+    public Page getOrCreatePage() {
+
+        return getOrCreateDebugPage();
+    }
+
     @PreDestroy
     public void shutdown() {
 
@@ -151,24 +196,31 @@ public class PlaywrightManager {
                 "Shutting down BrowserPilot..."
         );
 
+        BrowserPilotProperties.Mode mode =
+                properties.getBrowser().getMode();
+
         /*
-         * When ATTACH mode is used, BrowserPilot
-         * does not own the Chromium process.
-         *
-         * Therefore do not call browser.close().
+         * BrowserPilot owns the browser only when
+         * it launched it.
          */
+        if (mode == BrowserPilotProperties.Mode.LAUNCH) {
 
-        if (properties.getBrowser().getMode()
-                == BrowserPilotProperties.Mode.LAUNCH) {
-
-            if (browser != null && browser.isConnected()) {
+            if (browser != null
+                    && browser.isConnected()) {
 
                 browser.close();
             }
         }
 
-        context = null;
+        /*
+         * ATTACH mode:
+         *
+         * Do NOT close the browser because it
+         * belongs to the external Chromium process.
+         */
+
         browser = null;
+        context = null;
 
         if (playwright != null) {
 
