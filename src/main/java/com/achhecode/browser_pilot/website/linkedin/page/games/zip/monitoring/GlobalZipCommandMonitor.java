@@ -22,53 +22,57 @@ public class GlobalZipCommandMonitor implements ZipCommandMonitor, NativeKeyList
     private volatile boolean running = false;
     private volatile boolean hookRegistered = false;
 
-    @PostConstruct
-    public void initialize() {
-        registerNativeHook();
-    }
-
-    private synchronized void registerNativeHook() {
+    private synchronized boolean registerNativeHook() {
 
         if (hookRegistered) {
-            return;
+            return true;
         }
 
         try {
+
             GlobalScreen.registerNativeHook();
             GlobalScreen.addNativeKeyListener(this);
 
             hookRegistered = true;
 
-            log.info("JNativeHook global keyboard hook registered successfully");
+            log.info(
+                    "JNativeHook global keyboard hook registered successfully"
+            );
+
+            return true;
 
         } catch (NativeHookException e) {
 
             hookRegistered = false;
 
             log.error(
-                "Unable to register JNativeHook global keyboard hook. " +
-                "Keyboard tracking will be unavailable.",
-                e
+                    "Unable to register JNativeHook global keyboard hook.",
+                    e
             );
+
+            return false;
+
         } catch (Throwable e) {
 
             hookRegistered = false;
 
             log.error(
-                "Unexpected error while initializing JNativeHook. " +
-                "Keyboard tracking will be unavailable.",
-                e
+                    "Unexpected error while initializing JNativeHook.",
+                    e
             );
+
+            return false;
         }
     }
 
     @Override
     public synchronized void start() {
 
-        if (!hookRegistered) {
+        if (!hookRegistered && !registerNativeHook()) {
+
             throw new IllegalStateException(
-                "Global keyboard monitoring is unavailable. " +
-                "JNativeHook could not be initialized."
+                    "Global keyboard monitoring is unavailable. " +
+                    "JNativeHook could not be initialized."
             );
         }
 
