@@ -87,6 +87,7 @@ start_browser() {
         --no-first-run
         --no-default-browser-check
         --disable-features=WelcomePage,SignInPromo,PromoBrowser
+        about:blank
     )
 
     echo "Starting Chrome  profile=$PROFILE_NAME  port=$PORT"
