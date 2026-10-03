@@ -15,6 +15,9 @@ import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensReque
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.wend.WendGameService;
+import com.achhecode.browser_pilot.website.linkedin.page.games.wend.WendPage;
+import com.achhecode.browser_pilot.website.linkedin.page.games.wend.WendRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipRequest;
@@ -34,6 +37,7 @@ public class LinkedInGameService {
     private final QueensGameService queensGameService;
     private final TangoGameService tangoGameService;
     private final PatchesGameService patchesGameService;
+    private final WendGameService wendGameService;
 
     public LinkedInGameService(
             LinkedInPageResolver pageResolver,
@@ -41,7 +45,8 @@ public class LinkedInGameService {
             MiniSudokuGameService sudokuGameService,
             QueensGameService queensGameService,
             TangoGameService tangoGameService,
-            PatchesGameService patchesGameService
+            PatchesGameService patchesGameService,
+            WendGameService wendGameService
     ) {
         this.pageResolver = pageResolver;
         this.zipGameService = zipGameService;
@@ -49,6 +54,7 @@ public class LinkedInGameService {
         this.queensGameService = queensGameService;
         this.tangoGameService = tangoGameService;
         this.patchesGameService = patchesGameService;
+        this.wendGameService = wendGameService;
     }
 
     private MyNetworkPage getMyNetworkPage() {
@@ -82,20 +88,19 @@ public class LinkedInGameService {
         openGame(LinkedInGame.CROSSCLIMB);
     }
 
-    public void enterPatches(PatchesRequest patchesRequest) {
-        openGame(LinkedInGame.PATCHES);
-        if(patchesRequest.onlyKey()){
+    public void enterPatches(PatchesRequest request) {
+        if(request.onlyKey()){
             patchesGameService.solve(
-                    patchesRequest
+                    request
             );
         }else{
-            MyNetworkPage page = openGame(LinkedInGame.TANGO);
+            MyNetworkPage page = openGame(LinkedInGame.PATCHES);
 
             PatchesPage patchesPage = new PatchesPage(page.page());
 
             patchesGameService.solve(
                     patchesPage,
-                    patchesRequest
+                    request
             );
         }
     }
@@ -135,8 +140,21 @@ public class LinkedInGameService {
         }
     }
 
-    public void enterWend() {
-        openGame(LinkedInGame.WEND);
+    public void enterWend(WendRequest request) {
+        if(request.onlyKey()){
+            wendGameService.solve(
+                    request
+            );
+        }else{
+            MyNetworkPage page = openGame(LinkedInGame.WEND);
+
+            WendPage wendPage = new WendPage(page.page());
+
+            wendGameService.solve(
+                    wendPage,
+                    request
+            );
+        }
     }
 
     public void enterTango(TangoRequest tangoRequest) {

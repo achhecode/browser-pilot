@@ -4,6 +4,7 @@ import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSu
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.wend.WendRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipRequest;
 import com.achhecode.browser_pilot.website.linkedin.service.LinkedInGameService;
 
@@ -91,8 +92,10 @@ public class LinkedInGameController {
             summary = "Enter Wënd",
             description = "Navigates to the LinkedIn Wënd game."
     )
-    public ResponseEntity<Void> enterWend() {
-        linkedInGameService.enterWend();
+    public ResponseEntity<Void> enterWend(
+        @Valid @RequestBody WendRequest request
+    ) {
+        linkedInGameService.enterWend(request);
         return ResponseEntity.ok().build();
     }
 
