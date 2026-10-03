@@ -1,60 +1,43 @@
 package com.achhecode.browser_pilot.browser;
 
-import com.achhecode.browser_pilot.website.linkedin.LinkedInUrls;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.LoadState;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class BrowserPageResolver {
 
     private final PlaywrightManager playwrightManager;
 
-    public BrowserPageResolver(PlaywrightManager playwrightManager) {
-        this.playwrightManager = playwrightManager;
+    public Page findPage(String url) {
+        // return getContext()
+        //         .pages()
+        //         .stream()
+        //         .filter(page -> page.url().startsWith(url))
+        //         .findFirst()
+        //         .orElseThrow(() ->
+        //                 new IllegalStateException(
+        //                         "No browser page found for: " + urlPrefix
+        //                 )
+        //         );
+
+        return getContext()
+            .pages()
+            .stream()
+            .filter(page -> page.url().startsWith(url))
+            .findFirst()
+            .orElseGet(() -> openNewPage(url));
     }
 
-    public Page findPage(String urlPrefix) {
-
-        BrowserContext context =
-                playwrightManager.getContext();
-
-        return context.pages()
-                .stream()
-                .filter(page -> page.url().startsWith(urlPrefix))
-                .findFirst()
-                .orElseThrow(() ->
-                        new IllegalStateException(
-                                "No browser page found for: " + urlPrefix
-                        )
-                );
+    private Page openNewPage(String url) {
+        Page page = getContext().newPage();
+        page.navigate(url);
+        return page;
     }
 
-    public Page findLinkedInPage() {
-
-        BrowserContext context =
-                playwrightManager.getContext();
-
-        return context.pages()
-                .stream()
-                .filter(page ->
-                        page.url().startsWith(LinkedInUrls.LINKEDIN_URL_PREFIX)
-                )
-                .findFirst()
-                .orElseThrow(() ->
-                        new IllegalStateException(
-                                "No LinkedIn browser page found"
-                        )
-                );
-    }
-
-    public void waitUntilDocumentLoaded(Page page) {
-
-        page.waitForLoadState(LoadState.DOMCONTENTLOADED);
-
-        page.waitForFunction(
-                "() => document.readyState === 'complete'"
-        );
+    private BrowserContext getContext() {
+        return playwrightManager.getContext();
     }
 }

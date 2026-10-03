@@ -13,5 +13,4 @@ public class BrowserPilotApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BrowserPilotApplication.class, args);
 	}
-
 }

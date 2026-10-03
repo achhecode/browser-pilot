@@ -1,18 +1,18 @@
 package com.achhecode.browser_pilot.website.linkedin.service;
 
-import com.achhecode.browser_pilot.browser.BrowserPageResolver;
 import com.achhecode.browser_pilot.website.linkedin.LinkedInPageFactory;
+import com.achhecode.browser_pilot.website.linkedin.LinkedInPageResolver;
 import com.microsoft.playwright.Page;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LinkedInAutomationService {
 
-    private final BrowserPageResolver pageResolver;
+    private final LinkedInPageResolver pageResolver;
     private final LinkedInPageFactory pageFactory;
 
     public LinkedInAutomationService(
-            BrowserPageResolver pageResolver,
+            LinkedInPageResolver pageResolver,
             LinkedInPageFactory pageFactory
     ) {
         this.pageResolver = pageResolver;
@@ -21,7 +21,7 @@ public class LinkedInAutomationService {
 
     public void clickMyNetwork() {
 
-        Page page = pageResolver.findLinkedInPage();
+        Page page = pageResolver.findPage();
 
         // pageResolver.waitUntilDocumentLoaded(page);
 
