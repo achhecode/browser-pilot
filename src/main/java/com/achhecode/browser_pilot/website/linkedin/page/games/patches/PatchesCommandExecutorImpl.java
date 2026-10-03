@@ -7,6 +7,7 @@ import com.achhecode.browser_pilot.grid.GridDirection;
 import com.achhecode.browser_pilot.grid.GridNavigator;
 import com.achhecode.browser_pilot.grid.GridPosition;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
+import com.achhecode.browser_pilot.screen.MouseService;
 
 import java.util.List;
 
@@ -20,18 +21,22 @@ public class PatchesCommandExecutorImpl
         private final PatchesValidator validator;
         private final PatchesMapper mapper;
         private final PatchRouteOptimizerFactory optimizerFactory;
+        private final MouseService mouseService;
 
         public PatchesCommandExecutorImpl(
                         KeyboardService keyboard,
                         GridNavigator navigator,
                         PatchesValidator validator,
                         PatchesMapper mapper,
-                        PatchRouteOptimizerFactory optimizerFactory) {
+                        PatchRouteOptimizerFactory optimizerFactory,
+                        MouseService mouseService
+                ) {
                 this.keyboard = keyboard;
                 this.navigator = navigator;
                 this.validator = validator;
                 this.mapper = mapper;
                 this.optimizerFactory = optimizerFactory;
+                this.mouseService = mouseService;
         }
 
         @Override
@@ -41,9 +46,7 @@ public class PatchesCommandExecutorImpl
                 long start = System.nanoTime();
 
                 try {
-                        if(request.onlyKey()){
-                                keyboard.switchTab();
-                        }
+                        prepare(request.onlyKey());
                         
                         validator.validate(request);
 
@@ -104,5 +107,19 @@ public class PatchesCommandExecutorImpl
 
                         keyboard.pressSpace();
                 }
+        }
+
+
+        private void prepare(boolean onlyKey) {
+
+                if(onlyKey) keyboard.switchTab();
+                // click in empty area
+                mouseService.click(350, 450);
+
+                keyboard.addDelay(100);
+                keyboard.pressTab();
+                keyboard.addDelay(100);
+                keyboard.pressEnter();
+                keyboard.addDelay(100);
         }
 }

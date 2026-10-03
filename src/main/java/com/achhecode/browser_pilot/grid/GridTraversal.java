@@ -29,12 +29,6 @@ public final class GridTraversal {
         } else {
             keyboard.pressLeft();
         }
-
-        log.info(
-                "Moved: {} -> {}",
-                current,
-                next
-        );
     }
 
 

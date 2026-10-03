@@ -13,6 +13,7 @@ import com.achhecode.browser_pilot.grid.GridTraversal;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
 import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
 import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
+import com.achhecode.browser_pilot.screen.MouseService;
 
 @Slf4j
 @Component
@@ -21,13 +22,16 @@ public class QueensCommandExecutorImpl
 
     private final KeyboardService keyboard;
     private final GridTraversal gridTraversal;
+    private final MouseService mouseService;
 
     public QueensCommandExecutorImpl(
             KeyboardService keyboard,
-            GridTraversal gridTraversal
+            GridTraversal gridTraversal,
+            MouseService mouseService
     ) {
         this.keyboard = keyboard;
         this.gridTraversal = gridTraversal;
+        this.mouseService = mouseService;
     }
 
     @Override
@@ -38,9 +42,7 @@ public class QueensCommandExecutorImpl
 
         try {
 
-            if(request.onlyKey()){
-                keyboard.switchTab();
-            }
+            prepare(request.onlyKey());
             
             Set<GridPosition> queens =
                     QueensPositionMapper.from(
@@ -107,5 +109,18 @@ public class QueensCommandExecutorImpl
                 keyboard.addDelay(keySpeed);
             }
         }
+    }
+
+    private void prepare(boolean onlyKey) {
+
+        if(onlyKey) keyboard.switchTab();
+        // click in empty area
+        mouseService.click(350, 450);
+
+        keyboard.addDelay(100);
+        keyboard.pressTab();
+        keyboard.addDelay(100);
+        keyboard.pressEnter();
+        keyboard.addDelay(100);
     }
 }

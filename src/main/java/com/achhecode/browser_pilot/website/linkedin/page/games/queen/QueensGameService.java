@@ -25,7 +25,7 @@ public class QueensGameService {
     ) {
         queensPage.waitUntilReady();
 
-        queensPage.getBoardState();
+        // queensPage.getBoardState();
 
         
         int totalCells = queensPage.totalCellIndex();

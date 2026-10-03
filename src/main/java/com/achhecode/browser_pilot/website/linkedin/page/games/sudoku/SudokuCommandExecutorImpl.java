@@ -10,6 +10,7 @@ import com.achhecode.browser_pilot.grid.GridTraversal;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
 import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
 import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
+import com.achhecode.browser_pilot.screen.MouseService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoCommandExecutionException;
 
@@ -22,12 +23,17 @@ public class SudokuCommandExecutorImpl
 
         private final KeyboardService keyboard;
         private final GridTraversal gridTraversal;
+            private final MouseService mouseService;
+
 
         public SudokuCommandExecutorImpl(
                         KeyboardService keyboard,
-                        GridTraversal gridTraversal) {
+                        GridTraversal gridTraversal,
+                        MouseService mouseService
+                ) {
                 this.keyboard = keyboard;
                 this.gridTraversal = gridTraversal;
+                this.mouseService = mouseService;
         }
 
         @Override
@@ -36,9 +42,7 @@ public class SudokuCommandExecutorImpl
                         String executionId) {
                 try {
 
-                        if (request.onlyKey()) {
-                                keyboard.switchTab();
-                        }
+                        prepare(request.onlyKey());
 
                         SudokuPositions positions = SudokuPositionMapper.from(
                                         request.instructions());
@@ -98,5 +102,18 @@ public class SudokuCommandExecutorImpl
                                 keyboard.addDelay(keySpeed);
                         }
                 }
+        }
+
+        private void prepare(boolean onlyKey) {
+
+                if(onlyKey) keyboard.switchTab();
+                // click in empty area
+                mouseService.click(350, 450);
+
+                keyboard.addDelay(100);
+                keyboard.pressTab();
+                keyboard.addDelay(100);
+                keyboard.pressEnter();
+                keyboard.addDelay(100);
         }
 }
