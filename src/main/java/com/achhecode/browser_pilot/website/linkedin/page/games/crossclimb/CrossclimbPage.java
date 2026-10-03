@@ -70,6 +70,40 @@ public class CrossclimbPage extends WebsitePage {
     }
 
 
+    public boolean waitUntilStartAndEndClueAppears(
+        String expectedClue
+    ) {
+        try {
+            page.waitForFunction(
+                    """
+                    expected => {
+                        const element =
+                            document.querySelector('p.crossclimb__clue');
+
+                        return element
+                            && element.textContent.trim().includes(expected);
+                    }
+                    """,
+                    expectedClue,
+                    new Page.WaitForFunctionOptions()
+                            .setTimeout(60_000)
+                            .setPollingInterval(2_000)
+            );
+
+            return true;
+
+        } catch (PlaywrightException e) {
+            log.error(
+                    "Timed out waiting for Crossclimb start/end clue. Expected: '{}'",
+                    expectedClue,
+                    e
+            );
+
+            return false;
+        }
+    }
+
+
     public List<String> getBoardWords() {
         return page.locator("div.crossclimb__guess")
                 .all()
