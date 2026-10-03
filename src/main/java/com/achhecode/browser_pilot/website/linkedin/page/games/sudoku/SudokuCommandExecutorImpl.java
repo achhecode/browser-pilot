@@ -11,6 +11,7 @@ import com.achhecode.browser_pilot.keyboard.KeyboardService;
 import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
 import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
 import com.achhecode.browser_pilot.screen.MouseService;
+import com.achhecode.browser_pilot.website.linkedin.LinkedInGame;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoCommandExecutionException;
 
@@ -23,7 +24,7 @@ public class SudokuCommandExecutorImpl
 
         private final KeyboardService keyboard;
         private final GridTraversal gridTraversal;
-            private final MouseService mouseService;
+        private final MouseService mouseService;
 
 
         public SudokuCommandExecutorImpl(
@@ -108,7 +109,7 @@ public class SudokuCommandExecutorImpl
 
                 if(onlyKey) keyboard.switchTab();
                 // click in empty area
-                mouseService.click(350, 450);
+                mouseService.click(LinkedInGame.MINI_SUDOKU.location().x(), LinkedInGame.MINI_SUDOKU.location().y());
 
                 keyboard.addDelay(100);
                 keyboard.pressTab();

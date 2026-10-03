@@ -20,7 +20,7 @@ public class WendCommandServiceImpl
 
                 commandExecutor.execute(wendRequest, executionId);
 
-                log.info("Patches automation completed. executionId={}, durationMs={}",
+                log.info("Wend automation completed. executionId={}, durationMs={}",
                                 executionId, System.currentTimeMillis() - start);
                 return;
         }

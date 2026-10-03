@@ -8,6 +8,7 @@ import com.achhecode.browser_pilot.grid.GridNavigator;
 import com.achhecode.browser_pilot.grid.GridPosition;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
 import com.achhecode.browser_pilot.screen.MouseService;
+import com.achhecode.browser_pilot.website.linkedin.LinkedInGame;
 
 import java.util.List;
 
@@ -114,8 +115,7 @@ public class PatchesCommandExecutorImpl
 
                 if(onlyKey) keyboard.switchTab();
                 // click in empty area
-                mouseService.click(350, 450);
-
+                mouseService.click(LinkedInGame.PATCHES.location().x(), LinkedInGame.PATCHES.location().y());
                 keyboard.addDelay(100);
                 keyboard.pressTab();
                 keyboard.addDelay(100);

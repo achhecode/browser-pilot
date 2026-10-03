@@ -10,6 +10,8 @@ import com.achhecode.browser_pilot.grid.GridTraversal;
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
 import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
 import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
+import com.achhecode.browser_pilot.screen.MouseService;
+import com.achhecode.browser_pilot.website.linkedin.LinkedInGame;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,13 +22,16 @@ public class TangoCommandExecutorImpl
 
     private final KeyboardService keyboard;
     private final GridTraversal gridTraversal;
+    private final MouseService mouseService;
 
     public TangoCommandExecutorImpl(
             KeyboardService keyboard,
-            GridTraversal gridTraversal
+            GridTraversal gridTraversal,
+            MouseService mouseService
     ) {
         this.keyboard = keyboard;
         this.gridTraversal = gridTraversal;
+        this.mouseService = mouseService;
     }
 
     @Override
@@ -36,9 +41,7 @@ public class TangoCommandExecutorImpl
     ) {
         try {
 
-            if(request.onlyKey()){
-                keyboard.switchTab();
-            }
+            prepare(request.onlyKey());
             
             TangoPositions positions =
                     TangoPositionMapper.from(
@@ -125,5 +128,19 @@ public class TangoCommandExecutorImpl
                 keyboard.addDelay(keySpeed);
             }
         }
+    }
+
+
+    private void prepare(boolean onlyKey) {
+
+            if(onlyKey) keyboard.switchTab();
+            // click in empty area
+            mouseService.click(LinkedInGame.TANGO.location().x(), LinkedInGame.TANGO.location().y());
+
+            keyboard.addDelay(100);
+            keyboard.pressTab();
+            keyboard.addDelay(100);
+            keyboard.pressEnter();
+            keyboard.addDelay(100);
     }
 }

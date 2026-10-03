@@ -14,6 +14,7 @@ import com.achhecode.browser_pilot.keyboard.KeyboardService;
 import com.achhecode.browser_pilot.keyboard.SnakeGridTraversal;
 import com.achhecode.browser_pilot.keyboard.SnakeTraversalStrategy;
 import com.achhecode.browser_pilot.screen.MouseService;
+import com.achhecode.browser_pilot.website.linkedin.LinkedInGame;
 
 @Slf4j
 @Component
@@ -115,7 +116,7 @@ public class QueensCommandExecutorImpl
 
         if(onlyKey) keyboard.switchTab();
         // click in empty area
-        mouseService.click(350, 450);
+        mouseService.click(LinkedInGame.QUEENS.location().x(), LinkedInGame.QUEENS.location().y());
 
         keyboard.addDelay(100);
         keyboard.pressTab();

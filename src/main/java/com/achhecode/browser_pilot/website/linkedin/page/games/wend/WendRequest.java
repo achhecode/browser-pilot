@@ -21,10 +21,13 @@ public record WendRequest(
 
         WendRouteStrategy routeStrategy,
 
+        List<@NotNull @Size(min = 2, max = 2) List<@NotNull Integer>> blocked,
+
         @NotEmpty
         List<@Valid Wend> wend,
 
         boolean onlyKey,
+
         @Min(10)
         @Max(1000)
         Integer keySpeed
@@ -42,7 +45,10 @@ public record WendRequest(
 
     public WendRequest {
         if (keySpeed == null) {
-        keySpeed = 10;
+            keySpeed = 10;
+        }
+        if (blocked == null) {
+            blocked = List.of();
         }
     }
 }
