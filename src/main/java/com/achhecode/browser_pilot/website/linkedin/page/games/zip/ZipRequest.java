@@ -1,5 +1,7 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.zip;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameRequest;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -31,7 +33,7 @@ public record ZipRequest(
         @Max(value = 1000, message = "keySpeed must not exceed 1000")
         Integer keySpeed
 
-) {
+) implements LinkedInGameRequest {
 
     public ZipRequest {
         if (keySpeed == null) {

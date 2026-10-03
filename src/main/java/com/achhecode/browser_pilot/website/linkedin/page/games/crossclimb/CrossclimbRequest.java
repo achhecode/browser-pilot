@@ -2,6 +2,8 @@ package com.achhecode.browser_pilot.website.linkedin.page.games.crossclimb;
 
 import java.util.List;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameRequest;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Min;
@@ -24,7 +26,7 @@ public record CrossclimbRequest(
         @Min(10)
         @Max(1000)
         Integer keySpeed
-) {
+) implements LinkedInGameRequest {
 
     public CrossclimbRequest {
         if (keySpeed == null) {

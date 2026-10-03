@@ -1,5 +1,6 @@
 package com.achhecode.browser_pilot.website.linkedin.controller;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.crossclimb.CrossclimbRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesRequest;
@@ -8,7 +9,6 @@ import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensReque
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.wend.WendRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipRequest;
-import com.achhecode.browser_pilot.website.linkedin.service.LinkedInGameService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

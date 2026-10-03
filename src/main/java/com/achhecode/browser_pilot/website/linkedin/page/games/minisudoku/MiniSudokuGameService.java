@@ -4,13 +4,14 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameSolver;
 import com.achhecode.browser_pilot.website.linkedin.page.games.sudoku.SudokuCommandService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j 
 @Service
-public class MiniSudokuGameService {
+public class MiniSudokuGameService implements LinkedInGameSolver<MiniSudokuRequest, MiniSudokuPage>{
 
     private final SudokuCommandService sudokuCommandService;
 
@@ -21,8 +22,7 @@ public class MiniSudokuGameService {
         this.sudokuCommandService = sudokuCommandService;
     }
 
-
-
+    @Override 
     public void solve(
             MiniSudokuPage miniSudokuPage,
             MiniSudokuRequest miniSudokuRequest
@@ -95,7 +95,7 @@ public class MiniSudokuGameService {
         }
     }
 
-
+    @Override 
     public void solve(
             MiniSudokuRequest miniSudokuRequest
     ) {

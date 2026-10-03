@@ -3,11 +3,13 @@ package com.achhecode.browser_pilot.website.linkedin.page.games.wend;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameSolver;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j 
 @Service 
-public class WendGameService {
+public class WendGameService implements LinkedInGameSolver<WendRequest, WendPage>{
 
     private final WendCommandService commandService;
 
@@ -18,7 +20,7 @@ public class WendGameService {
         this.commandService = commandService;
     }
 
-
+    @Override 
     public void solve(
             WendPage wendPage,
             WendRequest wendRequest
@@ -46,7 +48,7 @@ public class WendGameService {
 
     }
 
-
+    @Override 
     public void solve(
             WendRequest wendRequest
     ) {

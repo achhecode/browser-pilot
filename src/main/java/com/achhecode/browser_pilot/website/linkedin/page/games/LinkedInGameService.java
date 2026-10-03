@@ -1,4 +1,4 @@
-package com.achhecode.browser_pilot.website.linkedin.service;
+package com.achhecode.browser_pilot.website.linkedin.page.games;
 
 import com.achhecode.browser_pilot.website.linkedin.LinkedInGame;
 import com.achhecode.browser_pilot.website.linkedin.LinkedInPageResolver;
@@ -30,6 +30,8 @@ import com.achhecode.browser_pilot.website.linkedin.page.games.zip.ZipRequest;
 import com.microsoft.playwright.Page;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,24 @@ public class LinkedInGameService {
         this.crossclimbGameService = crossclimbGameService;
     }
 
+    private <R extends LinkedInGameRequest, P> void enterGame(
+        LinkedInGame game,
+        R request,
+        LinkedInGameSolver<R, P> solver,
+        Function<Page, P> pageFactory
+    ) {
+        if (request.onlyKey()) {
+            solver.solve(request);
+            return;
+        }
+
+        MyNetworkPage networkPage = openGame(game);
+
+        P gamePage = pageFactory.apply(networkPage.page());
+
+        solver.solve(gamePage, request);
+    }
+
     private MyNetworkPage getMyNetworkPage() {
         Page page = pageResolver.findPage();
 
@@ -97,141 +117,74 @@ public class LinkedInGameService {
     }
 
     public void enterCrossclimb(CrossclimbRequest request) {
-        if(request.onlyKey()){
-            crossclimbGameService.solve(
-                    request
-            );
-        }else{
-            MyNetworkPage networkPage = openGame(LinkedInGame.CROSSCLIMB);
-
-            CrossclimbPage page = new CrossclimbPage(networkPage.page());
-
-            crossclimbGameService.solve(
-                    page,
-                    request
-            );
-        }
+        enterGame(
+                LinkedInGame.CROSSCLIMB,
+                request,
+                crossclimbGameService,
+                CrossclimbPage::new
+        );
     }
 
     public void enterPatches(PatchesRequest request) {
-        if(request.onlyKey()){
-            patchesGameService.solve(
-                    request
-            );
-        }else{
-            MyNetworkPage page = openGame(LinkedInGame.PATCHES);
-
-            PatchesPage patchesPage = new PatchesPage(page.page());
-
-            patchesGameService.solve(
-                    patchesPage,
-                    request
-            );
-        }
+        enterGame(
+                LinkedInGame.PATCHES,
+                request,
+                patchesGameService,
+                PatchesPage::new
+        );
     }
 
-    public void enterZip(ZipRequest zipRequest) {
-        if(zipRequest.onlyKey()){
-            zipGameService.solve(
-                    zipRequest
-            );
-        }else{
-            MyNetworkPage page = openGame(LinkedInGame.ZIP);
-
-            ZipPage zipPage = new ZipPage(page.page());
-
-            zipGameService.solve(
-                    zipPage,
-                    zipRequest
-            );
-        }
-        
+    public void enterZip(ZipRequest request) {
+        enterGame(
+                LinkedInGame.ZIP,
+                request,
+                zipGameService,
+                ZipPage::new
+        );
     }
 
-    public void enterMiniSudoku(MiniSudokuRequest miniSudokuRequest) {
-        if(miniSudokuRequest.onlyKey()){
-            sudokuGameService.solve(
-                    miniSudokuRequest
-            );
-        }else{
-            MyNetworkPage page = openGame(LinkedInGame.MINI_SUDOKU);
-
-            MiniSudokuPage miniSudokuPage = new MiniSudokuPage(page.page());
-
-            sudokuGameService.solve(
-                    miniSudokuPage,
-                    miniSudokuRequest
-            );
-        }
+    public void enterMiniSudoku(MiniSudokuRequest request) {
+        enterGame(
+                LinkedInGame.MINI_SUDOKU,
+                request,
+                sudokuGameService,
+                MiniSudokuPage::new
+        );
     }
 
     public void enterWend(WendRequest request) {
-        if(request.onlyKey()){
-            wendGameService.solve(
-                    request
-            );
-        }else{
-            MyNetworkPage page = openGame(LinkedInGame.WEND);
-
-            WendPage wendPage = new WendPage(page.page());
-
-            wendGameService.solve(
-                    wendPage,
-                    request
-            );
-        }
+        enterGame(
+                LinkedInGame.WEND,
+                request,
+                wendGameService,
+                WendPage::new
+        );
     }
 
-    public void enterTango(TangoRequest tangoRequest) {
-        if(tangoRequest.onlyKey()){
-            tangoGameService.solve(
-                    tangoRequest
-            );
-        }else{
-            MyNetworkPage page = openGame(LinkedInGame.TANGO);
-
-            TangoPage tangoPage = new TangoPage(page.page());
-
-            tangoGameService.solve(
-                    tangoPage,
-                    tangoRequest
-            );
-        }
+    public void enterTango(TangoRequest request) {
+        enterGame(
+                LinkedInGame.TANGO,
+                request,
+                tangoGameService,
+                TangoPage::new
+        );
     }
 
-    public void enterQueens(QueensRequest queensRequest) {
-        if(queensRequest.onlyKey()){
-            queensGameService.solve(
-                    queensRequest
-            );
-        }else{
-            MyNetworkPage page = openGame(LinkedInGame.QUEENS);
-
-            QueensPage queensPage = new QueensPage(page.page());
-
-            queensGameService.solve(
-                    queensPage,
-                    queensRequest
-            );
-        }
-        
+    public void enterQueens(QueensRequest request) {
+        enterGame(
+                LinkedInGame.QUEENS,
+                request,
+                queensGameService,
+                QueensPage::new
+        );
     }
 
-    // 
     public void enterPinpoint(PinpointRequest request) {
-        if(request.onlyKey()){
-            pinpointGameService.solve(
-                    request
-            );
-        }else{
-            MyNetworkPage networkPage = openGame(LinkedInGame.PINPOINT);
-
-            PinpointPage page = new PinpointPage(networkPage.page());
-
-            pinpointGameService.solve(
-                    page,
-                    request
-            );
-        }
+        enterGame(
+                LinkedInGame.PINPOINT,
+                request,
+                pinpointGameService,
+                PinpointPage::new
+        );
     }
 }

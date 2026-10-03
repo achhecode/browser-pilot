@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 import com.achhecode.browser_pilot.grid.GridDirection;
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameRequest;
 
 public record WendRequest(
 
@@ -31,7 +32,7 @@ public record WendRequest(
         @Min(10)
         @Max(1000)
         Integer keySpeed
-) {
+) implements LinkedInGameRequest {
 
     public record Wend(
             @NotNull

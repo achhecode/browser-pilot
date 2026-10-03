@@ -4,8 +4,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameSolver;
+
 @Service
-public class PinpointGameService {
+public class PinpointGameService  implements LinkedInGameSolver<PinpointRequest, PinpointPage> {
 
     private final PinpointCommandExecutor commandExecutor;
 
@@ -15,6 +17,7 @@ public class PinpointGameService {
         this.commandExecutor = commandExecutor;
     }
 
+    @Override 
     public void solve(
             PinpointPage page,
             PinpointRequest request
@@ -31,8 +34,8 @@ public class PinpointGameService {
                 executionId
         );
     }
-
-
+    
+    @Override 
     public void solve(
             PinpointRequest request
     ) {

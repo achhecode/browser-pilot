@@ -2,6 +2,8 @@ package com.achhecode.browser_pilot.website.linkedin.page.games.pinpoint;
 
 import java.util.List;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameRequest;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +23,7 @@ public record PinpointRequest (
     @Min(10)
     @Max(1000)
     Integer keySpeed
-) {
+) implements LinkedInGameRequest {
     public PinpointRequest {
         if (keySpeed == null) {
         keySpeed = 10;

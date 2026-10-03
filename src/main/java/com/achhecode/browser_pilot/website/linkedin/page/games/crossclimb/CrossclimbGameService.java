@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.achhecode.browser_pilot.keyboard.KeyboardService;
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameSolver;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class CrossclimbGameService {
+public class CrossclimbGameService 
+        implements LinkedInGameSolver<CrossclimbRequest, CrossclimbPage>{
 
     private static final String FINAL_CLUE = "The top + bottom rows =";
 
@@ -20,6 +22,7 @@ public class CrossclimbGameService {
         this.keyboardService = keyboardService;
     }
 
+    @Override
     public void solve(
             CrossclimbPage page,
             CrossclimbRequest request
@@ -65,6 +68,7 @@ public class CrossclimbGameService {
         }
     }
 
+    @Override
     public void solve(CrossclimbRequest request) {
         for (CrossclimbClue clue : request.clues()) {
             keyboardService.typeAnswer(clue.answer());

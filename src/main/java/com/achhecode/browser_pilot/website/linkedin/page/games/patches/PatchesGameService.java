@@ -2,11 +2,14 @@ package com.achhecode.browser_pilot.website.linkedin.page.games.patches;
 
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameSolver;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j 
 @Service 
-public class PatchesGameService {
+public class PatchesGameService implements LinkedInGameSolver<PatchesRequest, PatchesPage>{
 
     private final PatchesCommandService commandService;
 
@@ -17,7 +20,7 @@ public class PatchesGameService {
         this.commandService = commandService;
     }
 
-
+    @Override 
     public void solve(
             PatchesPage patchesPage,
             PatchesRequest patchesRequest
@@ -45,7 +48,7 @@ public class PatchesGameService {
 
     }
 
-
+    @Override 
     public void solve(
             PatchesRequest patchesRequest
     ) {

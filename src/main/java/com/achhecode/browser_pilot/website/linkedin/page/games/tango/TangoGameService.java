@@ -4,11 +4,13 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameSolver;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j 
 @Service 
-public class TangoGameService {
+public class TangoGameService implements LinkedInGameSolver<TangoRequest, TangoPage>{
 
     private final TangoCommandService tangoCommandService;
 
@@ -20,6 +22,7 @@ public class TangoGameService {
     }
 
 
+    @Override 
     public void solve(
             TangoPage tangoPage,
             TangoRequest tangoRequest
@@ -49,6 +52,7 @@ public class TangoGameService {
     }
 
 
+    @Override 
     public void solve(
             TangoRequest tangoRequest
     ) {

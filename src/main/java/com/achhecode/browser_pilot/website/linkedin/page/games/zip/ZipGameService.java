@@ -2,8 +2,10 @@ package com.achhecode.browser_pilot.website.linkedin.page.games.zip;
 
 import org.springframework.stereotype.Service;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameSolver;
+
 @Service
-public class ZipGameService {
+public class ZipGameService implements LinkedInGameSolver<ZipRequest, ZipPage> {
 
     private final ZipCommandService commandService;
 
@@ -13,6 +15,7 @@ public class ZipGameService {
         this.commandService = commandService;
     }
 
+    @Override 
     public void solve(
             ZipPage zipPage,
             ZipRequest request
@@ -26,7 +29,7 @@ public class ZipGameService {
         );
     }
 
-
+    @Override 
     public void solve(
             ZipRequest request
     ) {
