@@ -29,17 +29,16 @@ public class ZipCommandController {
         log.info("Received instruction: {}", request.instruction());
 
         String expanded =
-                zipCommandService.expandInstruction(
-                        request.instruction()
-                );
+        zipCommandService.expandInstruction(
+                request.instruction()
+        );
 
         String reversed =
                 zipCommandService.reverseInstruction(
                         expanded
                 );
 
-        int commandCount =
-                request.instruction().length();
+        int commandCount = expanded.split(",").length;
 
         return new ZipInstructionResponse(
                 expanded,

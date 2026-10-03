@@ -15,17 +15,12 @@ public class ZipCommandService {
 
     private final ZipCommandExecutor executor;
 
-    public ZipCommandService(
-            ZipCommandExecutor executor
-    ) {
+    public ZipCommandService(ZipCommandExecutor executor) {
         this.executor = executor;
     }
 
-    public void execute(
-            ZipRequest request
-    ) {
-        String executionId =
-                UUID.randomUUID().toString();
+    public void execute(ZipRequest request) {
+        String executionId = UUID.randomUUID().toString();
 
         log.info(
                 "Executing Zip. executionId={}, instructionLength={}",
@@ -33,41 +28,79 @@ public class ZipCommandService {
                 request.instructions().length()
         );
 
-        executor.execute(
-                request,
-                executionId
-        );
+        executor.execute(request, executionId);
     }
 
+    @SuppressWarnings("null")
     public String expandInstruction(String instruction) {
-
-        return instruction
-                .toUpperCase()
-                .chars()
-                .mapToObj(c -> switch (c) {
-                    case 'U' -> "UP";
-                    case 'D' -> "DOWN";
-                    case 'L' -> "LEFT";
-                    case 'R' -> "RIGHT";
-                    default -> throw new IllegalArgumentException(
-                            "Invalid instruction: " + (char) c
-                    );
-                })
-                .collect(Collectors.joining(","));
-    }
-
-    public String reverseInstruction(String instruction) {
-
         if (instruction == null || instruction.isBlank()) {
             return "";
         }
 
-        String[] commands = instruction.split(",");
+        instruction = instruction.trim();
 
-        List<String> reversed = Arrays.asList(commands);
+        if (instruction.contains(",")) {
+            return Arrays.stream(instruction.split(","))
+                    .map(String::trim)
+                    .map(String::toUpperCase)
+                    .peek(this::validateCommand)
+                    .collect(Collectors.joining(","));
+        }
 
-        Collections.reverse(reversed);
+        return instruction
+                .toUpperCase()
+                .chars()
+                .mapToObj(this::expandCommand)
+                .collect(Collectors.joining(","));
+    }
 
-        return String.join(",", reversed);
+    public String reverseInstruction(String instruction) {
+        if (instruction == null || instruction.isBlank()) {
+            return "";
+        }
+
+        String expanded = expandInstruction(instruction);
+
+        List<String> commands = Arrays.asList(expanded.split(","));
+
+        Collections.reverse(commands);
+
+        return commands.stream()
+                .map(this::reverseCommand)
+                .collect(Collectors.joining(","));
+    }
+
+    private String expandCommand(int command) {
+        return switch (command) {
+            case 'U' -> "UP";
+            case 'D' -> "DOWN";
+            case 'L' -> "LEFT";
+            case 'R' -> "RIGHT";
+            default -> throw new IllegalArgumentException(
+                    "Invalid instruction: " + (char) command
+            );
+        };
+    }
+
+    private String reverseCommand(String command) {
+        return switch (command) {
+            case "UP" -> "DOWN";
+            case "DOWN" -> "UP";
+            case "LEFT" -> "RIGHT";
+            case "RIGHT" -> "LEFT";
+            default -> throw new IllegalArgumentException(
+                    "Invalid command: " + command
+            );
+        };
+    }
+
+    private void validateCommand(String command) {
+        switch (command) {
+            case "UP", "DOWN", "LEFT", "RIGHT" -> {
+            }
+            default -> throw new IllegalArgumentException(
+                    "Invalid command: " + command
+            );
+        }
     }
 }
