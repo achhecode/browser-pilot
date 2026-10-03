@@ -1,4 +1,4 @@
-package com.achhecode.browser_pilot.website.linkedin.page.games.crosslimb;
+package com.achhecode.browser_pilot.website.linkedin.page.games.crossclimb;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

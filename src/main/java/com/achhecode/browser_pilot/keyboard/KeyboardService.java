@@ -32,4 +32,5 @@ public interface KeyboardService {
 
     void holdSpace();
     void releaseSpace();
+    void typeAnswer(String answer);
 }

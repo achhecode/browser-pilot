@@ -4,6 +4,9 @@ import com.achhecode.browser_pilot.website.linkedin.LinkedInGame;
 import com.achhecode.browser_pilot.website.linkedin.LinkedInPageResolver;
 import com.achhecode.browser_pilot.website.linkedin.page.MyNetworkPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuPage;
+import com.achhecode.browser_pilot.website.linkedin.page.games.crossclimb.CrossclimbGameService;
+import com.achhecode.browser_pilot.website.linkedin.page.games.crossclimb.CrossclimbPage;
+import com.achhecode.browser_pilot.website.linkedin.page.games.crossclimb.CrossclimbRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesGameService;
@@ -42,6 +45,7 @@ public class LinkedInGameService {
     private final PatchesGameService patchesGameService;
     private final WendGameService wendGameService;
     private final PinpointGameService pinpointGameService;
+    private final CrossclimbGameService crossclimbGameService;
 
     public LinkedInGameService(
             LinkedInPageResolver pageResolver,
@@ -51,7 +55,8 @@ public class LinkedInGameService {
             TangoGameService tangoGameService,
             PatchesGameService patchesGameService,
             WendGameService wendGameService,
-            PinpointGameService pinpointGameService
+            PinpointGameService pinpointGameService,
+            CrossclimbGameService crossclimbGameService
     ) {
         this.pageResolver = pageResolver;
         this.zipGameService = zipGameService;
@@ -61,6 +66,7 @@ public class LinkedInGameService {
         this.patchesGameService = patchesGameService;
         this.wendGameService = wendGameService;
         this.pinpointGameService = pinpointGameService;
+        this.crossclimbGameService = crossclimbGameService;
     }
 
     private MyNetworkPage getMyNetworkPage() {
@@ -90,8 +96,21 @@ public class LinkedInGameService {
         return myNetworkPage;
     }
 
-    public void enterCrossclimb() {
-        openGame(LinkedInGame.CROSSCLIMB);
+    public void enterCrossclimb(CrossclimbRequest request) {
+        if(request.onlyKey()){
+            crossclimbGameService.solve(
+                    request
+            );
+        }else{
+            MyNetworkPage networkPage = openGame(LinkedInGame.CROSSCLIMB);
+
+            CrossclimbPage page = new CrossclimbPage(networkPage.page());
+
+            crossclimbGameService.solve(
+                    page,
+                    request
+            );
+        }
     }
 
     public void enterPatches(PatchesRequest request) {

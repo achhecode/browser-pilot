@@ -1,5 +1,6 @@
 package com.achhecode.browser_pilot.website.linkedin.controller;
 
+import com.achhecode.browser_pilot.website.linkedin.page.games.crossclimb.CrossclimbRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.pinpoint.PinpointRequest;
@@ -38,8 +39,8 @@ public class LinkedInGameController {
             summary = "Enter Crossclimb",
             description = "Navigates to the LinkedIn Crossclimb game."
     )
-    public ResponseEntity<Void> enterCrossclimb() {
-        linkedInGameService.enterCrossclimb();
+    public ResponseEntity<Void> enterCrossclimb(@Valid @RequestBody CrossclimbRequest request) {
+        linkedInGameService.enterCrossclimb(request);
         return ResponseEntity.ok().build();
     }
 

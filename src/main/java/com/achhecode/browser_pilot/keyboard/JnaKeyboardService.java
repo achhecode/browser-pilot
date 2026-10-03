@@ -122,6 +122,12 @@ public class JnaKeyboardService implements KeyboardService {
          post(SPACE, false, FLAG_NONE); 
     }
 
+    @Override public void typeAnswer(String answer) {
+        for (char character : answer.toCharArray()) {
+            typeLetter(character);
+        }
+    }
+
     // ---- Internals -------------------------------------------------------
 
     private void repeat(short keyCode, int n) {
