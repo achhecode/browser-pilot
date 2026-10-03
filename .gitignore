@@ -44,3 +44,6 @@ logs/
 **/.DS_Store
 releases/v-1.0.2/*.jar
 releases/v-1.0.2/*.jar
+
+
+testing-browser/
