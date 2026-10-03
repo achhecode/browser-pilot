@@ -1,31 +1,48 @@
 package com.achhecode.browser_pilot.browser;
 
-import com.microsoft.playwright.Page;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BrowserNavigationService {
 
-    private final PlaywrightManager playwrightManager;
+    private final TabManager tabManager;
 
     public BrowserNavigationService(
-            PlaywrightManager playwrightManager
+            TabManager tabManager
     ) {
-        this.playwrightManager = playwrightManager;
+        this.tabManager = tabManager;
     }
 
-    public String navigate(String url) {
+    public BrowserTab navigate(
+            String tabId,
+            String url
+    ) {
 
-        if (url == null || url.isBlank()) {
-            throw new IllegalArgumentException(
-                    "URL must not be empty."
-            );
-        }
+        BrowserTab tab =
+                tabManager.getTab(tabId);
 
-        Page page = playwrightManager.getOrCreatePage();
+        tab.getPage().navigate(url);
 
-        page.navigate(url);
+        return tab;
+    }
 
-        return page.url();
+    public BrowserTab navigate(
+            int tabIndex,
+            String url
+    ) {
+
+        BrowserTab tab =
+                tabManager.getTab(tabIndex);
+
+        tab.getPage().navigate(url);
+
+        return tab;
+    }
+
+    public BrowserTab navigate(
+            String url
+    ) {
+
+        return navigate(0, url);
     }
 }
