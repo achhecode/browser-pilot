@@ -18,6 +18,7 @@ public class ZipValidator {
             );
         }
 
+        @SuppressWarnings("null")
         List<GridDirection> directions =
                 Arrays.stream(instructions.split(","))
                         .map(String::trim)

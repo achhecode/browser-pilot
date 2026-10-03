@@ -2,5 +2,6 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "terminal.integrated.env.osx": {
         "PLAYWRIGHT_BROWSERS_PATH": "${workspaceFolder}/runtime/browsers"
-    }
+    },
+    "java.compile.nullAnalysis.mode": "automatic"
 }
