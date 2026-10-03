@@ -14,7 +14,7 @@ public class LinkedInPageResolver implements WebsitePageResolver{
 
     @Override
     public Page findPage() {
-        return browserPageResolver.findPage(
+        return browserPageResolver.findOrOpenPage(
                 LinkedInUrls.LINKEDIN_URL_PREFIX
         );
     }

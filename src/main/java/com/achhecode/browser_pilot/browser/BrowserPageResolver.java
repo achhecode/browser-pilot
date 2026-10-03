@@ -11,27 +11,26 @@ public class BrowserPageResolver {
 
     private final PlaywrightManager playwrightManager;
 
-    public Page findPage(String url) {
-        // return getContext()
-        //         .pages()
-        //         .stream()
-        //         .filter(page -> page.url().startsWith(url))
-        //         .findFirst()
-        //         .orElseThrow(() ->
-        //                 new IllegalStateException(
-        //                         "No browser page found for: " + urlPrefix
-        //                 )
-        //         );
-
+    public Page findOrOpenPage(String url) {
         return getContext()
-            .pages()
-            .stream()
-            .filter(page -> page.url().startsWith(url))
-            .findFirst()
-            .orElseGet(() -> openNewPage(url));
+                .pages()
+                .stream()
+                .filter(page -> !page.isClosed())
+                .filter(page -> page.url().startsWith(url))
+                .findFirst()
+                .orElseGet(() -> openPage(url));
     }
 
-    private Page openNewPage(String url) {
+    public Page getOrCreatePage() {
+        return getContext()
+                .pages()
+                .stream()
+                .filter(page -> !page.isClosed())
+                .findFirst()
+                .orElseGet(() -> getContext().newPage());
+    }
+
+    private Page openPage(String url) {
         Page page = getContext().newPage();
         page.navigate(url);
         return page;

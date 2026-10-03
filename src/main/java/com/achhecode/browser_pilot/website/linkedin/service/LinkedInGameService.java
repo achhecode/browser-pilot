@@ -1,8 +1,7 @@
 package com.achhecode.browser_pilot.website.linkedin.service;
 
-import com.achhecode.browser_pilot.browser.BrowserPageResolver;
 import com.achhecode.browser_pilot.website.linkedin.LinkedInGame;
-import com.achhecode.browser_pilot.website.linkedin.LinkedInUrls;
+import com.achhecode.browser_pilot.website.linkedin.LinkedInPageResolver;
 import com.achhecode.browser_pilot.website.linkedin.page.MyNetworkPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuGameService;
@@ -29,7 +28,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LinkedInGameService {
 
-    private final BrowserPageResolver pageResolver;
+    private final LinkedInPageResolver pageResolver;
     private final ZipGameService zipGameService;
     private final MiniSudokuGameService sudokuGameService;
     private final QueensGameService queensGameService;
@@ -37,7 +36,7 @@ public class LinkedInGameService {
     private final PatchesGameService patchesGameService;
 
     public LinkedInGameService(
-            BrowserPageResolver pageResolver,
+            LinkedInPageResolver pageResolver,
             ZipGameService zipGameService,
             MiniSudokuGameService sudokuGameService,
             QueensGameService queensGameService,
@@ -53,7 +52,7 @@ public class LinkedInGameService {
     }
 
     private MyNetworkPage getMyNetworkPage() {
-        Page page = pageResolver.findPage(LinkedInUrls.HOME);
+        Page page = pageResolver.findPage();
 
         MyNetworkPage myNetworkPage = new MyNetworkPage(page);
         myNetworkPage.open();
@@ -63,7 +62,7 @@ public class LinkedInGameService {
 
     private MyNetworkPage openGame(LinkedInGame game) {
 
-        Page page = pageResolver.findPage(LinkedInUrls.HOME);
+        Page page = pageResolver.findPage();
 
         log.info("Currently at page {}", page.url());
 
