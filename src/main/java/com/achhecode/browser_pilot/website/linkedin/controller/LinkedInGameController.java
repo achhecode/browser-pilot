@@ -2,6 +2,7 @@ package com.achhecode.browser_pilot.website.linkedin.controller;
 
 import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSudokuRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.pinpoint.PinpointRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.tango.TangoRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.wend.WendRequest;
@@ -126,6 +127,17 @@ public class LinkedInGameController {
             @Valid @RequestBody QueensRequest queensRequest
     ) {
         linkedInGameService.enterQueens(queensRequest);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/pinpoint")
+    @Operation(
+            summary = "Enter Pinpoint",
+            description = "Navigates to the LinkedIn Pinpoint game."
+    )
+    public ResponseEntity<Void> enterPinpoint(@RequestBody @Valid PinpointRequest request) {
+        linkedInGameService.enterPinpoint(request);
         return ResponseEntity.ok().build();
     }
 }

@@ -8,7 +8,8 @@ public enum LinkedInGame {
     MINI_SUDOKU("/games/mini-sudoku/", GridLocation.EMPTY_LEFT),
     WEND("/games/wend/", GridLocation.EMPTY_LEFT),
     TANGO("/games/tango/", GridLocation.EMPTY_LEFT),
-    QUEENS("/games/queens/", GridLocation.EMPTY_LEFT);
+    QUEENS("/games/queens/", GridLocation.EMPTY_LEFT),
+    PINPOINT("/games/pinpoint/", GridLocation.EMPTY_LEFT);
 
     private final String path;
     private final GridLocation location;

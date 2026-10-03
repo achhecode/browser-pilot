@@ -9,6 +9,9 @@ import com.achhecode.browser_pilot.website.linkedin.page.games.minisudoku.MiniSu
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.patches.PatchesRequest;
+import com.achhecode.browser_pilot.website.linkedin.page.games.pinpoint.PinpointGameService;
+import com.achhecode.browser_pilot.website.linkedin.page.games.pinpoint.PinpointPage;
+import com.achhecode.browser_pilot.website.linkedin.page.games.pinpoint.PinpointRequest;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensGameService;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensPage;
 import com.achhecode.browser_pilot.website.linkedin.page.games.queen.QueensRequest;
@@ -38,6 +41,7 @@ public class LinkedInGameService {
     private final TangoGameService tangoGameService;
     private final PatchesGameService patchesGameService;
     private final WendGameService wendGameService;
+    private final PinpointGameService pinpointGameService;
 
     public LinkedInGameService(
             LinkedInPageResolver pageResolver,
@@ -46,7 +50,8 @@ public class LinkedInGameService {
             QueensGameService queensGameService,
             TangoGameService tangoGameService,
             PatchesGameService patchesGameService,
-            WendGameService wendGameService
+            WendGameService wendGameService,
+            PinpointGameService pinpointGameService
     ) {
         this.pageResolver = pageResolver;
         this.zipGameService = zipGameService;
@@ -55,6 +60,7 @@ public class LinkedInGameService {
         this.tangoGameService = tangoGameService;
         this.patchesGameService = patchesGameService;
         this.wendGameService = wendGameService;
+        this.pinpointGameService = pinpointGameService;
     }
 
     private MyNetworkPage getMyNetworkPage() {
@@ -190,5 +196,23 @@ public class LinkedInGameService {
             );
         }
         
+    }
+
+    // 
+    public void enterPinpoint(PinpointRequest request) {
+        if(request.onlyKey()){
+            pinpointGameService.solve(
+                    request
+            );
+        }else{
+            MyNetworkPage networkPage = openGame(LinkedInGame.PINPOINT);
+
+            PinpointPage page = new PinpointPage(networkPage.page());
+
+            pinpointGameService.solve(
+                    page,
+                    request
+            );
+        }
     }
 }
