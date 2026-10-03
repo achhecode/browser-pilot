@@ -60,11 +60,22 @@
 			<scope>test</scope>
 		</dependency>
 
+
+		<!-- Tried without bundle but then it will require node so keeping it  -->
+		<!-- Playwright Java API + driver.
+			Browser binaries are intentionally excluded.
+			BrowserPilot uses the user's existing Chrome/Chromium. -->
 		<!-- Source: https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
 		<dependency>
 			<groupId>com.microsoft.playwright</groupId>
 			<artifactId>playwright</artifactId>
 			<version>1.63.0</version>
+			<!-- <exclusions>
+				<exclusion>
+					<groupId>com.microsoft.playwright</groupId>
+					<artifactId>driver-bundle</artifactId>
+				</exclusion>
+			</exclusions> -->
 		</dependency>
 
 		<!-- Validation -->

@@ -105,3 +105,87 @@ git push --force-with-lease origin main
 git push --force origin main  
 git ls-files | grep 'browser-pilot-1.0.2.jar'
 ```
+
+
+---
+
+Remove browser binaries from your project
+
+```bash
+
+find . -type d \( \
+  -name "chromium-*" -o \
+  -name "chrome-*" -o \
+  -name "ms-playwright" \
+\)
+
+find . -type f | grep -Ei 'chromium|chrome|webkit|firefox'
+
+```
+
+Now 
+
+```bash
+mvn clean package
+
+mvn clean package -DskipTests
+
+# still jar 240 mb
+
+unzip -l target/*.jar | sort -k1,1nr | head -30
+
+
+unzip -l target/*.jar \
+  | awk '{print $1, $4}' \
+  | sort -nr \
+  | head -30
+
+
+
+unzip -l target/*.jar | grep -Ei \
+'chromium|chrome|firefox|webkit|ms-playwright|browser'
+
+
+du -sh target/*
+
+mvn dependency:tree
+
+mvn dependency:tree -Dverbose
+
+find . -type f -size +50M -print
+
+
+grep -R "runtime" . --exclude-dir=target --exclude-dir=.git
+
+grep -R "PLAYWRIGHT_BROWSERS_PATH" . --exclude-dir=target --exclude-dir=.git
+
+
+rm -rf runtime
+
+ls -lh target/browser-pilot-1.0.2.jar
+
+jar tf target/browser-pilot-1.0.2.jar | grep -Ei 'chromium|chrome|firefox|webkit|runtime'
+
+unzip -l target/browser-pilot-1.0.2.jar | sort -k1,1nr | head -30
+
+
+du -sh ~/.m2/repository/com/microsoft/playwright/*
+
+
+du -sh ~/.m2/repository/com/github/kwhat/*
+
+rm -rf target
+
+ls -lh target/browser-pilot-1.0.2.jar
+
+unzip -l target/browser-pilot-1.0.2.jar | grep 'driver'
+
+
+unzip -l target/browser-pilot-1.0.2.jar \
+  | sort -k1,1nr \
+  | head -40
+
+
+
+https://googlechromelabs.github.io/chrome-for-testing/
+```
