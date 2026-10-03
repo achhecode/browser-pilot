@@ -4,15 +4,13 @@ import com.achhecode.browser_pilot.config.BrowserPilotProperties;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class PlaywrightManager {
@@ -96,6 +94,10 @@ public class PlaywrightManager {
                 .launch(options);
 
         context = browser.newContext();
+
+        System.out.println(
+                "Browser launched successfully."
+        );
     }
 
     private void attachToBrowser() {
@@ -125,6 +127,10 @@ public class PlaywrightManager {
             );
         }
 
+        /*
+         * For CDP attach mode we use the first
+         * existing browser context.
+         */
         context = browser.contexts().get(0);
 
         System.out.println(
@@ -144,10 +150,6 @@ public class PlaywrightManager {
         return browser;
     }
 
-    /*
-     * Keep this method because your existing
-     * classes already use it.
-     */
     public BrowserContext getDefaultContext() {
 
         if (context == null) {
@@ -160,33 +162,9 @@ public class PlaywrightManager {
         return context;
     }
 
-    /*
-     * Optional newer name.
-     */
     public BrowserContext getContext() {
 
         return getDefaultContext();
-    }
-
-    public Page getOrCreateDebugPage() {
-
-        BrowserContext context =
-                getDefaultContext();
-
-        if (!context.pages().isEmpty()) {
-
-            return context.pages().get(0);
-        }
-
-        return context.newPage();
-    }
-
-    /*
-     * Alias if you want the more generic name.
-     */
-    public Page getOrCreatePage() {
-
-        return getOrCreateDebugPage();
     }
 
     @PreDestroy
@@ -208,18 +186,28 @@ public class PlaywrightManager {
             if (browser != null
                     && browser.isConnected()) {
 
-                browser.close();
+                try {
+
+                    browser.close();
+
+                } catch (Exception e) {
+
+                    System.err.println(
+                            "Error while closing browser: "
+                                    + e.getMessage()
+                    );
+                }
             }
         }
 
         /*
          * ATTACH mode:
          *
-         * Do NOT close the browser because it
-         * belongs to the external Chromium process.
+         * Do NOT close the external browser.
          */
 
         browser = null;
+
         context = null;
 
         if (playwright != null) {
