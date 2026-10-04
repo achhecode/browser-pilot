@@ -104,7 +104,11 @@ public class WendCommandExecutorImpl
     }
 
     private void prepare(boolean onlyKey) {
-        if (onlyKey) keyboard.switchTab();
+        if (onlyKey) {
+            keyboard.switchTab();
+        }else{
+            keyboard.addDelay(1000); // 1 sec solution not accepted
+        }
 
         // click in empty area
         mouseService.click(LinkedInGame.WEND.location().x(), LinkedInGame.WEND.location().y());

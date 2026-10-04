@@ -114,7 +114,7 @@ public class SudokuCommandExecutorImpl
                 keyboard.addDelay(100);
                 keyboard.pressTab();
                 keyboard.addDelay(100);
-                keyboard.pressEnter();
+                keyboard.pressLeft();
                 keyboard.addDelay(100);
         }
 }

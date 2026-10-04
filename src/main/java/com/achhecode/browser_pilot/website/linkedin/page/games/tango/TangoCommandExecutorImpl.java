@@ -133,7 +133,11 @@ public class TangoCommandExecutorImpl
 
     private void prepare(boolean onlyKey) {
 
-            if(onlyKey) keyboard.switchTab();
+            if(onlyKey) {
+                keyboard.switchTab();
+            }else{
+                keyboard.addDelay(1000);// 1sec solution not accepted
+            }
             // click in empty area
             mouseService.click(LinkedInGame.TANGO.location().x(), LinkedInGame.TANGO.location().y());
 

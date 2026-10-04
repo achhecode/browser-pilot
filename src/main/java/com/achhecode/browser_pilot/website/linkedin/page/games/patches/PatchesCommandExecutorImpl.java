@@ -113,7 +113,11 @@ public class PatchesCommandExecutorImpl
 
         private void prepare(boolean onlyKey) {
 
-                if(onlyKey) keyboard.switchTab();
+                if(onlyKey) {
+                        keyboard.switchTab();
+                }else{
+                        keyboard.addDelay(1000);
+                }
                 // click in empty area
                 mouseService.click(LinkedInGame.PATCHES.location().x(), LinkedInGame.PATCHES.location().y());
                 keyboard.addDelay(100);
