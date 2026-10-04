@@ -43,31 +43,6 @@ public class WrappingGridNavigator {
         return to;
     }
 
-    // ---------- pure logic (no keyboard) ----------
-
-    // GridPosition next(GridPosition p, GridDirection direction) {
-    //     int dr = 0, dc = 0;
-    //     switch (direction) {
-    //         case UP -> dr = -1;
-    //         case DOWN -> dr = 1;
-    //         case LEFT -> dc = -1;
-    //         case RIGHT -> dc = 1;
-    //     }
-    //     int rows = layout.rows(), cols = layout.cols();
-    //     int r = p.row(), c = p.column();
-
-    //     // At most max(rows, cols) steps: the origin cell itself is open,
-    //     // so the loop always terminates (worst case it returns to itself).
-    //     for (int i = 0; i < Math.max(rows, cols); i++) {
-    //         r = Math.floorMod(r + dr, rows);
-    //         c = Math.floorMod(c + dc, cols);
-    //         if (!layout.isBlocked(r, c)) {
-    //             return new GridPosition(r, c);
-    //         }
-    //     }
-    //     return p;
-    // }
-
     GridPosition next(GridPosition p, GridDirection direction) {
         return layout.next(p, direction);
     }

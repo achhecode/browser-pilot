@@ -12,12 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 public class WendGameService implements LinkedInGameSolver<WendRequest, WendPage>{
 
     private final WendCommandService commandService;
+    private final WendRequestMapper wendRequestMapper;
 
 
     public WendGameService(
-            WendCommandService commandService
+            WendCommandService commandService,
+            WendRequestMapper wendRequestMapper
     ) {
         this.commandService = commandService;
+        this.wendRequestMapper = wendRequestMapper;
     }
 
     @Override 
@@ -28,6 +31,8 @@ public class WendGameService implements LinkedInGameSolver<WendRequest, WendPage
         wendPage.waitUntilReady();
 
         wendPage.getBoardState();
+
+        // WendRequest wendRequest2 = wendRequestMapper.map(wendRequest);
 
         
         int totalCells = wendPage.totalCellIndex();
