@@ -6,7 +6,7 @@ public enum LinkedInGame {
     PATCHES("/games/patches/", GridLocation.EMPTY_LEFT),
     ZIP("/games/zip/", GridLocation.EMPTY_LEFT),
     MINI_SUDOKU("/games/mini-sudoku/", GridLocation.EMPTY_LEFT),
-    WEND("/games/wend/", GridLocation.EMPTY_LEFT),
+    WEND("/games/wend/", GridLocation.EMPTY_RIGHT),
     TANGO("/games/tango/", GridLocation.EMPTY_LEFT),
     QUEENS("/games/queens/", GridLocation.EMPTY_LEFT),
     PINPOINT("/games/pinpoint/", GridLocation.EMPTY_LEFT);

@@ -76,14 +76,9 @@ public class ZipCommandExecutorImpl
     ) {
         if (request.onlyKey()) {
             keyboard.switchTab();
-            return;
+        }else{
+            keyboard.addDelay(800);
         }
-
-        /*
-         * LinkedIn needs enough time before
-         * keyboard automation starts.
-         */
-        keyboard.addDelay(1000);
     }
 
     private void executeDirections(

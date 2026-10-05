@@ -107,7 +107,11 @@ public class SudokuCommandExecutorImpl
 
         private void prepare(boolean onlyKey) {
 
-                if(onlyKey) keyboard.switchTab();
+                if(onlyKey){
+                    keyboard.switchTab();
+                }else{
+                    keyboard.addDelay(800);
+                }
                 // click in empty area
                 mouseService.click(LinkedInGame.MINI_SUDOKU.location().x(), LinkedInGame.MINI_SUDOKU.location().y());
 

@@ -114,7 +114,11 @@ public class QueensCommandExecutorImpl
 
     private void prepare(boolean onlyKey) {
 
-        if(onlyKey) keyboard.switchTab();
+        if(onlyKey){
+            keyboard.switchTab();
+        }else{
+            keyboard.addDelay(800);
+        }
         // click in empty area
         mouseService.click(LinkedInGame.QUEENS.location().x(), LinkedInGame.QUEENS.location().y());
 
