@@ -29,11 +29,12 @@ public class OpportunitiesPage extends WebsitePage {
     private static final int MAX_ATTEMPTS = 2;
     private static final double ELEMENT_TIMEOUT_MS = 10_000;
     private static final double PAGE_LOAD_TIMEOUT_MS = 15_000;
+    private static final double APPLY_ALL_PROMPT_TIMEOUT_MS = 3_000; // popup is optional, keep short
     private static final long JOB_LOAD_TIMEOUT_MS = 10_000;
     private static final double POLL_INTERVAL_MS = 200;
 
     private static final String REQUIRED_KEYWORD = "Java";
-    private static final String REQUIRED_DESCRIPTION_TERM = "Spring Boot";
+    private static final String REQUIRED_DESCRIPTION_TERM = "Spring";
 
     // Matches /candidate/opportunities/ with or without a query string (e.g. ?matching=true).
     private static final String OPPORTUNITIES_URL_PREFIX =
@@ -64,6 +65,12 @@ public class OpportunitiesPage extends WebsitePage {
         static final String APPLY_BUTTON =
                 "xpath=//div[contains(@class,'apply')]" +
                 "//button[contains(@class,'new-btn') and normalize-space()='Apply']";
+
+        // Optional popup shown after Apply when the same company has more jobs.
+        static final String APPLY_ALL_MODAL =
+                "xpath=//div[contains(@class,'app-modal') and contains(@class,'apply-all-modal')]";
+
+        static final String APPLY_ALL_BUTTON = "xpath=//button[@ng-click='applyBulk()']";
 
         // Verified in Chrome DevTools: exactly 1 match, visible, enabled, not covered.
         static final String NOT_INTERESTED_BUTTON =
@@ -176,7 +183,7 @@ public class OpportunitiesPage extends WebsitePage {
     }
 
     @SuppressWarnings("null")
-    private Optional<JobDetails> openFirstJob() {
+private Optional<JobDetails> openFirstJob() {
         Locator viewJobButton = page.locator(Selectors.EMPLOYER_ROWS)
                 .first()
                 .locator(Selectors.VIEW_JOB_BUTTON)
@@ -196,15 +203,24 @@ public class OpportunitiesPage extends WebsitePage {
     }
 
     private boolean waitForModalVisible() {
-        try {
-            page.locator(Selectors.MODAL).first().waitFor(
-                    new Locator.WaitForOptions()
-                            .setState(WaitForSelectorState.VISIBLE)
-                            .setTimeout(ELEMENT_TIMEOUT_MS));
+        boolean visible = waitForState(
+                Selectors.MODAL, WaitForSelectorState.VISIBLE, ELEMENT_TIMEOUT_MS);
+
+        if (visible) {
             log.info("Job modal loaded.");
+        } else {
+            log.warn("Job modal did not become visible.");
+        }
+        return visible;
+    }
+
+    /** Waits for the element to reach the given state; false on timeout. */
+    private boolean waitForState(String selector, WaitForSelectorState state, double timeoutMs) {
+        try {
+            page.locator(selector).first().waitFor(
+                    new Locator.WaitForOptions().setState(state).setTimeout(timeoutMs));
             return true;
         } catch (PlaywrightException e) {
-            log.warn("Job modal did not become visible.");
             return false;
         }
     }
@@ -213,7 +229,34 @@ public class OpportunitiesPage extends WebsitePage {
 
     private boolean apply() {
         log.info("{} and {} matched. Applying...", REQUIRED_KEYWORD, REQUIRED_DESCRIPTION_TERM);
-        return clickWhenReady(Selectors.APPLY_BUTTON, "Apply");
+        if (!clickWhenReady(Selectors.APPLY_BUTTON, "Apply")) {
+            return false;
+        }
+        return handleApplyAllPrompt();
+    }
+
+    /**
+     * After Apply, Instahyre may offer to apply to every job of the same company.
+     * If that popup shows up, confirm it; the job modal then loads the next job.
+     *
+     * @return false only if the popup appeared but could not be confirmed
+     */
+    private boolean handleApplyAllPrompt() {
+        boolean promptShown = waitForState(
+                Selectors.APPLY_ALL_MODAL, WaitForSelectorState.VISIBLE, APPLY_ALL_PROMPT_TIMEOUT_MS);
+
+        if (!promptShown) {
+            log.info("No 'apply to all' prompt appeared.");
+            return true;
+        }
+
+        log.info("'Apply to all' prompt detected. Confirming...");
+        if (!clickWhenReady(Selectors.APPLY_ALL_BUTTON, "Apply all")) {
+            return false;
+        }
+
+        waitForState(Selectors.APPLY_ALL_MODAL, WaitForSelectorState.HIDDEN, ELEMENT_TIMEOUT_MS);
+        return true;
     }
 
     private boolean notInterested() {
@@ -303,7 +346,7 @@ public class OpportunitiesPage extends WebsitePage {
     }
 
     @SuppressWarnings("null")
-    private String getCombinedText(String xpath) {
+private String getCombinedText(String xpath) {
         return page.locator(xpath)
                 .allInnerTexts()
                 .stream()
