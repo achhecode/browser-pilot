@@ -3,6 +3,7 @@ package com.achhecode.browser_pilot.website.instahyre.service;
 import com.achhecode.browser_pilot.website.instahyre.InstahyrePageFactory;
 import com.achhecode.browser_pilot.website.instahyre.InstahyrePageResolver;
 import com.achhecode.browser_pilot.website.instahyre.InstahyreProperties;
+import com.achhecode.browser_pilot.website.instahyre.model.JobApplicationRequest;
 import com.microsoft.playwright.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +44,10 @@ public class InstahyreAutomationService {
     }
 
 
-    public void applyJob() {
+    public void applyJob(JobApplicationRequest request) {
         Page page = pageResolver.findPage();
 
-        pageFactory.opportunities(page).clickApply();
+        pageFactory.opportunities(page).clickApply(request);
         log.info("Applied jobs");
     }
 

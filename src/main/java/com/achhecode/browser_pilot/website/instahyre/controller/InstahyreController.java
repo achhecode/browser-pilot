@@ -1,9 +1,13 @@
 package com.achhecode.browser_pilot.website.instahyre.controller;
 
+import com.achhecode.browser_pilot.website.instahyre.model.JobApplicationRequest;
 import com.achhecode.browser_pilot.website.instahyre.service.InstahyreAutomationService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,8 +26,8 @@ public class InstahyreController {
 
 
     @PostMapping("/apply-job")
-    public ResponseEntity<String> applyJob() {
-        automationService.applyJob();
+    public ResponseEntity<String> applyJob(@Valid @RequestBody JobApplicationRequest request) {
+        automationService.applyJob(request);
         return ResponseEntity.ok("Instahyre job applied successfully");
     }
 

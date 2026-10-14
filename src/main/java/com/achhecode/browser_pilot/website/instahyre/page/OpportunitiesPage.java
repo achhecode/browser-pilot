@@ -1,6 +1,9 @@
 package com.achhecode.browser_pilot.website.instahyre.page;
 
 import com.achhecode.browser_pilot.website.WebsitePage;
+import com.achhecode.browser_pilot.website.instahyre.matching.JobMatcher;
+import com.achhecode.browser_pilot.website.instahyre.model.JobApplicationRequest;
+import com.achhecode.browser_pilot.website.instahyre.model.JobDetails;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
@@ -8,13 +11,12 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Inspects Instahyre opportunities and applies to the ones matching the criteria.
+ * Inspects Instahyre opportunities and applies to the ones matching a {@link JobApplicationRequest}.
  *
  * The job modal stays open: after Apply / Not interested, the next job is
  * loaded into the same modal, so we wait for its content to change instead of
@@ -26,15 +28,14 @@ import java.util.stream.Collectors;
 public class OpportunitiesPage extends WebsitePage {
 
     // ---------- Configuration ----------
-    private static final int MAX_ATTEMPTS = 2;
+    /** Safety cap so a request that never reaches noOfJobs cannot loop forever. */
+    private static final int MAX_JOBS_TO_INSPECT = 200;
+
     private static final double ELEMENT_TIMEOUT_MS = 10_000;
     private static final double PAGE_LOAD_TIMEOUT_MS = 15_000;
     private static final double APPLY_ALL_PROMPT_TIMEOUT_MS = 3_000; // popup is optional, keep short
     private static final long JOB_LOAD_TIMEOUT_MS = 10_000;
     private static final double POLL_INTERVAL_MS = 200;
-
-    private static final String REQUIRED_KEYWORD = "Java";
-    private static final String REQUIRED_DESCRIPTION_TERM = "Spring";
 
     // Matches /candidate/opportunities/ with or without a query string (e.g. ?matching=true).
     private static final String OPPORTUNITIES_URL_PREFIX =
@@ -62,6 +63,12 @@ public class OpportunitiesPage extends WebsitePage {
                 "//div[contains(@class,'job-description')]" +
                 "//p[@ng-bind-html]";
 
+        static final String COMPANY_NAME =
+                "//div[@id='employer-profile']//*[contains(@class,'company-name')]";
+
+        static final String COMPANY_SIZE =
+                "//div[@id='employer-profile']//*[contains(@class,'company-size')]";
+
         static final String APPLY_BUTTON =
                 "xpath=//div[contains(@class,'apply')]" +
                 "//button[contains(@class,'new-btn') and normalize-space()='Apply']";
@@ -80,13 +87,9 @@ public class OpportunitiesPage extends WebsitePage {
     }
 
     // ---------- Types ----------
-    private record JobDetails(String title, String function, String keywords, String description) {
-        boolean isLoaded() {
-            return !title.isBlank() && !description.isBlank();
-        }
-    }
-
     private enum Outcome { APPLIED, DECLINED, FAILED }
+
+    private record Summary(int applied, int declined, int inspected) {}
 
     private final Page page;
 
@@ -97,44 +100,23 @@ public class OpportunitiesPage extends WebsitePage {
 
     // ---------- Public API ----------
 
-    public void clickApply() {
+    public void clickApply(JobApplicationRequest request) {
         if (!isOnOpportunitiesPage()) {
             log.warn("Not on the opportunities page (current URL: {}). Aborting.", page.url());
             return;
         }
 
-        int applied = 0;
-        int declined = 0;
+        log.info("Starting with request: {}", request);
 
+        Summary summary = new Summary(0, 0, 0);
         try {
-            Optional<JobDetails> current = openJobIfNeeded();
-
-            for (int attempt = 1; attempt <= MAX_ATTEMPTS && current.isPresent(); attempt++) {
-                log.info("========== Attempt {} of {} ==========", attempt, MAX_ATTEMPTS);
-
-                JobDetails job = current.get();
-                logJob(job);
-
-                Outcome outcome = processJob(job);
-                if (outcome == Outcome.FAILED) {
-                    break;
-                }
-
-                switch (outcome) {
-                    case APPLIED -> applied++;
-                    case DECLINED -> declined++;
-                    default -> { }
-                }
-
-                if (attempt < MAX_ATTEMPTS) {
-                    current = awaitNextJob(job);
-                }
-            }
+            summary = processJobs(request);
         } catch (PlaywrightException e) {
             log.error("Unexpected Playwright error: {}", e.getMessage());
         }
 
-        log.info("Finished. Applied: {}, Not interested: {}", applied, declined);
+        log.info("Finished. Applied: {}/{}, Not interested: {}, Inspected: {}",
+                summary.applied(), request.noOfJobs(), summary.declined(), summary.inspected());
     }
 
     // ---------- Page verification ----------
@@ -154,16 +136,53 @@ public class OpportunitiesPage extends WebsitePage {
 
     // ---------- Orchestration ----------
 
-    private Outcome processJob(JobDetails job) {
-        if (matchesCriteria(job)) {
+    private Summary processJobs(JobApplicationRequest request) {
+        JobMatcher matcher = new JobMatcher(request);
+        int applied = 0;
+        int declined = 0;
+        int inspected = 0;
+
+        Optional<JobDetails> current = openJobIfNeeded();
+
+        while (current.isPresent()
+                && applied < request.noOfJobs()
+                && inspected < MAX_JOBS_TO_INSPECT) {
+
+            inspected++;
+            log.info("========== Job {} (applied {}/{}) ==========",
+                    inspected, applied, request.noOfJobs());
+
+            JobDetails job = current.get();
+            logJob(job);
+
+            Outcome outcome = processJob(job, matcher);
+            if (outcome == Outcome.FAILED) {
+                break;
+            }
+
+            if (outcome == Outcome.APPLIED) {
+                applied++;
+            } else {
+                declined++;
+            }
+
+            current = applied < request.noOfJobs() ? awaitNextJob(job) : Optional.empty();
+        }
+
+        return new Summary(applied, declined, inspected);
+    }
+
+    private Outcome processJob(JobDetails job, JobMatcher matcher) {
+        if (!matcher.hasRequiredFields(job)) {
+            log.error("Request filters on company name/size but they could not be read. "
+                    + "Check the COMPANY_* selectors. Stopping without clicking anything.");
+            return Outcome.FAILED;
+        }
+
+        if (matcher.matches(job)) {
             return apply() ? Outcome.APPLIED : Outcome.FAILED;
         }
         return notInterested() ? Outcome.DECLINED : Outcome.FAILED;
-    }
-
-    private boolean matchesCriteria(JobDetails job) {
-        return containsIgnoreCase(job.keywords(), REQUIRED_KEYWORD)
-                && containsIgnoreCase(job.description(), REQUIRED_DESCRIPTION_TERM);
     }
 
     // ---------- Opening a job ----------
@@ -183,7 +202,7 @@ public class OpportunitiesPage extends WebsitePage {
     }
 
     @SuppressWarnings("null")
-private Optional<JobDetails> openFirstJob() {
+    private Optional<JobDetails> openFirstJob() {
         Locator viewJobButton = page.locator(Selectors.EMPLOYER_ROWS)
                 .first()
                 .locator(Selectors.VIEW_JOB_BUTTON)
@@ -228,7 +247,8 @@ private Optional<JobDetails> openFirstJob() {
     // ---------- Actions ----------
 
     private boolean apply() {
-        log.info("{} and {} matched. Applying...", REQUIRED_KEYWORD, REQUIRED_DESCRIPTION_TERM);
+        log.info("Criteria matched. Applying...");
+
         if (!clickWhenReady(Selectors.APPLY_BUTTON, "Apply")) {
             return false;
         }
@@ -325,12 +345,15 @@ private Optional<JobDetails> openFirstJob() {
                 getText(Selectors.JOB_TITLE),
                 getCombinedText(Selectors.JOB_FUNCTION),
                 getCombinedText(Selectors.JOB_KEYWORDS),
-                getText(Selectors.JOB_DESCRIPTION)
+                getText(Selectors.JOB_DESCRIPTION),
+                getText(Selectors.COMPANY_NAME),
+                getText(Selectors.COMPANY_SIZE)
         );
     }
 
     private void logJob(JobDetails job) {
         log.info("Job title: {}", job.title());
+        log.info("Company: {} (size: {})", job.companyName(), job.companySize());
         log.info("Job function: {}", job.function());
         log.info("Keywords: {}", job.keywords());
         log.info("Description: {}", job.description());
@@ -346,17 +369,12 @@ private Optional<JobDetails> openFirstJob() {
     }
 
     @SuppressWarnings("null")
-private String getCombinedText(String xpath) {
+    private String getCombinedText(String xpath) {
         return page.locator(xpath)
                 .allInnerTexts()
                 .stream()
                 .map(String::trim)
                 .filter(text -> !text.isEmpty())
                 .collect(Collectors.joining(", "));
-    }
-
-    private static boolean containsIgnoreCase(String text, String expected) {
-        return text != null
-                && text.toLowerCase(Locale.ROOT).contains(expected.toLowerCase(Locale.ROOT));
     }
 }
