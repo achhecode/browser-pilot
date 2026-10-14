@@ -189,3 +189,16 @@ unzip -l target/browser-pilot-1.0.2.jar \
 
 https://googlechromelabs.github.io/chrome-for-testing/
 ```
+
+---
+
+
+H2 Database
+
+```sh
+
+
+./mvnw dependency:tree -Dincludes=org.springframework.boot:spring-boot
+./mvnw dependency:tree -Dincludes=com.h2database:h2
+
+```
