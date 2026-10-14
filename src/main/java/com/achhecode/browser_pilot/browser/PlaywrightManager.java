@@ -5,6 +5,7 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
@@ -18,58 +19,41 @@ public class PlaywrightManager {
     private final BrowserPilotProperties properties;
 
     private Playwright playwright;
-
     private Browser browser;
-
     private BrowserContext context;
 
-    public PlaywrightManager(
-            BrowserPilotProperties properties
-    ) {
+    public PlaywrightManager(BrowserPilotProperties properties) {
         this.properties = properties;
     }
 
     @PostConstruct
-    public void start() {
-
+    public synchronized void start() {
         playwright = Playwright.create();
 
-        BrowserPilotProperties.Mode mode =
-                properties.getBrowser().getMode();
-
-        switch (mode) {
-
+        switch (properties.getBrowser().getMode()) {
             case LAUNCH -> launchBrowser();
-
             case ATTACH -> attachToBrowser();
-
             default -> throw new IllegalStateException(
-                    "Unsupported browser mode: " + mode
+                    "Unsupported browser mode: "
+                            + properties.getBrowser().getMode()
             );
         }
     }
 
     private void launchBrowser() {
-
-        BrowserPilotProperties.Browser browserProperties =
+        BrowserPilotProperties.Browser config =
                 properties.getBrowser();
 
         BrowserType.LaunchOptions options =
                 new BrowserType.LaunchOptions()
-                        .setHeadless(
-                                browserProperties.isHeadless()
-                        );
+                        .setHeadless(config.isHeadless());
 
-        String executablePath =
-                browserProperties.getExecutablePath();
+        String executablePath = config.getExecutablePath();
 
-        if (executablePath != null
-                && !executablePath.isBlank()) {
-
+        if (executablePath != null && !executablePath.isBlank()) {
             Path path = Path.of(executablePath);
 
             if (!Files.isRegularFile(path)) {
-
                 throw new IllegalArgumentException(
                         "Chromium executable does not exist: "
                                 + executablePath
@@ -79,156 +63,193 @@ public class PlaywrightManager {
             options.setExecutablePath(path);
 
             System.out.println(
-                    "Launching custom browser: "
-                            + executablePath
+                    "Launching custom browser: " + executablePath
             );
-
         } else {
-
             System.out.println(
                     "Launching Playwright-managed Chromium."
             );
         }
 
-        browser = playwright.chromium()
-                .launch(options);
-
+        browser = playwright.chromium().launch(options);
         context = browser.newContext();
 
-        System.out.println(
-                "Browser launched successfully."
-        );
+        System.out.println("Browser launched successfully.");
     }
 
     private void attachToBrowser() {
-
         BrowserPilotProperties.Attach attach =
                 properties.getBrowser().getAttach();
 
-        String endpoint =
-                "http://"
-                        + attach.getHost()
-                        + ":"
-                        + attach.getPort();
+        String endpoint = "http://"
+                + attach.getHost()
+                + ":"
+                + attach.getPort();
 
         System.out.println(
-                "Connecting to existing Chromium: "
-                        + endpoint
+                "Connecting to existing Chromium: " + endpoint
         );
 
-        browser = playwright.chromium()
-                .connectOverCDP(endpoint);
+        browser = playwright.chromium().connectOverCDP(endpoint);
+        context = findAttachedContext();
 
-        if (browser.contexts().isEmpty()) {
+        System.out.println("Connected to existing Chromium.");
+    }
 
-            throw new IllegalStateException(
-                    "Connected to Chromium, "
-                            + "but no browser context exists."
-            );
+    private BrowserContext findAttachedContext() {
+        for (BrowserContext candidate : browser.contexts()) {
+            try {
+                // Accessing pages checks whether the context is usable.
+                candidate.pages();
+                return candidate;
+            } catch (PlaywrightException ignored) {
+                // Try another available context.
+            }
         }
 
-        /*
-         * For CDP attach mode we use the first
-         * existing browser context.
-         */
-        context = browser.contexts().get(0);
-
-        System.out.println(
-                "Connected to existing Chromium."
+        throw new IllegalStateException(
+                "Connected to Chromium, but no usable browser "
+                        + "context exists. Ensure Chromium is running "
+                        + "with its remote debugging port enabled."
         );
     }
 
-    public Browser getBrowser() {
+    /**
+     * Returns a usable context or recovers it when possible.
+     */
+    public synchronized BrowserContext getOrCreateContext() {
+        ensurePlaywright();
 
-        if (browser == null) {
+        if (isBrowserConnected()) {
+            if (isContextUsable(context)) {
+                return context;
+            }
 
-            throw new IllegalStateException(
-                    "Browser is not available."
-            );
+            return recoverContext();
         }
 
+        return recoverBrowser();
+    }
+
+    private BrowserContext recoverContext() {
+        return switch (properties.getBrowser().getMode()) {
+            case LAUNCH -> {
+                context = browser.newContext();
+                yield context;
+            }
+            case ATTACH -> {
+                // Reuse the external browser's existing context.
+                context = findAttachedContext();
+                yield context;
+            }
+            default -> throw new IllegalStateException(
+                    "Unsupported browser mode: "
+                            + properties.getBrowser().getMode()
+            );
+        };
+    }
+
+    private BrowserContext recoverBrowser() {
+        System.out.println(
+                "Browser disconnected. Recovering browser connection..."
+        );
+
+        return switch (properties.getBrowser().getMode()) {
+            case LAUNCH -> {
+                launchBrowser();
+                yield context;
+            }
+            case ATTACH -> {
+                attachToBrowser();
+                yield context;
+            }
+            default -> throw new IllegalStateException(
+                    "Unsupported browser mode: "
+                            + properties.getBrowser().getMode()
+            );
+        };
+    }
+
+    private boolean isBrowserConnected() {
+        if (browser == null) {
+            return false;
+        }
+
+        try {
+            return browser.isConnected();
+        } catch (PlaywrightException e) {
+            return false;
+        }
+    }
+
+    private boolean isContextUsable(BrowserContext candidate) {
+        if (candidate == null) {
+            return false;
+        }
+
+        try {
+            candidate.pages();
+            return true;
+        } catch (PlaywrightException e) {
+            return false;
+        }
+    }
+
+    private void ensurePlaywright() {
+        if (playwright == null) {
+            playwright = Playwright.create();
+        }
+    }
+
+    public synchronized Browser getBrowser() {
+        getOrCreateContext();
         return browser;
     }
 
-    public BrowserContext getDefaultContext() {
-
-        if (context == null) {
-
-            throw new IllegalStateException(
-                    "Browser context is not available."
-            );
-        }
-
-        return context;
+    public synchronized BrowserContext getDefaultContext() {
+        return getOrCreateContext();
     }
 
-    public BrowserContext getContext() {
-
-        return getDefaultContext();
+    public synchronized BrowserContext getContext() {
+        return getOrCreateContext();
     }
 
     @PreDestroy
-    public void shutdown() {
-
-        System.out.println(
-                "Shutting down BrowserPilot..."
-        );
+    public synchronized void shutdown() {
+        System.out.println("Shutting down BrowserPilot...");
 
         BrowserPilotProperties.Mode mode =
                 properties.getBrowser().getMode();
 
-        /*
-         * BrowserPilot owns the browser only when
-         * it launched it.
-         */
-        if (mode == BrowserPilotProperties.Mode.LAUNCH) {
-
-            if (browser != null
-                    && browser.isConnected()) {
-
-                try {
-
-                    browser.close();
-
-                } catch (Exception e) {
-
-                    System.err.println(
-                            "Error while closing browser: "
-                                    + e.getMessage()
-                    );
-                }
+        // Only close the browser when BrowserPilot owns it.
+        if (mode == BrowserPilotProperties.Mode.LAUNCH
+                && browser != null
+                && browser.isConnected()) {
+            try {
+                browser.close();
+            } catch (Exception e) {
+                System.err.println(
+                        "Error while closing browser: " + e.getMessage()
+                );
             }
         }
 
-        /*
-         * ATTACH mode:
-         *
-         * Do NOT close the external browser.
-         */
-
+        // ATTACH mode leaves the external browser running.
         browser = null;
-
         context = null;
 
         if (playwright != null) {
-
             try {
-
                 playwright.close();
-
             } catch (Exception e) {
-
                 System.err.println(
-                        "Error while closing Playwright: "
-                                + e.getMessage()
+                        "Error while closing Playwright: " + e.getMessage()
                 );
             }
 
             playwright = null;
         }
 
-        System.out.println(
-                "BrowserPilot shutdown complete."
-        );
+        System.out.println("BrowserPilot shutdown complete.");
     }
 }

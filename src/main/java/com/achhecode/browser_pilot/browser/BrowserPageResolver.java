@@ -12,31 +12,55 @@ public class BrowserPageResolver {
     private final PlaywrightManager playwrightManager;
 
     public Page findOrOpenPage(String url) {
-        return getContext()
-                .pages()
+        BrowserContext context = getContext();
+
+        return context.pages()
                 .stream()
                 .filter(page -> !page.isClosed())
                 .filter(page -> page.url().startsWith(url))
                 .findFirst()
-                .orElseGet(() -> openPage(url));
+                .orElseGet(() -> {
+                    Page page = getFreshPage();
+                    page.navigate(url);
+                    return page;
+                });
     }
 
     public Page getOrCreatePage() {
-        return getContext()
-                .pages()
+        BrowserContext context = getContext();
+
+        return context.pages()
                 .stream()
                 .filter(page -> !page.isClosed())
                 .findFirst()
-                .orElseGet(() -> getContext().newPage());
+                .orElseGet(context::newPage);
     }
 
-    private Page openPage(String url) {
-        Page page = getContext().newPage();
-        page.navigate(url);
-        return page;
+    /**
+     * Returns a usable blank tab, or creates a new tab.
+     * Existing website tabs are preserved.
+     */
+    public Page getFreshPage() {
+        BrowserContext context = getContext();
+
+        return context.pages()
+                .stream()
+                .filter(page -> !page.isClosed())
+                .filter(this::isBlankPage)
+                .findFirst()
+                .orElseGet(context::newPage);
+    }
+
+    private boolean isBlankPage(Page page) {
+        try {
+            String url = page.url();
+            return url.equals("about:blank") || url.equals("about:blank#");
+        } catch (com.microsoft.playwright.PlaywrightException e) {
+            return false;
+        }
     }
 
     private BrowserContext getContext() {
-        return playwrightManager.getContext();
+        return playwrightManager.getOrCreateContext();
     }
 }

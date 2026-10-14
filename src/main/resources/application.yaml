@@ -51,3 +51,9 @@ logging:
       total-size-cap: 1GB
       max-history: 30
       clean-history-on-start: true
+
+
+website:
+  instahyre:
+    username: ${INSTAHYRE_USERNAME}
+    password: ${INSTAHYRE_PASSWORD}
