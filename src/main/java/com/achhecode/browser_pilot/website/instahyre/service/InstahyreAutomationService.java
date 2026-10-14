@@ -42,6 +42,14 @@ public class InstahyreAutomationService {
         );
     }
 
+
+    public void applyJob() {
+        Page page = pageResolver.findPage();
+
+        pageFactory.opportunities(page).clickApply();
+        log.info("Applied jobs");
+    }
+
     public void signup() {
         Page page = pageResolver.findPage();
 

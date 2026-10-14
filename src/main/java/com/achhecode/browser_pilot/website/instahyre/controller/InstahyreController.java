@@ -21,6 +21,13 @@ public class InstahyreController {
     }
 
 
+    @PostMapping("/apply-job")
+    public ResponseEntity<String> applyJob() {
+        automationService.applyJob();
+        return ResponseEntity.ok("Instahyre job applied successfully");
+    }
+
+
     @PostMapping("/recover")
     public ResponseEntity<String> recover() {
         automationService.openFreshTab();
