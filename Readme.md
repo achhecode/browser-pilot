@@ -6,7 +6,7 @@ You send a solution to an endpoint. Browser Pilot moves a logical cursor around 
 
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Maven](https://img.shields.io/badge/Apache%20Maven-3.9.16-blue)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-brightgreen)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.1-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-macOS-lightgrey)
 
 ---
