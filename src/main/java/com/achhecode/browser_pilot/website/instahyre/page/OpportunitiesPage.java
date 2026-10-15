@@ -77,7 +77,9 @@ public class OpportunitiesPage extends WebsitePage {
         static final String APPLY_ALL_MODAL =
                 "xpath=//div[contains(@class,'app-modal') and contains(@class,'apply-all-modal')]";
 
-        static final String APPLY_ALL_BUTTON = "xpath=//button[@ng-click='applyBulk()']";
+        // static final String APPLY_ALL_BUTTON = "xpath=//button[@ng-click='applyBulk()']";
+        
+        static final String CANCEL_ALL_BUTTON = "xpath=//button[@ng-click='applyBulkCancel()']";
 
         // Verified in Chrome DevTools: exactly 1 match, visible, enabled, not covered.
         static final String NOT_INTERESTED_BUTTON =
@@ -271,7 +273,11 @@ public class OpportunitiesPage extends WebsitePage {
         }
 
         log.info("'Apply to all' prompt detected. Confirming...");
-        if (!clickWhenReady(Selectors.APPLY_ALL_BUTTON, "Apply all")) {
+        // if (!clickWhenReady(Selectors.APPLY_ALL_BUTTON, "Apply all")) {
+        //     return false;
+        // }
+
+        if (!clickWhenReady(Selectors.CANCEL_ALL_BUTTON, "Cancel")) {
             return false;
         }
 
