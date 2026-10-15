@@ -57,3 +57,8 @@ website:
   instahyre:
     username: ${INSTAHYRE_USERNAME}
     password: ${INSTAHYRE_PASSWORD}
+    
+    resume-path: ${INSTAHYRE_RESUME_PATH}
+    
+    questionnaire:
+      answers-file: ${QUESTIONNAIRE_ANSWERS_FILE}

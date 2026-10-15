@@ -130,6 +130,8 @@ mvn clean package
 
 mvn clean package -DskipTests
 
+mvn clean spring-boot:run
+
 # still jar 240 mb
 
 unzip -l target/*.jar | sort -k1,1nr | head -30

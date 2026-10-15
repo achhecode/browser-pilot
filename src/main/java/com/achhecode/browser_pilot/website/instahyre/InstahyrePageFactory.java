@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.achhecode.browser_pilot.website.instahyre.page.HomePage;
 import com.achhecode.browser_pilot.website.instahyre.page.LoginPage;
 import com.achhecode.browser_pilot.website.instahyre.page.OpportunitiesPage;
+import com.achhecode.browser_pilot.website.instahyre.page.QuestionnairePage;
 import com.microsoft.playwright.Page;
 
 @Component 
@@ -20,5 +21,9 @@ public class InstahyrePageFactory {
 
     public OpportunitiesPage opportunities(Page page) {
         return new OpportunitiesPage(page);
+    }
+
+    public QuestionnairePage questionnaire(Page page) {
+        return new QuestionnairePage(page);
     }
 }
