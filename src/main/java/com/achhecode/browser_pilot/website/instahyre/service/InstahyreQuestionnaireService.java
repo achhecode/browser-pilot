@@ -64,7 +64,6 @@ public class InstahyreQuestionnaireService {
                 continue;
             }
 
-            questionnaire.debugQuestion(i);
             questionnaire.fillAnswers(i, answers);
 
             log.info("Answers filled for question {}", i + 1);
