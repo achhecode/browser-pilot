@@ -51,6 +51,21 @@ public class BrowserPageResolver {
                 .orElseGet(context::newPage);
     }
 
+
+    /**
+     * Returns the most recently opened tab, regardless of its URL.
+     * Creates a new tab if no open tabs exist.
+     */
+    public Page getCurrentOpenPage() {
+        BrowserContext context = getContext();
+
+        return context.pages()
+                .stream()
+                .filter(page -> !page.isClosed())
+                .reduce((first, second) -> second)
+                .orElseGet(context::newPage);
+    }
+
     private boolean isBlankPage(Page page) {
         try {
             String url = page.url();

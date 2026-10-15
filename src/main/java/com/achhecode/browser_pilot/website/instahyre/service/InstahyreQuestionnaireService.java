@@ -20,8 +20,8 @@ public class InstahyreQuestionnaireService {
 
     public void completeQuestionnaire() {
         QuestionnairePage questionnaire =
-                pageFactory.questionnaire(pageResolver.findPage());
-
+                pageFactory.questionnaire(pageResolver.getQuestionnairePage());
+                
         if (!questionnaire.isQuestionnairePage()) {
             throw new IllegalStateException(
                     "The current Instahyre page is not a questionnaire."
