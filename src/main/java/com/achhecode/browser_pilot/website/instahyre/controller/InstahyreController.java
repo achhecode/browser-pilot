@@ -3,6 +3,7 @@ package com.achhecode.browser_pilot.website.instahyre.controller;
 import com.achhecode.browser_pilot.api.AuditApi;
 import com.achhecode.browser_pilot.website.instahyre.model.JobApplicationRequest;
 import com.achhecode.browser_pilot.website.instahyre.service.InstahyreAutomationService;
+import com.achhecode.browser_pilot.website.instahyre.service.InstahyreQuestionnaireService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InstahyreController {
 
     private final InstahyreAutomationService automationService;
+    private final InstahyreQuestionnaireService instahyreQuestionnaireService;
 
     @AuditApi ("INSTAHYRE_LOGIN")
     @PostMapping("/login")
@@ -34,6 +36,16 @@ public class InstahyreController {
 
         automationService.applyJob(request);
         return ResponseEntity.ok("Instahyre job applied successfully");
+    }
+
+     @AuditApi ("INSTAHYRE_QUESTIONNAIRE")
+    @PostMapping("/questionnaire/complete")
+    public ResponseEntity<String> completeQuestionnaire() {
+        instahyreQuestionnaireService.completeQuestionnaire();
+
+        return ResponseEntity.ok(
+                "Questionnaire completed and submitted."
+        );
     }
 
 

@@ -22,4 +22,8 @@ public final class InstahyreUrls {
 
     public static final String OPPORTUNITIES =
             "https://www.instahyre.com/candidate/opportunities/";
+
+    public static final String QUESTIONNAIRE =
+            "https://www.instahyre.com/questionnaire/";
+
 }

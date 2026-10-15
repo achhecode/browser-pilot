@@ -28,4 +28,14 @@ public class InstahyrePageResolver implements WebsitePageResolver {
 
         return page;
     }
+
+    public Page getQuestionnairePage() {
+        Page page = browserPageResolver.getCurrentOpenPage();
+
+        if (!page.url().startsWith(InstahyreUrls.QUESTIONNAIRE)) {
+            return findPage();
+        }
+
+        return page;
+    }
 }
