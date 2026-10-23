@@ -1,6 +1,5 @@
 package com.achhecode.browser_pilot.website.instahyre.controller;
 
-import com.achhecode.browser_pilot.api.AuditApi;
 import com.achhecode.browser_pilot.website.instahyre.model.JobApplicationRequest;
 import com.achhecode.browser_pilot.website.instahyre.service.InstahyreAutomationService;
 import com.achhecode.browser_pilot.website.instahyre.service.InstahyreQuestionnaireService;
@@ -21,15 +20,12 @@ public class InstahyreController {
     private final InstahyreAutomationService automationService;
     private final InstahyreQuestionnaireService instahyreQuestionnaireService;
 
-    @AuditApi ("INSTAHYRE_LOGIN")
     @PostMapping("/login")
     public ResponseEntity<String> login() {
         automationService.login();
         return ResponseEntity.ok("Instahyre login automation executed successfully");
     }
 
-
-    @AuditApi ("INSTAHYRE_APPLY_JOB")
     @PostMapping("/apply-job")
     public ResponseEntity<String> applyJob(
             @Valid @RequestBody JobApplicationRequest request) {
@@ -38,7 +34,6 @@ public class InstahyreController {
         return ResponseEntity.ok("Instahyre job applied successfully");
     }
 
-     @AuditApi ("INSTAHYRE_QUESTIONNAIRE")
     @PostMapping("/questionnaire/complete")
     public ResponseEntity<String> completeQuestionnaire() {
         instahyreQuestionnaireService.completeQuestionnaire();
@@ -48,8 +43,6 @@ public class InstahyreController {
         );
     }
 
-
-    @AuditApi ("INSTAHYRE_RECOVER")
     @PostMapping("/recover")
     public ResponseEntity<String> recover() {
         automationService.openFreshTab();
