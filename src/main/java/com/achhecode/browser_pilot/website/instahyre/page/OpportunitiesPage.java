@@ -1,6 +1,7 @@
 package com.achhecode.browser_pilot.website.instahyre.page;
 
 import com.achhecode.browser_pilot.website.WebsitePage;
+import com.achhecode.browser_pilot.website.instahyre.InstahyreUrls;
 import com.achhecode.browser_pilot.website.instahyre.matching.JobMatcher;
 import com.achhecode.browser_pilot.website.instahyre.model.JobApplicationRequest;
 import com.achhecode.browser_pilot.website.instahyre.model.JobDetails;
@@ -382,5 +383,9 @@ public class OpportunitiesPage extends WebsitePage {
                 .map(String::trim)
                 .filter(text -> !text.isEmpty())
                 .collect(Collectors.joining(", "));
+    }
+
+    public boolean isDisplayed(){
+        return page.url().contains(InstahyreUrls.OPPORTUNITIES);
     }
 }

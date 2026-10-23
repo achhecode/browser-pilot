@@ -1,6 +1,7 @@
 package com.achhecode.browser_pilot.website.instahyre.page;
 
 import com.achhecode.browser_pilot.website.WebsitePage;
+import com.achhecode.browser_pilot.website.instahyre.InstahyreUrls;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -29,5 +30,9 @@ public class HomePage extends WebsitePage {
             );
 
         singup.click();
-    }    
+    }
+    
+    public boolean isDisplayed(){
+        return page.url().contains(InstahyreUrls.HOME);
+    }
 }

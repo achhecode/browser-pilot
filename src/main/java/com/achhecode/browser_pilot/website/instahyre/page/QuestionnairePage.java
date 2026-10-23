@@ -252,4 +252,8 @@ public class QuestionnairePage extends WebsitePage {
                 question.locator("button").count());
     }
 
+    public boolean isDisplayed(){
+        return page.url().contains(InstahyreUrls.QUESTIONNAIRE);
+    }
+
 }

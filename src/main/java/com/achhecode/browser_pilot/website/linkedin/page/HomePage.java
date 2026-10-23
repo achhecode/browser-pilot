@@ -1,6 +1,7 @@
 package com.achhecode.browser_pilot.website.linkedin.page;
 
 import com.achhecode.browser_pilot.website.WebsitePage;
+import com.achhecode.browser_pilot.website.linkedin.LinkedInUrls;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -27,5 +28,9 @@ public class HomePage extends WebsitePage {
     public boolean hasNotifications() {
         // Implement later
         return false;
+    }
+
+    public boolean isDisplayed(){
+        return page.url().contains(LinkedInUrls.HOME);
     }
 }

@@ -1,6 +1,7 @@
 package com.achhecode.browser_pilot.website.instahyre.page;
 
 import com.achhecode.browser_pilot.website.WebsitePage;
+import com.achhecode.browser_pilot.website.instahyre.InstahyreUrls;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import org.slf4j.Logger;
@@ -76,5 +77,9 @@ public class LoginPage extends WebsitePage {
 
         log.info("Credentials filled successfully. Submitting login form.");
         loginButton.click();
+    }
+
+    public boolean isDisplayed(){
+        return page.url().contains(InstahyreUrls.LOGIN);
     }
 }
