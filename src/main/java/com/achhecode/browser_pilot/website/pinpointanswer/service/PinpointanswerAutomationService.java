@@ -3,12 +3,14 @@ package com.achhecode.browser_pilot.website.pinpointanswer.service;
 
 import com.achhecode.browser_pilot.website.pinpointanswer.PinpointanswerPageResolver;
 import com.achhecode.browser_pilot.website.pinpointanswer.PinpointanswerUrls;
+import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPMiniSudokuResult;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPPatchesResults;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPQueensResult;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPTangoResults;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPWendResults;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPZipResult;
 import com.achhecode.browser_pilot.website.pinpointanswer.page.AnswerPage;
+import com.achhecode.browser_pilot.website.pinpointanswer.page.PPMiniSudokuPage;
 import com.achhecode.browser_pilot.website.pinpointanswer.page.PPPatchesPage;
 import com.achhecode.browser_pilot.website.pinpointanswer.page.PPQueensPage;
 import com.achhecode.browser_pilot.website.pinpointanswer.page.PPTangoPage;
@@ -47,6 +49,10 @@ public class PinpointanswerAutomationService {
 
     public PPPatchesResults retrievePatchesAnswer() {
         return retrieveAnswer(PinpointanswerUrls.PATCHES, PPPatchesPage::new);
+    }
+
+    public PPMiniSudokuResult retrieveMiniSudokuAnswer() {
+        return retrieveAnswer(PinpointanswerUrls.MINI_SUDOKU, PPMiniSudokuPage::new);
     }
 
     private <T, P extends AnswerPage<T>> T retrieveAnswer(String url, Function<Page, P> pageFactory) {

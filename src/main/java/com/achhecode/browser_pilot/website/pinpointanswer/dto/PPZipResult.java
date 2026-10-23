@@ -1,4 +1,6 @@
 package com.achhecode.browser_pilot.website.pinpointanswer.dto;
 
-public record PPZipResult(String answer) {
+import java.util.List;
+
+public record PPZipResult(List<String> answer) {
 }

@@ -18,4 +18,8 @@ public class LinkedInPageResolver implements WebsitePageResolver{
                 LinkedInUrls.LINKEDIN_URL_PREFIX
         );
     }
+
+    public Page getCurrentPage(){
+        return browserPageResolver.getCurrentOpenPage();
+    }
 }

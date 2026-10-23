@@ -1,5 +1,6 @@
 package com.achhecode.browser_pilot.website.pinpointanswer.controller;
 
+import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPMiniSudokuResult;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPPatchesResults;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPQueensResult;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPTangoResults;
@@ -22,6 +23,12 @@ public class PinpointanswerController {
     @PostMapping("/zip/solve")
     public ResponseEntity<PPZipResult> solveZip() {
         PPZipResult result = automationService.retrieveZipAnswer();
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/mini-sudoku/solve")
+    public ResponseEntity<PPMiniSudokuResult> solveMiniSudoku() {
+        PPMiniSudokuResult result = automationService.retrieveMiniSudokuAnswer();
         return ResponseEntity.ok(result);
     }
 

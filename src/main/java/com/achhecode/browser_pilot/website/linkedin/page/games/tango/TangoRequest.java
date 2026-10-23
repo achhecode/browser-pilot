@@ -1,20 +1,15 @@
 package com.achhecode.browser_pilot.website.linkedin.page.games.tango;
 
-import com.achhecode.browser_pilot.website.linkedin.page.games.LinkedInGameRequest;
+import java.util.List;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import com.achhecode.browser_pilot.grid.Coordinates;
 
-public record TangoRequest (
-    String instructions,
-    boolean onlyKey,
-    @Min(10)
-    @Max(1000)
-    Integer keySpeed
-) implements LinkedInGameRequest {
-    public TangoRequest {
-        if (keySpeed == null) {
-        keySpeed = 10;
-        }
+public record TangoRequest(
+    List<Answer> answer
+) {
+    public record Answer(
+        String value,
+        Coordinates coordinates
+    ) {
     }
 }

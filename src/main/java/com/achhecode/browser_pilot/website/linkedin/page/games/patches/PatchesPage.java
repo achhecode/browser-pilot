@@ -18,6 +18,10 @@ public class PatchesPage extends WebsitePage {
         return page.url().contains(LinkedInGame.PATCHES.path());
     }
 
+    public void solve(){
+        
+    }
+
     public void waitUntilReady() {
         page.locator(BOARD_SELECTOR)
                 .waitFor(

@@ -1,5 +1,8 @@
 package com.achhecode.browser_pilot.website.pinpointanswer.page;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.achhecode.browser_pilot.website.WebsitePage;
 import com.achhecode.browser_pilot.website.pinpointanswer.PinpointanswerUrls;
 import com.achhecode.browser_pilot.website.pinpointanswer.dto.PPZipResult;
@@ -58,12 +61,12 @@ public class PPZipPage extends WebsitePage implements AnswerPage<PPZipResult> {
         return gridSize;
     }
 
-    public String getPathToCompleteZip() {
+    public List<String> getPathToCompleteZip() {
         clickRevealAll();
         int gridSize = calculateGridSize();
         int total = totalCell();
 
-        StringBuilder path = new StringBuilder();
+        List<String> path = new ArrayList<>();
 
         int previousRow = -1;
         int previousCol = -1;
@@ -96,21 +99,17 @@ public class PPZipPage extends WebsitePage implements AnswerPage<PPZipResult> {
                 throw new IllegalStateException("Cell coordinates outside grid: " + cellValue);
             }
 
+
             if (previousRow != -1) {
                 String direction = getDirection(previousRow, previousCol, row, col);
-
-                if (path.length() > 0) {
-                    path.append(",");
-                }
-
-                path.append(direction);
+                path.add(direction);
             }
 
             previousRow = row;
             previousCol = col;
         }
 
-        return path.toString();
+        return path;
     }
 
     // Determine movement between two consecutive cells

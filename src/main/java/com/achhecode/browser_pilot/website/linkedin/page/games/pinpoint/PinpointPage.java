@@ -18,6 +18,10 @@ public class PinpointPage extends WebsitePage {
         return page.url().contains("/games/pinpoint/");
     }
 
+    public void solve(){
+        
+    }
+
     public void waitUntilReady() {
         page.locator(BOARD_SELECTOR)
                 .waitFor(

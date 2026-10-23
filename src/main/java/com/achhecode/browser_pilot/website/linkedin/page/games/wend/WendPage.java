@@ -18,6 +18,10 @@ public class WendPage extends WebsitePage {
         return page.url().contains(LinkedInGame.WEND.path());
     }
 
+    public void solve(){
+        
+    }
+
     public void waitUntilReady() {
         page.locator(BOARD_SELECTOR)
                 .waitFor(

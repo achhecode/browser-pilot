@@ -1,4 +1,8 @@
+
 package com.achhecode.browser_pilot.website.linkedin;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 public enum LinkedInGame {
 
@@ -10,6 +14,8 @@ public enum LinkedInGame {
     TANGO("/games/tango/", GridLocation.EMPTY_LEFT),
     QUEENS("/games/queens/", GridLocation.EMPTY_LEFT),
     PINPOINT("/games/pinpoint/", GridLocation.EMPTY_LEFT);
+
+    private static final String BASE_URL = "https://www.linkedin.com";
 
     private final String path;
     private final GridLocation location;
@@ -25,5 +31,15 @@ public enum LinkedInGame {
 
     public GridLocation location() {
         return location;
+    }
+
+    public String url() {
+        return BASE_URL + path;
+    }
+
+    public static Optional<LinkedInGame> fromPath(String path) {
+        return Arrays.stream(values())
+                .filter(game -> game.path.equals(path))
+                .findFirst();
     }
 }
