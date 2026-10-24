@@ -86,6 +86,7 @@ public class PatchesPage extends WebsitePage {
     }
 
     /** Picks the shortest route and turns it into the list of visited cells. */
+    @SuppressWarnings("null")
     private List<Coordinates> buildPath(int index, PatchResult patch, int gridSize) {
         Coordinates start = patch.startCoordinates();
         if (start == null || !inBounds(start, gridSize)) {
