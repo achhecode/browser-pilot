@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build All Services",
+      "type": "shell",
+      "command": "./mvnw clean package",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Shared DTO",
+      "type": "shell",
+      "command": "mvn -pl browser-pilot-dto -am clean package",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Instahyre",
+      "type": "shell",
+      "command": "mvn -pl instahyre-service -am clean package",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build LinkedIn",
+      "type": "shell",
+      "command": "./mvnw -pl linkedin-service -am clean package",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Pinpoint",
+      "type": "shell",
+      "command": "./mvnw -pl pinpoint-service -am clean package",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Playwright",
+      "type": "shell",
+      "command": "./mvnw -pl playwright-service -am clean package",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}
+
+
+// use cmd+shift+p to run the specific job

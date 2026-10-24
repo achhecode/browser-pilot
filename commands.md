@@ -204,3 +204,65 @@ H2 Database
 ./mvnw dependency:tree -Dincludes=com.h2database:h2
 
 ```
+
+
+```sh
+brew install tree
+
+tree --gitignore -a -L 5
+
+git ls-files --cached --others --exclude-standard
+
+
+```
+
+
+## Build all services from root
+
+```sh
+./mvnw clean package
+mvn clean package
+```
+
+### Build a specific service
+```sh
+./mvnw -pl instahyre-service clean package
+
+./mvnw -pl linkedin-service clean package
+
+./mvnw -pl pinpoint-service clean package
+
+./mvnw -pl playwright-service clean package
+
+
+# If a service depends on another module in repository, add -am
+
+./mvnw -pl instahyre-service -am clean package
+```
+
+#### Run each service from the root
+
+```sh
+java -jar instahyre-service/target/instahyre-service-1.0.2.jar
+```
+
+
+```sh
+mvn -pl pinpoint-service -Dtest=PinpointServiceApplicationTests \
+    -Dspring-boot.test.context.failure.threshold=1 test
+
+
+mvn -pl pinpoint-service -am \
+    -Dtest=PinpointServiceApplicationTests \
+    -Dsurefire.failIfNoSpecifiedTests=false \
+    -Dspring-boot.test.context.failure.threshold=1 \
+    test
+
+
+mvn clean install -U -DskipTests
+
+
+grep -n -A 8 -B 3 "Caused by:" \
+  instahyre-service/target/surefire-reports/com.achhecode.instahyreservice.InstahyreServiceApplicationTests.txt
+```
+

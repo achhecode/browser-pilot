@@ -32,24 +32,24 @@ build/
 ### VS Code ###
 # .vscode/
 
-
+### Browser Pilot runtime and generated files ###
 runtime/
-
 page-captures/
-
 instructions.md
-
 src/main/java/com/achhecode/browser_pilot/test/
 logs/
 **/.DS_Store
 releases/v-1.0.2/*.jar
-releases/v-1.0.2/*.jar
-
-
 testing-browser/
-
 test.html
-
 questionnaire-answers.json
-
 **/data
+
+### Generated files in all subprojects ###
+**/runtime/
+**/page-captures/
+**/instructions.md
+**/logs/
+**/test.html
+**/data/
+**/releases
