@@ -62,10 +62,10 @@ public class LinkedInWebGameAutomationService {
     }
 
     public void solveWend(WendRequest request) {
-        executeGame(LinkedInGame.WEND, WendPage::new, game -> game.solve());
+        executeGame(LinkedInGame.WEND, WendPage::new, game -> game.solve(request.request()));
     }
 
     public void solvePatches(PatchesRequest request) {
-        executeGame(LinkedInGame.PATCHES, PatchesPage::new, game -> game.solve());
+        executeGame(LinkedInGame.PATCHES, PatchesPage::new, game -> game.solve(request.request()));
     }
 }
