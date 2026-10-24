@@ -1,4 +1,3 @@
-
 {
   "version": "2.0.0",
   "tasks": [
@@ -63,9 +62,69 @@
       "problemMatcher": []
     },
     {
+      "label": "Clean and Reinstall All Dependencies",
+      "type": "shell",
+      "command": "./mvnw clean install -DskipTests",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean and Reinstall Shared DTO Dependencies",
+      "type": "shell",
+      "command": "./mvnw -pl browser-pilot-dto -am clean install -DskipTests",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean and Reinstall Instahyre Dependencies",
+      "type": "shell",
+      "command": "./mvnw -pl instahyre-service -am clean install -DskipTests",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean and Reinstall LinkedIn Dependencies",
+      "type": "shell",
+      "command": "./mvnw -pl linkedin-service -am clean install -DskipTests",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean and Reinstall Pinpoint Dependencies",
+      "type": "shell",
+      "command": "./mvnw -pl pinpoint-service -am clean install -DskipTests",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean and Reinstall Playwright Dependencies",
+      "type": "shell",
+      "command": "./mvnw -pl playwright-service -am clean install -DskipTests",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
       "label": "Run Instahyre",
       "type": "shell",
-      "command": "./mvnw -pl instahyre-service -am install -DskipTests && ./mvnw -pl instahyre-service spring-boot:run -Dspring-boot.run.workingDirectory=${workspaceFolder}",
+      "command": "./mvnw -pl instahyre-service -am install -DskipTests && ./mvnw -pl instahyre-service spring-boot:run",
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -76,7 +135,7 @@
     {
       "label": "Run LinkedIn",
       "type": "shell",
-      "command": "./mvnw -pl linkedin-service -am install -DskipTests && ./mvnw -pl linkedin-service spring-boot:run -Dspring-boot.run.workingDirectory=${workspaceFolder}",
+      "command": "./mvnw -pl linkedin-service -am install -DskipTests && ./mvnw -pl linkedin-service spring-boot:run",
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -87,7 +146,7 @@
     {
       "label": "Run Pinpoint",
       "type": "shell",
-      "command": "./mvnw -pl pinpoint-service -am install -DskipTests && ./mvnw -pl pinpoint-service spring-boot:run -Dspring-boot.run.workingDirectory=${workspaceFolder}",
+      "command": "./mvnw -pl pinpoint-service -am install -DskipTests && ./mvnw -pl pinpoint-service spring-boot:run",
       "options": {
         "cwd": "${workspaceFolder}"
       },
