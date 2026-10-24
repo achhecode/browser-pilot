@@ -1,7 +1,7 @@
 package com.achhecode.instahyreservice.page;
 
 import com.achhecode.instahyreservice.InstahyreUrls;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.instahyreservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 

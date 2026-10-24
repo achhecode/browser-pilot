@@ -3,21 +3,19 @@ package com.achhecode.linkedinservice.page.games;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j 
+@Slf4j
 public class CrossclimbPage extends WebsitePage {
 
-    private static final String GRID_SELECTOR =
-            "div.crossclimb__grid-wrapper > div.crossclimb__grid";
+    private static final String GRID_SELECTOR = "div.crossclimb__grid-wrapper > div.crossclimb__grid";
 
-    private static final String CLUE_SELECTOR =
-            "p.crossclimb__clue";
+    private static final String CLUE_SELECTOR = "p.crossclimb__clue";
 
     public CrossclimbPage(Page page) {
         super(page);
@@ -28,54 +26,34 @@ public class CrossclimbPage extends WebsitePage {
     }
 
     public void waitUntilReady() {
-        page.locator(GRID_SELECTOR)
-                .waitFor(
-                        new Locator.WaitForOptions()
-                                .setTimeout(10_000)
-                );
+        page.locator(GRID_SELECTOR).waitFor(new Locator.WaitForOptions().setTimeout(10_000));
     }
 
     public String getCurrentClue() {
-        return page.locator(CLUE_SELECTOR)
-                .first()
-                .textContent()
-                .trim();
+        return page.locator(CLUE_SELECTOR).first().textContent().trim();
     }
 
     public boolean waitForClueToChange(String previousClue) {
         try {
-            page.waitForFunction(
-                    """
+            page.waitForFunction("""
                     previous => {
                         const element = document.querySelector('p.crossclimb__clue');
                         return element && element.textContent.trim() !== previous;
                     }
-                    """,
-                    previousClue,
-                    new Page.WaitForFunctionOptions()
-                            .setTimeout(5_000)
-            );
+                    """, previousClue, new Page.WaitForFunctionOptions().setTimeout(5_000));
 
             return true;
 
         } catch (PlaywrightException e) {
-            log.error(
-                    "Crossclimb clue did not change within 5 seconds. Previous clue: '{}'",
-                    previousClue,
-                    e
-            );
+            log.error("Crossclimb clue did not change within 5 seconds. Previous clue: '{}'", previousClue, e);
 
             return false;
         }
     }
 
-
-    public boolean waitUntilStartAndEndClueAppears(
-        String expectedClue
-    ) {
+    public boolean waitUntilStartAndEndClueAppears(String expectedClue) {
         try {
-            page.waitForFunction(
-                    """
+            page.waitForFunction("""
                     expected => {
                         const element =
                             document.querySelector('p.crossclimb__clue');
@@ -83,60 +61,35 @@ public class CrossclimbPage extends WebsitePage {
                         return element
                             && element.textContent.trim().includes(expected);
                     }
-                    """,
-                    expectedClue,
-                    new Page.WaitForFunctionOptions()
-                            .setTimeout(60_000)
-                            .setPollingInterval(2_000)
-            );
+                    """, expectedClue, new Page.WaitForFunctionOptions().setTimeout(60_000).setPollingInterval(2_000));
 
             return true;
 
         } catch (PlaywrightException e) {
-            log.error(
-                    "Timed out waiting for Crossclimb start/end clue. Expected: '{}'",
-                    expectedClue,
-                    e
-            );
+            log.error("Timed out waiting for Crossclimb start/end clue. Expected: '{}'", expectedClue, e);
 
             return false;
         }
     }
 
-
     public List<String> getBoardWords() {
-        return page.locator("div.crossclimb__guess")
-                .all()
-                .stream()
-                .map(this::getWord)
-                .toList();
+        return page.locator("div.crossclimb__guess").all().stream().map(this::getWord).toList();
     }
 
     private String getWord(Locator row) {
-        return row.locator("input[data-crossclimb-guess-input-idx]")
-                .all()
-                .stream()
-                .map(input -> input.inputValue())
-                .collect(Collectors.joining())
-                .trim();
+        return row.locator("input[data-crossclimb-guess-input-idx]").all().stream().map(input -> input.inputValue())
+                .collect(Collectors.joining()).trim();
     }
 
     public void arrangeWords(List<String> desiredOrder) {
 
-        Locator rows = page.locator(
-                "div.crossclimb__guess:not(.crossclimb__guess--lock)"
-        );
+        Locator rows = page.locator("div.crossclimb__guess:not(.crossclimb__guess--lock)");
 
-        for (int targetIndex = 0;
-            targetIndex < desiredOrder.size();
-            targetIndex++) {
+        for (int targetIndex = 0; targetIndex < desiredOrder.size(); targetIndex++) {
 
             String desiredWord = desiredOrder.get(targetIndex);
 
-            int currentIndex = findRowIndex(
-                    rows,
-                    desiredWord
-            );
+            int currentIndex = findRowIndex(rows, desiredWord);
 
             if (currentIndex == targetIndex) {
                 continue;
@@ -145,22 +98,15 @@ public class CrossclimbPage extends WebsitePage {
             Locator sourceRow = rows.nth(currentIndex);
             Locator targetRow = rows.nth(targetIndex);
 
-            Locator sourceHandle = sourceRow.locator(
-                    "[data-sortable-handle='true']"
-            ).first();
+            Locator sourceHandle = sourceRow.locator("[data-sortable-handle='true']").first();
 
-            Locator targetHandle = targetRow.locator(
-                    "[data-sortable-handle='true']"
-            ).first();
+            Locator targetHandle = targetRow.locator("[data-sortable-handle='true']").first();
 
             sourceHandle.dragTo(targetHandle);
         }
     }
 
-    private int findRowIndex(
-        Locator rows,
-        String word
-    ) {
+    private int findRowIndex(Locator rows, String word) {
         for (int i = 0; i < rows.count(); i++) {
 
             String currentWord = getWord(rows.nth(i));
@@ -170,8 +116,6 @@ public class CrossclimbPage extends WebsitePage {
             }
         }
 
-        throw new IllegalStateException(
-                "Word not found on Crossclimb board: " + word
-        );
+        throw new IllegalStateException("Word not found on Crossclimb board: " + word);
     }
 }

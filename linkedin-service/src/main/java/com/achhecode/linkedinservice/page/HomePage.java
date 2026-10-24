@@ -1,7 +1,7 @@
 package com.achhecode.linkedinservice.page;
 
 import com.achhecode.linkedinservice.LinkedInUrls;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 

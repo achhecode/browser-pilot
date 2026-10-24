@@ -9,7 +9,7 @@ import java.util.Set;
 import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.browserpilotdto.dto.TangoRequest;
 import com.achhecode.browserpilotdto.dto.TangoResult;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 

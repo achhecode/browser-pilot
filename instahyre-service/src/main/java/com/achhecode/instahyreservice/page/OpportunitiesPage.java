@@ -4,7 +4,7 @@ import com.achhecode.instahyreservice.InstahyreUrls;
 import com.achhecode.instahyreservice.matching.JobMatcher;
 import com.achhecode.instahyreservice.model.JobApplicationRequest;
 import com.achhecode.instahyreservice.model.JobDetails;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.instahyreservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
@@ -17,7 +17,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Inspects Instahyre opportunities and applies to the ones matching a {@link JobApplicationRequest}.
+ * Inspects Instahyre opportunities and applies to the ones matching a
+ * {@link JobApplicationRequest}.
  *
  * The job modal stays open: after Apply / Not interested, the next job is
  * loaded into the same modal, so we wait for its content to change instead of
@@ -38,9 +39,9 @@ public class OpportunitiesPage extends WebsitePage {
     private static final long JOB_LOAD_TIMEOUT_MS = 10_000;
     private static final double POLL_INTERVAL_MS = 200;
 
-    // Matches /candidate/opportunities/ with or without a query string (e.g. ?matching=true).
-    private static final String OPPORTUNITIES_URL_PREFIX =
-            "https://www.instahyre.com/candidate/opportunities/";
+    // Matches /candidate/opportunities/ with or without a query string (e.g.
+    // ?matching=true).
+    private static final String OPPORTUNITIES_URL_PREFIX = "https://www.instahyre.com/candidate/opportunities/";
     private static final String OPPORTUNITIES_URL_GLOB = OPPORTUNITIES_URL_PREFIX + "**";
 
     // ---------- Selectors ----------
@@ -52,47 +53,43 @@ public class OpportunitiesPage extends WebsitePage {
 
         static final String JOB_TITLE = "//*[@id='job-description']/h2";
 
-        static final String JOB_FUNCTION =
-                "//*[@id='job-description']" +
-                "//div[contains(@class,'job-desc-subheading')]" +
-                "//span[contains(@class,'ng-binding')]";
+        static final String JOB_FUNCTION = "//*[@id='job-description']"
+                + "//div[contains(@class,'job-desc-subheading')]" + "//span[contains(@class,'ng-binding')]";
 
         static final String JOB_KEYWORDS = "//*[@id='job-skills-description']/li";
 
-        static final String JOB_DESCRIPTION =
-                "//*[@id='job-description']" +
-                "//div[contains(@class,'job-description')]" +
-                "//p[@ng-bind-html]";
+        static final String JOB_DESCRIPTION = "//*[@id='job-description']" + "//div[contains(@class,'job-description')]"
+                + "//p[@ng-bind-html]";
 
-        static final String COMPANY_NAME =
-                "//div[@id='employer-profile']//*[contains(@class,'company-name')]";
+        static final String COMPANY_NAME = "//div[@id='employer-profile']//*[contains(@class,'company-name')]";
 
-        static final String COMPANY_SIZE =
-                "//div[@id='employer-profile']//*[contains(@class,'company-size')]";
+        static final String COMPANY_SIZE = "//div[@id='employer-profile']//*[contains(@class,'company-size')]";
 
-        static final String APPLY_BUTTON =
-                "xpath=//div[contains(@class,'apply')]" +
-                "//button[contains(@class,'new-btn') and normalize-space()='Apply']";
+        static final String APPLY_BUTTON = "xpath=//div[contains(@class,'apply')]"
+                + "//button[contains(@class,'new-btn') and normalize-space()='Apply']";
 
         // Optional popup shown after Apply when the same company has more jobs.
-        static final String APPLY_ALL_MODAL =
-                "xpath=//div[contains(@class,'app-modal') and contains(@class,'apply-all-modal')]";
+        static final String APPLY_ALL_MODAL = "xpath=//div[contains(@class,'app-modal') and contains(@class,'apply-all-modal')]";
 
-        // static final String APPLY_ALL_BUTTON = "xpath=//button[@ng-click='applyBulk()']";
-        
+        // static final String APPLY_ALL_BUTTON =
+        // "xpath=//button[@ng-click='applyBulk()']";
+
         static final String CANCEL_ALL_BUTTON = "xpath=//button[@ng-click='applyBulkCancel()']";
 
         // Verified in Chrome DevTools: exactly 1 match, visible, enabled, not covered.
-        static final String NOT_INTERESTED_BUTTON =
-                "button.decline.new-btn:has-text('Not interested')";
+        static final String NOT_INTERESTED_BUTTON = "button.decline.new-btn:has-text('Not interested')";
 
-        private Selectors() {}
+        private Selectors() {
+        }
     }
 
     // ---------- Types ----------
-    private enum Outcome { APPLIED, DECLINED, FAILED }
+    private enum Outcome {
+        APPLIED, DECLINED, FAILED
+    }
 
-    private record Summary(int applied, int declined, int inspected) {}
+    private record Summary(int applied, int declined, int inspected) {
+    }
 
     private final Page page;
 
@@ -118,19 +115,20 @@ public class OpportunitiesPage extends WebsitePage {
             log.error("Unexpected Playwright error: {}", e.getMessage());
         }
 
-        log.info("Finished. Applied: {}/{}, Not interested: {}, Inspected: {}",
-                summary.applied(), request.noOfJobs(), summary.declined(), summary.inspected());
+        log.info("Finished. Applied: {}/{}, Not interested: {}, Inspected: {}", summary.applied(), request.noOfJobs(),
+                summary.declined(), summary.inspected());
     }
 
     // ---------- Page verification ----------
 
-    /** True when the URL starts with https://www.instahyre.com/candidate/opportunities/ */
+    /**
+     * True when the URL starts with
+     * https://www.instahyre.com/candidate/opportunities/
+     */
     public boolean isOnOpportunitiesPage() {
         try {
             // Waits briefly in case a redirect / navigation is still in progress.
-            page.waitForURL(
-                    OPPORTUNITIES_URL_GLOB,
-                    new Page.WaitForURLOptions().setTimeout(PAGE_LOAD_TIMEOUT_MS));
+            page.waitForURL(OPPORTUNITIES_URL_GLOB, new Page.WaitForURLOptions().setTimeout(PAGE_LOAD_TIMEOUT_MS));
             return page.url().startsWith(OPPORTUNITIES_URL_PREFIX);
         } catch (PlaywrightException e) {
             return false;
@@ -147,13 +145,10 @@ public class OpportunitiesPage extends WebsitePage {
 
         Optional<JobDetails> current = openJobIfNeeded();
 
-        while (current.isPresent()
-                && applied < request.noOfJobs()
-                && inspected < MAX_JOBS_TO_INSPECT) {
+        while (current.isPresent() && applied < request.noOfJobs() && inspected < MAX_JOBS_TO_INSPECT) {
 
             inspected++;
-            log.info("========== Job {} (applied {}/{}) ==========",
-                    inspected, applied, request.noOfJobs());
+            log.info("========== Job {} (applied {}/{}) ==========", inspected, applied, request.noOfJobs());
 
             JobDetails job = current.get();
             logJob(job);
@@ -190,7 +185,9 @@ public class OpportunitiesPage extends WebsitePage {
 
     // ---------- Opening a job ----------
 
-    /** Reuses the modal if it is already open, otherwise opens the first listed job. */
+    /**
+     * Reuses the modal if it is already open, otherwise opens the first listed job.
+     */
     @SuppressWarnings("null")
     private Optional<JobDetails> openJobIfNeeded() {
         if (isModalVisible()) {
@@ -206,9 +203,7 @@ public class OpportunitiesPage extends WebsitePage {
 
     @SuppressWarnings("null")
     private Optional<JobDetails> openFirstJob() {
-        Locator viewJobButton = page.locator(Selectors.EMPLOYER_ROWS)
-                .first()
-                .locator(Selectors.VIEW_JOB_BUTTON)
+        Locator viewJobButton = page.locator(Selectors.EMPLOYER_ROWS).first().locator(Selectors.VIEW_JOB_BUTTON)
                 .first();
 
         if (viewJobButton.count() == 0) {
@@ -225,8 +220,7 @@ public class OpportunitiesPage extends WebsitePage {
     }
 
     private boolean waitForModalVisible() {
-        boolean visible = waitForState(
-                Selectors.MODAL, WaitForSelectorState.VISIBLE, ELEMENT_TIMEOUT_MS);
+        boolean visible = waitForState(Selectors.MODAL, WaitForSelectorState.VISIBLE, ELEMENT_TIMEOUT_MS);
 
         if (visible) {
             log.info("Job modal loaded.");
@@ -239,8 +233,7 @@ public class OpportunitiesPage extends WebsitePage {
     /** Waits for the element to reach the given state; false on timeout. */
     private boolean waitForState(String selector, WaitForSelectorState state, double timeoutMs) {
         try {
-            page.locator(selector).first().waitFor(
-                    new Locator.WaitForOptions().setState(state).setTimeout(timeoutMs));
+            page.locator(selector).first().waitFor(new Locator.WaitForOptions().setState(state).setTimeout(timeoutMs));
             return true;
         } catch (PlaywrightException e) {
             return false;
@@ -265,8 +258,8 @@ public class OpportunitiesPage extends WebsitePage {
      * @return false only if the popup appeared but could not be confirmed
      */
     private boolean handleApplyAllPrompt() {
-        boolean promptShown = waitForState(
-                Selectors.APPLY_ALL_MODAL, WaitForSelectorState.VISIBLE, APPLY_ALL_PROMPT_TIMEOUT_MS);
+        boolean promptShown = waitForState(Selectors.APPLY_ALL_MODAL, WaitForSelectorState.VISIBLE,
+                APPLY_ALL_PROMPT_TIMEOUT_MS);
 
         if (!promptShown) {
             log.info("No 'apply to all' prompt appeared.");
@@ -275,7 +268,7 @@ public class OpportunitiesPage extends WebsitePage {
 
         log.info("'Apply to all' prompt detected. Confirming...");
         // if (!clickWhenReady(Selectors.APPLY_ALL_BUTTON, "Apply all")) {
-        //     return false;
+        // return false;
         // }
 
         if (!clickWhenReady(Selectors.CANCEL_ALL_BUTTON, "Cancel")) {
@@ -292,9 +285,9 @@ public class OpportunitiesPage extends WebsitePage {
     }
 
     /**
-     * Clicks the first VISIBLE element matching the selector. click() auto-waits for
-     * the element to be visible, stable and enabled, so no manual visibility check
-     * (which races with the modal re-rendering) is needed.
+     * Clicks the first VISIBLE element matching the selector. click() auto-waits
+     * for the element to be visible, stable and enabled, so no manual visibility
+     * check (which races with the modal re-rendering) is needed.
      */
     private boolean clickWhenReady(String selector, String label) {
         Locator button = page.locator(selector + " >> visible=true").first();
@@ -310,7 +303,10 @@ public class OpportunitiesPage extends WebsitePage {
         }
     }
 
-    /** Fallback: fires the DOM click event directly (same as element.click() in the console). */
+    /**
+     * Fallback: fires the DOM click event directly (same as element.click() in the
+     * console).
+     */
     private boolean dispatchClick(Locator button, String label) {
         try {
             button.dispatchEvent("click");
@@ -324,7 +320,10 @@ public class OpportunitiesPage extends WebsitePage {
 
     // ---------- Waiting for the modal content ----------
 
-    /** Waits until the modal shows a fully loaded job different from the previous one. */
+    /**
+     * Waits until the modal shows a fully loaded job different from the previous
+     * one.
+     */
     private Optional<JobDetails> awaitNextJob(JobDetails previous) {
         log.info("Waiting for the next job to load in the modal...");
         return awaitJob(job -> job.isLoaded() && !job.equals(previous));
@@ -348,14 +347,9 @@ public class OpportunitiesPage extends WebsitePage {
     // ---------- Job details ----------
 
     private JobDetails readJobDetails() {
-        return new JobDetails(
-                getText(Selectors.JOB_TITLE),
-                getCombinedText(Selectors.JOB_FUNCTION),
-                getCombinedText(Selectors.JOB_KEYWORDS),
-                getText(Selectors.JOB_DESCRIPTION),
-                getText(Selectors.COMPANY_NAME),
-                getText(Selectors.COMPANY_SIZE)
-        );
+        return new JobDetails(getText(Selectors.JOB_TITLE), getCombinedText(Selectors.JOB_FUNCTION),
+                getCombinedText(Selectors.JOB_KEYWORDS), getText(Selectors.JOB_DESCRIPTION),
+                getText(Selectors.COMPANY_NAME), getText(Selectors.COMPANY_SIZE));
     }
 
     private void logJob(JobDetails job) {
@@ -370,22 +364,16 @@ public class OpportunitiesPage extends WebsitePage {
 
     private String getText(String xpath) {
         Locator locator = page.locator(xpath).first();
-        return (locator.count() == 0 || !locator.isVisible())
-                ? ""
-                : locator.innerText().trim();
+        return (locator.count() == 0 || !locator.isVisible()) ? "" : locator.innerText().trim();
     }
 
     @SuppressWarnings("null")
     private String getCombinedText(String xpath) {
-        return page.locator(xpath)
-                .allInnerTexts()
-                .stream()
-                .map(String::trim)
-                .filter(text -> !text.isEmpty())
+        return page.locator(xpath).allInnerTexts().stream().map(String::trim).filter(text -> !text.isEmpty())
                 .collect(Collectors.joining(", "));
     }
 
-    public boolean isDisplayed(){
+    public boolean isDisplayed() {
         return page.url().contains(InstahyreUrls.OPPORTUNITIES);
     }
 }

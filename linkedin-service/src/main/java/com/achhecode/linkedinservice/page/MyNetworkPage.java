@@ -2,7 +2,7 @@ package com.achhecode.linkedinservice.page;
 
 import com.achhecode.linkedinservice.LinkedInGame;
 import com.achhecode.linkedinservice.LinkedInUrls;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -25,13 +25,7 @@ public class MyNetworkPage extends WebsitePage {
     }
 
     public void openGame(LinkedInGame game) {
-        page.locator(
-                "a[href$='" + game.path() + "']"
-        )
-        .first()
-        .click(
-                new Locator.ClickOptions()
-                        .setTimeout(ACTION_TIMEOUT)
-        );
+        page.locator("a[href$='" + game.path() + "']").first()
+                .click(new Locator.ClickOptions().setTimeout(ACTION_TIMEOUT));
     }
 }

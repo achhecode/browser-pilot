@@ -1,13 +1,12 @@
 package com.achhecode.linkedinservice.page.games;
 
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 public class PinpointPage extends WebsitePage {
 
-    private static final String BOARD_SELECTOR =
-            "xpath=//div[contains(@class, 'pinpoint__wrapper') and contains(@class, 'game-board')]";
+    private static final String BOARD_SELECTOR = "xpath=//div[contains(@class, 'pinpoint__wrapper') and contains(@class, 'game-board')]";
 
     public PinpointPage(Page page) {
         super(page);
@@ -17,16 +16,12 @@ public class PinpointPage extends WebsitePage {
         return page.url().contains("/games/pinpoint/");
     }
 
-    public void solve(){
-        
+    public void solve() {
+
     }
 
     public void waitUntilReady() {
-        page.locator(BOARD_SELECTOR)
-                .waitFor(
-                        new Locator.WaitForOptions()
-                                .setTimeout(10_000)
-                );
+        page.locator(BOARD_SELECTOR).waitFor(new Locator.WaitForOptions().setTimeout(10_000));
     }
 
     public String getBoardState() {

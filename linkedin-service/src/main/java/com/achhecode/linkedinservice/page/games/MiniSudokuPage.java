@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.achhecode.browserpilotdto.dto.Cell;
 import com.achhecode.browserpilotdto.dto.MiniSudokuRequest;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 

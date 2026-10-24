@@ -1,6 +1,6 @@
 package com.achhecode.linkedinservice.page;
 
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Page;
 
 public class LoginPage extends WebsitePage {

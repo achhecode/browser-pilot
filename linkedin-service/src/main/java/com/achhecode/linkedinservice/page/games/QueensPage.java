@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.linkedinservice.LinkedInGame;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;

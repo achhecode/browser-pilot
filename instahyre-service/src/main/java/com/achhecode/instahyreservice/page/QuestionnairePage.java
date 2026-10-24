@@ -1,7 +1,7 @@
 package com.achhecode.instahyreservice.page;
 
 import com.achhecode.instahyreservice.InstahyreUrls;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.instahyreservice.handler.WebsitePage;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -12,248 +12,183 @@ import lombok.extern.slf4j.Slf4j;
 import java.nio.file.Path;
 import java.util.Map;
 
-@Slf4j 
+@Slf4j
 public class QuestionnairePage extends WebsitePage {
 
-    private static final String QUESTIONS_SELECTOR =
-            "div.questions-container div.questionnaire-questions > div[ng-repeat]";
+        private static final String QUESTIONS_SELECTOR = "div.questions-container div.questionnaire-questions > div[ng-repeat]";
 
-    private static final String QUESTION_TEXT_SELECTOR =
-            ".question-label span";
+        private static final String QUESTION_TEXT_SELECTOR = ".question-label span";
 
-//     private static final String ANSWER_INPUT_SELECTOR =
-//             ".answer-container input[type='text']";
+        // private static final String ANSWER_INPUT_SELECTOR =
+        // ".answer-container input[type='text']";
 
+        private static final String ANSWER_INPUT_SELECTOR = ".answer-container input:not([type='hidden']), "
+                        + ".answer-container textarea, " + ".answer-container select";
 
-    private static final String ANSWER_INPUT_SELECTOR =
-                ".answer-container input:not([type='hidden']), "
-        + ".answer-container textarea, "
-        + ".answer-container select";
+        private static final String RESUME_UPLOAD_BUTTON_SELECTOR = ".answer-container .add-file button";
 
-    private static final String RESUME_UPLOAD_BUTTON_SELECTOR =
-            ".answer-container .add-file button";
+        private static final String SUBMIT_BUTTON_SELECTOR = "button[ng-click='submitQuestionnaire()']";
 
-    private static final String SUBMIT_BUTTON_SELECTOR =
-            "button[ng-click='submitQuestionnaire()']";
-
-    public QuestionnairePage(Page page) {
-        super(page);
-    }
-
-    public boolean isQuestionnairePage() {
-        return !page.isClosed()
-                && page.url().startsWith(InstahyreUrls.QUESTIONNAIRE);
-    }
-
-    public int getQuestionCount() {
-        ensureQuestionnairePage();
-        return page.locator(QUESTIONS_SELECTOR).count();
-    }
-
-    public String getQuestionText(int index) {
-        Locator questionText = getQuestion(index)
-                .locator(QUESTION_TEXT_SELECTOR);
-
-        if (questionText.count() == 0) {
-            return "";
+        public QuestionnairePage(Page page) {
+                super(page);
         }
 
-        return questionText.innerText().trim();
-    }
-
-    public void fillAnswer(int index, String answer) {
-        Locator inputs = getAnswerInputs(index);
-        int inputCount = inputs.count();
-
-        if (inputCount != 1) {
-            throw new IllegalStateException(
-                    "Expected one answer input for question "
-                            + (index + 1)
-                            + ", found " + inputCount
-            );
+        public boolean isQuestionnairePage() {
+                return !page.isClosed() && page.url().startsWith(InstahyreUrls.QUESTIONNAIRE);
         }
 
-        fillAndVerify(inputs.first(), answer, index);
-    }
-
-    
-    public void fillAnswers(int index, Map<String, String> answers) {
-        if (answers == null || answers.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Answers cannot be empty for question " + (index + 1)
-                );
+        public int getQuestionCount() {
+                ensureQuestionnairePage();
+                return page.locator(QUESTIONS_SELECTOR).count();
         }
 
-        Locator inputs = getAnswerInputs(index);
-        int inputCount = inputs.count();
+        public String getQuestionText(int index) {
+                Locator questionText = getQuestion(index).locator(QUESTION_TEXT_SELECTOR);
 
-        if (inputCount != 1) {
-                throw new IllegalStateException(
-                        "Expected one answer input for question "
-                                + (index + 1)
-                                + ", found " + inputCount
-                );
+                if (questionText.count() == 0) {
+                        return "";
+                }
+
+                return questionText.innerText().trim();
         }
 
-        String answer = String.join(" : ", answers.values());
+        public void fillAnswer(int index, String answer) {
+                Locator inputs = getAnswerInputs(index);
+                int inputCount = inputs.count();
 
-        log.info(
-                "Filling question {} with answer: {}",
-                index + 1,
-                answer
-        );
+                if (inputCount != 1) {
+                        throw new IllegalStateException("Expected one answer input for question " + (index + 1)
+                                        + ", found " + inputCount);
+                }
 
-        fillAndVerify(inputs.first(), answer, index);
-    }
-
-
-    public void uploadResume(int index, String resumePath) {
-        ensureQuestionnairePage();
-
-        Path path = Path.of(resumePath)
-                .toAbsolutePath()
-                .normalize();
-
-        if (!path.toFile().isFile()) {
-            throw new IllegalArgumentException(
-                    "Resume file does not exist: " + path
-            );
+                fillAndVerify(inputs.first(), answer, index);
         }
 
-        Locator uploadButton = getQuestion(index)
-                .locator(RESUME_UPLOAD_BUTTON_SELECTOR);
+        public void fillAnswers(int index, Map<String, String> answers) {
+                if (answers == null || answers.isEmpty()) {
+                        throw new IllegalArgumentException("Answers cannot be empty for question " + (index + 1));
+                }
 
-        if (uploadButton.count() == 0) {
-            throw new IllegalStateException(
-                    "Resume upload button not found for question "
-                            + (index + 1)
-            );
+                Locator inputs = getAnswerInputs(index);
+                int inputCount = inputs.count();
+
+                if (inputCount != 1) {
+                        throw new IllegalStateException("Expected one answer input for question " + (index + 1)
+                                        + ", found " + inputCount);
+                }
+
+                String answer = String.join(" : ", answers.values());
+
+                log.info("Filling question {} with answer: {}", index + 1, answer);
+
+                fillAndVerify(inputs.first(), answer, index);
         }
 
-        FileChooser fileChooser = page.waitForFileChooser(
-                uploadButton::click
-        );
+        public void uploadResume(int index, String resumePath) {
+                ensureQuestionnairePage();
 
-        fileChooser.setFiles(path);
-    }
+                Path path = Path.of(resumePath).toAbsolutePath().normalize();
 
-    public void submit() {
-        ensureQuestionnairePage();
+                if (!path.toFile().isFile()) {
+                        throw new IllegalArgumentException("Resume file does not exist: " + path);
+                }
 
-        Locator submitButton = page.locator(SUBMIT_BUTTON_SELECTOR);
+                Locator uploadButton = getQuestion(index).locator(RESUME_UPLOAD_BUTTON_SELECTOR);
 
-        submitButton.waitFor(
-                new Locator.WaitForOptions()
-                        .setState(WaitForSelectorState.VISIBLE)
-        );
+                if (uploadButton.count() == 0) {
+                        throw new IllegalStateException("Resume upload button not found for question " + (index + 1));
+                }
 
-        if (!submitButton.isEnabled()) {
-            throw new IllegalStateException(
-                    "Questionnaire submit button is disabled."
-            );
+                FileChooser fileChooser = page.waitForFileChooser(uploadButton::click);
+
+                fileChooser.setFiles(path);
         }
 
-        submitButton.click();
-    }
+        public void submit() {
+                ensureQuestionnairePage();
 
-    public void close() {
-        if (!page.isClosed()) {
-            page.close();
-        }
-    }
+                Locator submitButton = page.locator(SUBMIT_BUTTON_SELECTOR);
 
-    private Locator getAnswerInputs(int questionIndex) {
-        return getQuestion(questionIndex)
-                .locator(ANSWER_INPUT_SELECTOR);
-    }
+                submitButton.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE));
 
-    private void fillAndVerify(
-            Locator input,
-            String answer,
-            int questionIndex
-    ) {
-        input.fill(answer);
+                if (!submitButton.isEnabled()) {
+                        throw new IllegalStateException("Questionnaire submit button is disabled.");
+                }
 
-        if (!answer.equals(input.inputValue())) {
-            throw new IllegalStateException(
-                    "Answer verification failed for question "
-                            + (questionIndex + 1)
-            );
-        }
-    }
-
-    private Locator getQuestion(int index) {
-        ensureQuestionnairePage();
-
-        Locator questions = page.locator(QUESTIONS_SELECTOR);
-        int questionCount = questions.count();
-
-        if (index < 0 || index >= questionCount) {
-            throw new IllegalArgumentException(
-                    "Question index " + index
-                            + " is out of range. Question count: "
-                            + questionCount
-            );
+                submitButton.click();
         }
 
-        return questions.nth(index);
-    }
-
-    private void ensureQuestionnairePage() {
-        if (!isQuestionnairePage()) {
-            throw new IllegalStateException(
-                    "Current tab is not an Instahyre questionnaire page."
-            );
+        public void close() {
+                if (!page.isClosed()) {
+                        page.close();
+                }
         }
-    }
 
+        private Locator getAnswerInputs(int questionIndex) {
+                return getQuestion(questionIndex).locator(ANSWER_INPUT_SELECTOR);
+        }
 
-    public boolean verifySubmissionSuccess() {
-        ensureQuestionnairePage();
+        private void fillAndVerify(Locator input, String answer, int questionIndex) {
+                input.fill(answer);
 
-        Locator successMessage = page.locator(
-                "div.questionnaire-sent"
-        );
+                if (!answer.equals(input.inputValue())) {
+                        throw new IllegalStateException(
+                                        "Answer verification failed for question " + (questionIndex + 1));
+                }
+        }
 
-        successMessage.waitFor(
-                new Locator.WaitForOptions()
-                        .setState(WaitForSelectorState.VISIBLE)
-        );
+        private Locator getQuestion(int index) {
+                ensureQuestionnairePage();
 
-        Locator heading = successMessage.locator("h4");
+                Locator questions = page.locator(QUESTIONS_SELECTOR);
+                int questionCount = questions.count();
 
-        return heading.isVisible()
-                && "Questionnaire has been sent"
-                        .equals(heading.innerText().trim());
-    }
+                if (index < 0 || index >= questionCount) {
+                        throw new IllegalArgumentException("Question index " + index
+                                        + " is out of range. Question count: " + questionCount);
+                }
 
+                return questions.nth(index);
+        }
 
-    public void debugQuestion(int index) {
-        Locator question = getQuestion(index);
+        private void ensureQuestionnairePage() {
+                if (!isQuestionnairePage()) {
+                        throw new IllegalStateException("Current tab is not an Instahyre questionnaire page.");
+                }
+        }
 
-        log.info("Question text: {}", question.locator(QUESTION_TEXT_SELECTOR).innerText());
+        public boolean verifySubmissionSuccess() {
+                ensureQuestionnairePage();
 
-        log.info("Question HTML:\n{}",
-                question.evaluate("el => el.outerHTML"));
+                Locator successMessage = page.locator("div.questionnaire-sent");
 
-        log.info("All inputs: {}",
-                question.locator("input").count());
+                successMessage.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE));
 
-        log.info("Text inputs: {}",
-                question.locator("input[type='text']").count());
+                Locator heading = successMessage.locator("h4");
 
-        log.info("Textareas: {}",
-                question.locator("textarea").count());
+                return heading.isVisible() && "Questionnaire has been sent".equals(heading.innerText().trim());
+        }
 
-        log.info("Selects: {}",
-                question.locator("select").count());
+        public void debugQuestion(int index) {
+                Locator question = getQuestion(index);
 
-        log.info("Buttons: {}",
-                question.locator("button").count());
-    }
+                log.info("Question text: {}", question.locator(QUESTION_TEXT_SELECTOR).innerText());
 
-    public boolean isDisplayed(){
-        return page.url().contains(InstahyreUrls.QUESTIONNAIRE);
-    }
+                log.info("Question HTML:\n{}", question.evaluate("el => el.outerHTML"));
+
+                log.info("All inputs: {}", question.locator("input").count());
+
+                log.info("Text inputs: {}", question.locator("input[type='text']").count());
+
+                log.info("Textareas: {}", question.locator("textarea").count());
+
+                log.info("Selects: {}", question.locator("select").count());
+
+                log.info("Buttons: {}", question.locator("button").count());
+        }
+
+        public boolean isDisplayed() {
+                return page.url().contains(InstahyreUrls.QUESTIONNAIRE);
+        }
 
 }

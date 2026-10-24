@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.achhecode.browserpilotdto.dto.ZipRequest;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 

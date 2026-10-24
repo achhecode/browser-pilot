@@ -1,14 +1,13 @@
 package com.achhecode.linkedinservice.page.games;
 
 import com.achhecode.linkedinservice.LinkedInGame;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 public class PatchesPage extends WebsitePage {
 
-    private static final String BOARD_SELECTOR =
-            "xpath=//div[@data-testid='patches-game-container']";
+    private static final String BOARD_SELECTOR = "xpath=//div[@data-testid='patches-game-container']";
 
     public PatchesPage(Page page) {
         super(page);
@@ -18,16 +17,12 @@ public class PatchesPage extends WebsitePage {
         return page.url().contains(LinkedInGame.PATCHES.path());
     }
 
-    public void solve(){
-        
+    public void solve() {
+
     }
 
     public void waitUntilReady() {
-        page.locator(BOARD_SELECTOR)
-                .waitFor(
-                        new Locator.WaitForOptions()
-                                .setTimeout(10_000)
-                );
+        page.locator(BOARD_SELECTOR).waitFor(new Locator.WaitForOptions().setTimeout(10_000));
     }
 
     public int totalCellIndex() {
@@ -50,5 +45,5 @@ public class PatchesPage extends WebsitePage {
     public void submit() {
         // Click submit/check button.
     }
-    
+
 }
