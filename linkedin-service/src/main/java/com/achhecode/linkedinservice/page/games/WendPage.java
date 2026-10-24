@@ -1,19 +1,17 @@
 package com.achhecode.linkedinservice.page.games;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
-import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.browserpilotdto.dto.Direction;
 import com.achhecode.browserpilotdto.dto.WendResult;
 import com.achhecode.linkedinservice.LinkedInGame;
 import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Mouse;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-import com.microsoft.playwright.options.BoundingBox;
 
 public class WendPage extends WebsitePage {
 
@@ -24,14 +22,6 @@ public class WendPage extends WebsitePage {
     private static final String CELL_SELECTOR = BOARD_SELECTOR + "//*[@data-cell-idx]";
 
     private static final double DEFAULT_TIMEOUT_MS = 10_000;
-
-    /** Mouse interpolation steps between two adjacent cell centres. */
-    private static final int MOVE_STEPS = 8;
-
-    /** Pause after press, after each move, and after release (ms). */
-    private static final double PRESS_PAUSE_MS = 80;
-    private static final double MOVE_PAUSE_MS = 50;
-    private static final double RELEASE_PAUSE_MS = 120;
 
     public WendPage(Page page) {
         super(page);
@@ -52,8 +42,8 @@ public class WendPage extends WebsitePage {
     }
 
     /**
-     * Solves Wend (1-based coordinates). For every word: press and hold on the
-     * start cell, move onto the next cell for each direction, then release.
+     * Solves Wend (1-based coordinates). Everything is planned first (one DOM
+     * read), then all words are traced on one timeline lasting 2.3-2.7 s in total.
      */
     public void solve(List<WendResult> words) {
         if (words == null || words.isEmpty()) {
@@ -63,66 +53,21 @@ public class WendPage extends WebsitePage {
 
         waitUntilReady();
         int gridSize = gridSize();
-        LOGGER.info("Wend board " + gridSize + "x" + gridSize);
 
-        // Fail fast, before touching the game.
-        for (WendResult word : words) {
-            validate(word, gridSize);
-        }
+        // Phase 1: validate and plan, no input yet.
+        Map<Integer, double[]> centres = PacedDrags.cellCentres(page, CELL_SELECTOR);
+        PacedDrags timeline = new PacedDrags();
 
         for (WendResult word : words) {
-            traceWord(word, gridSize);
+            timeline.drag(buildPoints(word, gridSize, centres));
         }
+
+        // Phase 2: paced input.
+        timeline.run(page);
     }
 
-    /** Hold the mouse on the start cell, glide through each direction, release. */
-    private void traceWord(WendResult word, int gridSize) {
-        Coordinates start = word.startCoordinates();
-        int row = start.row();
-        int column = start.column();
-
-        LOGGER.info("Tracing " + word.word() + " from " + start);
-
-        double[] first = centre(row, column, gridSize);
-        page.mouse().move(first[0], first[1]);
-        page.mouse().down();
-        page.waitForTimeout(PRESS_PAUSE_MS);
-
-        try {
-            for (Direction direction : word.directions()) {
-                switch (direction) {
-                case UP -> row--;
-                case DOWN -> row++;
-                case LEFT -> column--;
-                case RIGHT -> column++;
-                }
-
-                double[] next = centre(row, column, gridSize);
-                page.mouse().move(next[0], next[1], new Mouse.MoveOptions().setSteps(MOVE_STEPS));
-                page.waitForTimeout(MOVE_PAUSE_MS);
-            }
-        } finally {
-            page.mouse().up(); // release, even if a move failed
-            page.waitForTimeout(RELEASE_PAUSE_MS);
-        }
-    }
-
-    /** Viewport centre of a cell (1-based row/column). */
-    private double[] centre(int row, int column, int gridSize) {
-        Locator cell = getCell(toCellIndex(row, column, gridSize));
-        cell.scrollIntoViewIfNeeded();
-        BoundingBox box = cell.boundingBox();
-
-        if (box == null) {
-            throw new IllegalStateException("Cell not visible: row " + row + ", column " + column);
-        }
-        return new double[] { box.x + box.width / 2, box.y + box.height / 2 };
-    }
-
-    /**
-     * Only checks the shape of the request and that the walk stays on the board.
-     */
-    private void validate(WendResult word, int gridSize) {
+    /** Start cell centre, then the centre of each cell the directions walk onto. */
+    private List<double[]> buildPoints(WendResult word, int gridSize, Map<Integer, double[]> centres) {
         if (word == null || word.startCoordinates() == null || word.directions() == null) {
             throw new IllegalArgumentException("Wend word is missing startCoordinates or directions: " + word);
         }
@@ -131,22 +76,30 @@ public class WendPage extends WebsitePage {
         int row = word.startCoordinates().row();
         int column = word.startCoordinates().column();
 
-        if (!inBounds(row, column, gridSize)) {
-            throw new IllegalArgumentException(label + ": start " + row + "," + column + " is outside the board");
-        }
+        List<double[]> points = new ArrayList<>();
+        points.add(centreOf(label, row, column, gridSize, centres));
 
-        for (int i = 0; i < word.directions().size(); i++) {
-            switch (word.directions().get(i)) {
+        for (Direction direction : word.directions()) {
+            switch (direction) {
             case UP -> row--;
             case DOWN -> row++;
             case LEFT -> column--;
             case RIGHT -> column++;
             }
-            if (!inBounds(row, column, gridSize)) {
-                throw new IllegalArgumentException(
-                        label + ": step " + (i + 1) + " leaves the board at " + row + "," + column);
-            }
+            points.add(centreOf(label, row, column, gridSize, centres));
         }
+        return points;
+    }
+
+    private double[] centreOf(String label, int row, int column, int gridSize, Map<Integer, double[]> centres) {
+        if (!inBounds(row, column, gridSize)) {
+            throw new IllegalArgumentException(label + ": " + row + "," + column + " is outside the board");
+        }
+        double[] centre = centres.get(toCellIndex(row, column, gridSize));
+        if (centre == null) {
+            throw new IllegalStateException(label + ": no cell found for row " + row + ", column " + column);
+        }
+        return centre;
     }
 
     /**
@@ -186,10 +139,6 @@ public class WendPage extends WebsitePage {
         } else {
             LOGGER.warning("Could not find the Wend button: " + namePattern);
         }
-    }
-
-    private Locator getCell(int cellIndex) {
-        return page.locator(BOARD_SELECTOR + "//*[@data-cell-idx='" + cellIndex + "']").first();
     }
 
     /** Row 6, column 6 on a 7x7 board is idx 40: (6-1)*7 + (6-1). */

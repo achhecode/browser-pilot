@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -16,7 +17,6 @@ import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-import com.microsoft.playwright.options.BoundingBox;
 
 public class PatchesPage extends WebsitePage {
 
@@ -27,15 +27,6 @@ public class PatchesPage extends WebsitePage {
     private static final String CELL_SELECTOR = BOARD_SELECTOR + "//*[@data-cell-idx][@role='button']";
 
     private static final double DEFAULT_TIMEOUT_MS = 10_000;
-
-    /** Mouse interpolation steps between two adjacent cell centres. */
-    private static final int MOVE_STEPS = 4;
-
-    /**
-     * One planned drag: the ordered cells to pass through (1-based), start first.
-     */
-    private record Drag(int patchIndex, List<Coordinates> path) {
-    }
 
     public PatchesPage(Page page) {
         super(page);
@@ -55,14 +46,8 @@ public class PatchesPage extends WebsitePage {
     }
 
     /**
-     * Solves Patches (1-based coordinates).
-     * <ol>
-     * <li>validate every patch against the board (no input yet),</li>
-     * <li>for each patch pick the shortest direction list and expand it to a cell
-     * path,</li>
-     * <li>drag each path: mouse down on the start cell, move through the cells,
-     * mouse up on the last one.</li>
-     * </ol>
+     * Solves Patches (1-based coordinates). Everything is planned first (one DOM
+     * read), then all drags run on one timeline lasting 2.3-2.7 s in total.
      */
     public void solve(List<PatchResult> patches) {
         if (patches == null || patches.isEmpty()) {
@@ -73,18 +58,31 @@ public class PatchesPage extends WebsitePage {
         waitUntilReady();
         int gridSize = gridSize();
 
-        // Phase 1 + 2: validate and plan, before touching the game.
+        // Phase 1: validate and plan, no input yet.
         validateNoOverlap(patches, gridSize);
 
-        List<Drag> drags = new ArrayList<>();
+        Map<Integer, double[]> centres = PacedDrags.cellCentres(page, CELL_SELECTOR);
+        PacedDrags timeline = new PacedDrags();
+
         for (int i = 0; i < patches.size(); i++) {
-            drags.add(new Drag(i, buildPath(i, patches.get(i), gridSize)));
+            List<Coordinates> path = buildPath(i, patches.get(i), gridSize);
+            timeline.drag(toPoints(path, gridSize, centres));
         }
 
-        // Phase 3: perform the drags.
-        for (Drag drag : drags) {
-            drag(drag.path(), gridSize);
+        // Phase 2: paced input.
+        timeline.run(page);
+    }
+
+    private List<double[]> toPoints(List<Coordinates> path, int gridSize, Map<Integer, double[]> centres) {
+        List<double[]> points = new ArrayList<>(path.size());
+        for (Coordinates c : path) {
+            double[] centre = centres.get(toCellIndex(c.row(), c.column(), gridSize));
+            if (centre == null) {
+                throw new IllegalStateException("No cell found for " + c);
+            }
+            points.add(centre);
         }
+        return points;
     }
 
     /** Picks the shortest route and turns it into the list of visited cells. */
@@ -148,33 +146,6 @@ public class PatchesPage extends WebsitePage {
         }
     }
 
-    /** Press on the first cell, glide through the rest, release on the last. */
-    private void drag(List<Coordinates> path, int gridSize) {
-        double[] first = centre(path.get(0), gridSize);
-
-        page.mouse().move(first[0], first[1]);
-        page.mouse().down();
-        try {
-            for (int i = 1; i < path.size(); i++) {
-                double[] point = centre(path.get(i), gridSize);
-                page.mouse().move(point[0], point[1],
-                        new com.microsoft.playwright.Mouse.MoveOptions().setSteps(MOVE_STEPS));
-            }
-        } finally {
-            page.mouse().up();
-        }
-    }
-
-    private double[] centre(Coordinates c, int gridSize) {
-        Locator cell = getCell(toCellIndex(c.row(), c.column(), gridSize));
-        cell.scrollIntoViewIfNeeded();
-        BoundingBox box = cell.boundingBox();
-        if (box == null) {
-            throw new IllegalStateException("Cell not visible: " + c);
-        }
-        return new double[] { box.x + box.width / 2, box.y + box.height / 2 };
-    }
-
     /** Board side length; throws if the rendered cells don't form a square. */
     private int gridSize() {
         int totalCells = totalCellIndex();
@@ -202,24 +173,21 @@ public class PatchesPage extends WebsitePage {
     }
 
     public void reset() {
-        Locator resetButton = page.getByRole(AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName(Pattern.compile("reset", Pattern.CASE_INSENSITIVE)));
-
-        if (resetButton.count() > 0) {
-            resetButton.first().click();
-        } else {
-            LOGGER.warning("Could not find the Patches reset button.");
-        }
+        clickButton("reset");
     }
 
     public void submit() {
-        Locator submitButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions()
-                .setName(Pattern.compile("check|submit|submit answer", Pattern.CASE_INSENSITIVE)));
+        clickButton("check|submit|submit answer");
+    }
 
-        if (submitButton.count() > 0) {
-            submitButton.first().click();
+    private void clickButton(String namePattern) {
+        Locator button = page.getByRole(AriaRole.BUTTON,
+                new Page.GetByRoleOptions().setName(Pattern.compile(namePattern, Pattern.CASE_INSENSITIVE)));
+
+        if (button.count() > 0) {
+            button.first().click();
         } else {
-            LOGGER.warning("Could not find the Patches submit/check button.");
+            LOGGER.warning("Could not find the Patches button: " + namePattern);
         }
     }
 
