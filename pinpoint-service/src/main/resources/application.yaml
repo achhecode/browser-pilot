@@ -2,6 +2,10 @@ spring:
   application:
     name: pinpoint-service
 
+server:
+  port: 8081
+
+
 logging:
   file:
     name: ./logs/pinpoint-service.log

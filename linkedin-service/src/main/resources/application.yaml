@@ -2,6 +2,8 @@ spring:
   application:
     name: linkedin-service
 
+server:
+  port: 8082
 
 logging:
   file:
