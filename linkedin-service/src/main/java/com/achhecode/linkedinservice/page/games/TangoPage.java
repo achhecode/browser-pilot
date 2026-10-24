@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.browserpilotdto.dto.TangoRequest;
+import com.achhecode.browserpilotdto.dto.TangoResult;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -55,7 +56,7 @@ public class TangoPage extends WebsitePage {
      * Already-disabled cells are skipped.
      */
     public void solve(TangoRequest request) {
-        if (request == null || request.answer() == null) {
+        if (request == null || request.request() == null) {
             throw new IllegalArgumentException("TangoRequest and its answer list must not be null");
         }
 
@@ -63,7 +64,7 @@ public class TangoPage extends WebsitePage {
 
         Set<Integer> processedCells = new HashSet<>();
 
-        for (TangoRequest.Answer answer : request.answer()) {
+        for (TangoResult answer : request.request()) {
             if (answer == null || answer.coordinates() == null) {
                 throw new IllegalArgumentException("Answer and coordinates must not be null");
             }

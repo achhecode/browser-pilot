@@ -38,13 +38,13 @@ public class ZipPage extends WebsitePage {
      * Executes the sequence of directions supplied in ZipRequest.
      */
     public void solve(ZipRequest request) {
-        if (request == null || request.answer() == null) {
+        if (request == null || request.request() == null) {
             throw new IllegalArgumentException("ZipRequest and its answer list must not be null");
         }
 
         waitUntilReady();
 
-        List<String> directions = request.answer();
+        List<String> directions = request.request();
 
         for (int i = 0; i < directions.size(); i++) {
             String direction = directions.get(i);

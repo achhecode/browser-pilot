@@ -3,6 +3,7 @@ package com.achhecode.linkedinservice.page.games;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.achhecode.browserpilotdto.dto.Cell;
 import com.achhecode.browserpilotdto.dto.MiniSudokuRequest;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
@@ -62,7 +63,7 @@ public class MiniSudokuPage extends WebsitePage {
      * Prefilled cells are skipped.
      */
     public void solve(MiniSudokuRequest request) {
-        if (request == null || request.cells() == null) {
+        if (request == null || request.request() == null) {
             throw new IllegalArgumentException(
                     "MiniSudokuRequest and its cells must not be null"
             );
@@ -82,7 +83,7 @@ public class MiniSudokuPage extends WebsitePage {
 
         Set<Integer> processedCells = new HashSet<>();
 
-        for (MiniSudokuRequest.Cell answer : request.cells()) {
+        for (Cell answer : request.request()) {
             if (answer == null || answer.coordinates() == null) {
                 throw new IllegalArgumentException(
                         "Cell answer and coordinates must not be null"

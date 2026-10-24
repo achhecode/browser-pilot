@@ -36,7 +36,7 @@ public class LinkedInWebGameAutomationService {
         Page page = pageResolver.findPage();
         page.navigate(LinkedInGame.QUEENS.url());
         QueensPage queensPage = new QueensPage(page);
-        queensPage.solve(request.queenPositions());
+        queensPage.solve(request.request());
     }
 
     public void solveMiniSudoku(MiniSudokuRequest request) {
