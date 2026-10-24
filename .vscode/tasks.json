@@ -1,3 +1,4 @@
+
 {
   "version": "2.0.0",
   "tasks": [
@@ -5,20 +6,29 @@
       "label": "Build All Services",
       "type": "shell",
       "command": "./mvnw clean package",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
       "problemMatcher": []
     },
     {
       "label": "Build Shared DTO",
       "type": "shell",
-      "command": "mvn -pl browser-pilot-dto -am clean package",
+      "command": "./mvnw -pl browser-pilot-dto -am clean package",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
       "problemMatcher": []
     },
     {
       "label": "Build Instahyre",
       "type": "shell",
-      "command": "mvn -pl instahyre-service -am clean package",
+      "command": "./mvnw -pl instahyre-service -am clean package",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
       "problemMatcher": []
     },
@@ -26,6 +36,9 @@
       "label": "Build LinkedIn",
       "type": "shell",
       "command": "./mvnw -pl linkedin-service -am clean package",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
       "problemMatcher": []
     },
@@ -33,6 +46,9 @@
       "label": "Build Pinpoint",
       "type": "shell",
       "command": "./mvnw -pl pinpoint-service -am clean package",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
       "problemMatcher": []
     },
@@ -40,11 +56,44 @@
       "label": "Build Playwright",
       "type": "shell",
       "command": "./mvnw -pl playwright-service -am clean package",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
       "problemMatcher": []
+    },
+    {
+      "label": "Run Instahyre",
+      "type": "shell",
+      "command": "./mvnw -pl instahyre-service -am install -DskipTests && ./mvnw -pl instahyre-service spring-boot:run -Dspring-boot.run.workingDirectory=${workspaceFolder}",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Run LinkedIn",
+      "type": "shell",
+      "command": "./mvnw -pl linkedin-service -am install -DskipTests && ./mvnw -pl linkedin-service spring-boot:run -Dspring-boot.run.workingDirectory=${workspaceFolder}",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Run Pinpoint",
+      "type": "shell",
+      "command": "./mvnw -pl pinpoint-service -am install -DskipTests && ./mvnw -pl pinpoint-service spring-boot:run -Dspring-boot.run.workingDirectory=${workspaceFolder}",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "isBackground": true
     }
   ]
 }
-
-
-// use cmd+shift+p to run the specific job
