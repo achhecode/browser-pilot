@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.achhecode.browserpilotdto.dto.Coordinates;
-import com.achhecode.browserpilotdto.dto.PPQueensResult;
+import com.achhecode.browserpilotdto.dto.QueensResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
-public class PPQueensPage extends WebsitePage implements AnswerPage<PPQueensResult> {
+public class PPQueensPage extends WebsitePage implements AnswerPage<QueensResponse> {
 
     private static final String REVEAL_ALL_XPATH = "//button[normalize-space(.)='Reveal all']";
 
@@ -30,8 +30,8 @@ public class PPQueensPage extends WebsitePage implements AnswerPage<PPQueensResu
     }
 
     @Override
-    public PPQueensResult getAnswer() {
-        return new PPQueensResult(getCoordinatesOfPlacedQueen());
+    public QueensResponse getAnswer() {
+        return new QueensResponse(getCoordinatesOfPlacedQueen());
     }
 
     public void clickRevealAll() {

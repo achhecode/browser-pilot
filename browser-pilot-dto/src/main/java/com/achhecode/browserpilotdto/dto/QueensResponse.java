@@ -1,9 +1,9 @@
-
 package com.achhecode.browserpilotdto.dto;
 
 import java.util.List;
 
-public record PPPatchesResults(
-        List<PPPatchesResult> results
+public record QueensResponse(
+    List<Coordinates> queenPositions
 ) {
+    
 }

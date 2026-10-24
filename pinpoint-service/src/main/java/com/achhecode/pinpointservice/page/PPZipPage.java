@@ -3,13 +3,13 @@ package com.achhecode.pinpointservice.page;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.achhecode.browserpilotdto.dto.PPZipResult;
+import com.achhecode.browserpilotdto.dto.ZipResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
-public class PPZipPage extends WebsitePage implements AnswerPage<PPZipResult> {
+public class PPZipPage extends WebsitePage implements AnswerPage<ZipResponse> {
 
     private static final String NEXT_STEP_XPATH = "//button[normalize-space(.)='Next step']";
 
@@ -30,8 +30,8 @@ public class PPZipPage extends WebsitePage implements AnswerPage<PPZipResult> {
     }
 
     @Override
-    public PPZipResult getAnswer() {
-        return new PPZipResult(getPathToCompleteZip());
+    public ZipResponse getAnswer() {
+        return new ZipResponse(getPathToCompleteZip());
     }
 
     public void clickNextStep() {

@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.achhecode.browserpilotdto.dto.Coordinates;
-import com.achhecode.browserpilotdto.dto.PPTangoResult;
-import com.achhecode.browserpilotdto.dto.PPTangoResults;
+import com.achhecode.browserpilotdto.dto.TangoResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
-public class PPTangoPage extends WebsitePage implements AnswerPage<PPTangoResults> {
+public class PPTangoPage extends WebsitePage implements AnswerPage<TangoResponse> {
 
     private static final String REVEAL_ALL_XPATH = "//button[normalize-space(.)='Reveal all']";
 
@@ -31,7 +30,7 @@ public class PPTangoPage extends WebsitePage implements AnswerPage<PPTangoResult
     }
 
     @Override
-    public PPTangoResults getAnswer() {
+    public TangoResponse getAnswer() {
         return getTangoSunAndMoonForCoordinates();
     }
 
@@ -58,11 +57,11 @@ public class PPTangoPage extends WebsitePage implements AnswerPage<PPTangoResult
         return gridSize;
     }
 
-    public PPTangoResults getTangoSunAndMoonForCoordinates() {
+    public TangoResponse getTangoSunAndMoonForCoordinates() {
         clickRevealAll();
 
         int gridSize = calculateGridSize();
-        List<PPTangoResult> results = new ArrayList<>();
+        List<TangoResponse.TangoResult> results = new ArrayList<>();
 
         for (int row = 1; row <= gridSize; row++) {
             for (int col = 1; col <= gridSize; col++) {
@@ -89,10 +88,10 @@ public class PPTangoPage extends WebsitePage implements AnswerPage<PPTangoResult
 
                 Coordinates coordinates = new Coordinates(row, col);
 
-                results.add(new PPTangoResult(value, coordinates));
+                results.add(new TangoResponse.TangoResult(value, coordinates));
             }
         }
 
-        return new PPTangoResults(results);
+        return new TangoResponse(results);
     }
 }

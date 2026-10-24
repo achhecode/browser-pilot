@@ -10,17 +10,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.browserpilotdto.dto.Direction;
-import com.achhecode.browserpilotdto.dto.PPWendResult;
-import com.achhecode.browserpilotdto.dto.PPWendResults;
+import com.achhecode.browserpilotdto.dto.WendResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
-public class PPWendPage extends WebsitePage implements AnswerPage<PPWendResults> {
+public class PPWendPage extends WebsitePage implements AnswerPage<WendResponse> {
 
     private static final String REVEAL_ALL_XPATH = "//button[normalize-space(.)='Reveal all']";
 
@@ -47,8 +45,8 @@ public class PPWendPage extends WebsitePage implements AnswerPage<PPWendResults>
     }
 
     @Override
-    public PPWendResults getAnswer() {
-        return new PPWendResults(getWords());
+    public WendResponse getAnswer() {
+        return new WendResponse(getWords());
     }
 
     public void clickRevealAll() {
@@ -70,7 +68,7 @@ public class PPWendPage extends WebsitePage implements AnswerPage<PPWendResults>
         return gridSize;
     }
 
-    public List<PPWendResult> getWords() {
+    public List<WendResponse.WendResult> getWords() {
         clickRevealAll();
 
         // Wait for the reveal animation and word list to finish loading.
@@ -82,7 +80,7 @@ public class PPWendPage extends WebsitePage implements AnswerPage<PPWendResults>
 
         Map<WordStyle, List<Cell>> groups = readCellsGroupedByStyle();
 
-        List<PPWendResult> results = new ArrayList<>();
+        List<WendResponse.WendResult> results = new ArrayList<>();
         Set<WordStyle> usedStyles = new HashSet<>();
 
         for (String word : completeWords) {
@@ -302,7 +300,7 @@ public class PPWendPage extends WebsitePage implements AnswerPage<PPWendResults>
         }
     }
 
-    private PPWendResult buildResult(String word, List<Cell> orderedCells) {
+    private WendResponse.WendResult buildResult(String word, List<Cell> orderedCells) {
         List<Coordinates> coordinates = new ArrayList<>();
         List<Direction> directions = new ArrayList<>();
 
@@ -314,7 +312,7 @@ public class PPWendPage extends WebsitePage implements AnswerPage<PPWendResults>
             directions.add(getDirection(orderedCells.get(i - 1), orderedCells.get(i)));
         }
 
-        return new PPWendResult(word, coordinates, coordinates.get(0), directions);
+        return new WendResponse.WendResult(word, coordinates, coordinates.get(0), directions);
     }
 
     private Direction getDirection(Cell from, Cell to) {

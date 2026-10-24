@@ -9,17 +9,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.browserpilotdto.dto.Direction;
-import com.achhecode.browserpilotdto.dto.PPPatchesResult;
-import com.achhecode.browserpilotdto.dto.PPPatchesResults;
+import com.achhecode.browserpilotdto.dto.PatchesResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
-public class PPPatchesPage extends WebsitePage implements AnswerPage<PPPatchesResults> {
+public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResponse> {
 
     private static final String REVEAL_ALL_XPATH = "//button[normalize-space(.)='Reveal all']";
 
@@ -38,8 +36,8 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PPPatchesRe
     }
 
     @Override
-    public PPPatchesResults getAnswer() {
-        return new PPPatchesResults(getPatches());
+    public PatchesResponse getAnswer() {
+        return new PatchesResponse(getPatches());
     }
 
     public void clickRevealAll() {
@@ -65,7 +63,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PPPatchesRe
         return gridSize;
     }
 
-    public List<PPPatchesResult> getPatches() {
+    public List<PatchesResponse.PatchResult> getPatches() {
         clickRevealAll();
 
         // Wait for the reveal operation to finish updating the board.
@@ -119,7 +117,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PPPatchesRe
             patchesById.computeIfAbsent(patchId, ignored -> new ArrayList<>()).add(cell);
         }
 
-        List<PPPatchesResult> results = new ArrayList<>();
+        List<PatchesResponse.PatchResult> results = new ArrayList<>();
 
         for (Map.Entry<Integer, List<Cell>> entry : patchesById.entrySet()) {
 
@@ -163,7 +161,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PPPatchesRe
      */
 
     @SuppressWarnings("null")
-    private PPPatchesResult buildPatch(int patchId, List<Cell> cells) {
+    private PatchesResponse.PatchResult buildPatch(int patchId, List<Cell> cells) {
         Integer clueSize = null;
         List<Coordinates> coordinates = new ArrayList<>();
 
@@ -193,7 +191,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PPPatchesRe
 
         List<List<Direction>> paths = findAllPaths(coordinates, start, end);
 
-        return new PPPatchesResult(actualSize, coordinates, start, paths);
+        return new PatchesResponse.PatchResult(actualSize, coordinates, start, paths);
     }
 
     private List<List<Direction>> findAllPaths(List<Coordinates> patchCoordinates, Coordinates start,

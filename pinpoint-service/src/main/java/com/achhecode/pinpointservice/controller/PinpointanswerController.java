@@ -3,12 +3,12 @@ package com.achhecode.pinpointservice.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.achhecode.browserpilotdto.dto.PPMiniSudokuResult;
-import com.achhecode.browserpilotdto.dto.PPPatchesResults;
-import com.achhecode.browserpilotdto.dto.PPQueensResult;
-import com.achhecode.browserpilotdto.dto.PPTangoResults;
-import com.achhecode.browserpilotdto.dto.PPWendResults;
-import com.achhecode.browserpilotdto.dto.PPZipResult;
+import com.achhecode.browserpilotdto.dto.MiniSudokuResponse;
+import com.achhecode.browserpilotdto.dto.PatchesResponse;
+import com.achhecode.browserpilotdto.dto.QueensResponse;
+import com.achhecode.browserpilotdto.dto.TangoResponse;
+import com.achhecode.browserpilotdto.dto.WendResponse;
+import com.achhecode.browserpilotdto.dto.ZipResponse;
 import com.achhecode.pinpointservice.service.PinpointanswerAutomationService;
 
 @RestController
@@ -22,38 +22,38 @@ public class PinpointanswerController {
     }
 
     @PostMapping("/zip/solve")
-    public ResponseEntity<PPZipResult> solveZip() {
-        PPZipResult result = automationService.retrieveZipAnswer();
+    public ResponseEntity<ZipResponse> solveZip() {
+        ZipResponse result = automationService.retrieveZipAnswer();
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/mini-sudoku/solve")
-    public ResponseEntity<PPMiniSudokuResult> solveMiniSudoku() {
-        PPMiniSudokuResult result = automationService.retrieveMiniSudokuAnswer();
+    public ResponseEntity<MiniSudokuResponse> solveMiniSudoku() {
+        MiniSudokuResponse result = automationService.retrieveMiniSudokuAnswer();
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/queens/solve")
-    public ResponseEntity<PPQueensResult> solveQueens() {
-        PPQueensResult answer = automationService.retrieveQueenAnswer();
+    public ResponseEntity<QueensResponse> solveQueens() {
+        QueensResponse answer = automationService.retrieveQueenAnswer();
         return ResponseEntity.ok(answer);
     }
 
     @PostMapping("/tango/solve")
-    public ResponseEntity<PPTangoResults> solveTango() {
-        PPTangoResults answer = automationService.retrieveTangoAnswer();
+    public ResponseEntity<TangoResponse> solveTango() {
+        TangoResponse answer = automationService.retrieveTangoAnswer();
         return ResponseEntity.ok(answer);
     }
 
     @PostMapping("/wend/solve")
-    public ResponseEntity<PPWendResults> solveWend() {
-        PPWendResults answer = automationService.retrieveWendAnswer();
+    public ResponseEntity<WendResponse> solveWend() {
+        WendResponse answer = automationService.retrieveWendAnswer();
         return ResponseEntity.ok(answer);
     }
 
     @PostMapping("/patches/solve")
-    public ResponseEntity<PPPatchesResults> solvePatches() {
-        PPPatchesResults answer = automationService.retrievePatchesAnswer();
+    public ResponseEntity<PatchesResponse> solvePatches() {
+        PatchesResponse answer = automationService.retrievePatchesAnswer();
         return ResponseEntity.ok(answer);
     }
 }

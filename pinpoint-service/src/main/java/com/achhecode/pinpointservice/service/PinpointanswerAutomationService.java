@@ -9,12 +9,12 @@ import com.achhecode.pinpointservice.page.PPQueensPage;
 import com.achhecode.pinpointservice.page.PPTangoPage;
 import com.achhecode.pinpointservice.page.PPWendPage;
 import com.achhecode.pinpointservice.page.PPZipPage;
-import com.achhecode.browserpilotdto.dto.PPMiniSudokuResult;
-import com.achhecode.browserpilotdto.dto.PPPatchesResults;
-import com.achhecode.browserpilotdto.dto.PPQueensResult;
-import com.achhecode.browserpilotdto.dto.PPTangoResults;
-import com.achhecode.browserpilotdto.dto.PPWendResults;
-import com.achhecode.browserpilotdto.dto.PPZipResult;
+import com.achhecode.browserpilotdto.dto.MiniSudokuResponse;
+import com.achhecode.browserpilotdto.dto.PatchesResponse;
+import com.achhecode.browserpilotdto.dto.QueensResponse;
+import com.achhecode.browserpilotdto.dto.TangoResponse;
+import com.achhecode.browserpilotdto.dto.WendResponse;
+import com.achhecode.browserpilotdto.dto.ZipResponse;
 import com.achhecode.pinpointservice.PinpointanswerPageResolver;
 import com.microsoft.playwright.Page;
 import org.springframework.stereotype.Service;
@@ -29,29 +29,29 @@ public class PinpointanswerAutomationService {
         this.pageResolver = pageResolver;
     }
 
-    public PPZipResult retrieveZipAnswer() {
+    public ZipResponse retrieveZipAnswer() {
         return retrieveAnswer(PinpointanswerUrls.ZIP, PPZipPage::new);
     }
 
-    public PPQueensResult retrieveQueenAnswer() {
+    public QueensResponse retrieveQueenAnswer() {
         return retrieveAnswer(PinpointanswerUrls.QUEENS, PPQueensPage::new);
     }
 
-    public PPTangoResults retrieveTangoAnswer() {
+    public TangoResponse retrieveTangoAnswer() {
         return retrieveAnswer(PinpointanswerUrls.TANGO, PPTangoPage::new);
     }
 
-    public PPWendResults retrieveWendAnswer() {
+    public WendResponse retrieveWendAnswer() {
         return retrieveAnswer(PinpointanswerUrls.WEND, PPWendPage::new);
     }
 
     // PPPatchesResults
 
-    public PPPatchesResults retrievePatchesAnswer() {
+    public PatchesResponse retrievePatchesAnswer() {
         return retrieveAnswer(PinpointanswerUrls.PATCHES, PPPatchesPage::new);
     }
 
-    public PPMiniSudokuResult retrieveMiniSudokuAnswer() {
+    public MiniSudokuResponse retrieveMiniSudokuAnswer() {
         return retrieveAnswer(PinpointanswerUrls.MINI_SUDOKU, PPMiniSudokuPage::new);
     }
 

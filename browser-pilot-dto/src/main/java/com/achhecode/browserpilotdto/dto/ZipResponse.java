@@ -2,5 +2,5 @@ package com.achhecode.browserpilotdto.dto;
 
 import java.util.List;
 
-public record PPTangoResults(List<PPTangoResult> results) {
+public record ZipResponse(List<String> answer) {
 }

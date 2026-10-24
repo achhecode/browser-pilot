@@ -6,13 +6,13 @@ import java.util.List;
 
 import com.achhecode.browserpilotdto.dto.Cell;
 import com.achhecode.browserpilotdto.dto.Coordinates;
-import com.achhecode.browserpilotdto.dto.PPMiniSudokuResult;
+import com.achhecode.browserpilotdto.dto.MiniSudokuResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
-public class PPMiniSudokuPage extends WebsitePage implements AnswerPage<PPMiniSudokuResult> {
+public class PPMiniSudokuPage extends WebsitePage implements AnswerPage<MiniSudokuResponse> {
 
     private static final String TOTAL_CELL_XPATH = "//section//div[contains(@class, 'grid')]"
             + "//div[contains(@class, 'aspect-square')]";
@@ -27,8 +27,8 @@ public class PPMiniSudokuPage extends WebsitePage implements AnswerPage<PPMiniSu
     }
 
     @Override
-    public PPMiniSudokuResult getAnswer() {
-        return new PPMiniSudokuResult(getSudokuGrid());
+    public MiniSudokuResponse getAnswer() {
+        return new MiniSudokuResponse(getSudokuGrid());
     }
 
     /**
