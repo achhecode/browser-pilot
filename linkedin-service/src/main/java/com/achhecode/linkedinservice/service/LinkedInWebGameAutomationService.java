@@ -1,10 +1,16 @@
+
 package com.achhecode.linkedinservice.service;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
 import com.achhecode.browserpilotdto.dto.MiniSudokuRequest;
+import com.achhecode.browserpilotdto.dto.PatchesRequest;
 import com.achhecode.browserpilotdto.dto.QueensRequest;
 import com.achhecode.browserpilotdto.dto.TangoRequest;
+import com.achhecode.browserpilotdto.dto.WendRequest;
 import com.achhecode.browserpilotdto.dto.ZipRequest;
 import com.achhecode.linkedinservice.LinkedInGame;
 import com.achhecode.linkedinservice.LinkedInPageResolver;
@@ -19,58 +25,47 @@ import com.microsoft.playwright.Page;
 
 @Service
 public class LinkedInWebGameAutomationService {
+
     private final LinkedInPageResolver pageResolver;
 
     public LinkedInWebGameAutomationService(LinkedInPageResolver pageResolver) {
         this.pageResolver = pageResolver;
     }
 
-    public void solveZip(ZipRequest request) {
+    private <T> void executeGame(LinkedInGame game, Function<Page, T> pageFactory, Consumer<T> action) {
+
         Page page = pageResolver.findPage();
-        page.navigate(LinkedInGame.ZIP.url());
-        ZipPage zipPage = new ZipPage(page);
-        zipPage.solve(request);
+        page.navigate(game.url());
+
+        T gamePage = pageFactory.apply(page);
+        action.accept(gamePage);
+    }
+
+    public void solveZip(ZipRequest request) {
+        executeGame(LinkedInGame.ZIP, ZipPage::new, game -> game.solve(request));
     }
 
     public void solveQueens(QueensRequest request) {
-        Page page = pageResolver.findPage();
-        page.navigate(LinkedInGame.QUEENS.url());
-        QueensPage queensPage = new QueensPage(page);
-        queensPage.solve(request.request());
+        executeGame(LinkedInGame.QUEENS, QueensPage::new, game -> game.solve(request.request()));
     }
 
     public void solveMiniSudoku(MiniSudokuRequest request) {
-        Page page = pageResolver.findPage();
-        page.navigate(LinkedInGame.MINI_SUDOKU.url());
-        MiniSudokuPage miniSudokuPage = new MiniSudokuPage(page);
-        miniSudokuPage.solve(request);
-    }
-
-    public void solvePatches() {
-        Page page = pageResolver.findPage();
-        page.navigate(LinkedInGame.PATCHES.url());
-        PatchesPage patchesPage = new PatchesPage(page);
-        patchesPage.solve();
+        executeGame(LinkedInGame.MINI_SUDOKU, MiniSudokuPage::new, game -> game.solve(request));
     }
 
     public void solvePinpoint() {
-        Page page = pageResolver.findPage();
-        page.navigate(LinkedInGame.PINPOINT.url());
-        PinpointPage pinpointPage = new PinpointPage(page);
-        pinpointPage.solve();
+        executeGame(LinkedInGame.PINPOINT, PinpointPage::new, game -> game.solve());
     }
 
     public void solveTango(TangoRequest request) {
-        Page page = pageResolver.findPage();
-        page.navigate(LinkedInGame.TANGO.url());
-        TangoPage tangoPage = new TangoPage(page);
-        tangoPage.solve(request);
+        executeGame(LinkedInGame.TANGO, TangoPage::new, game -> game.solve(request));
     }
 
-    public void solveWend() {
-        Page page = pageResolver.findPage();
-        page.navigate(LinkedInGame.WEND.url());
-        WendPage wendPage = new WendPage(page);
-        wendPage.solve();
+    public void solveWend(WendRequest request) {
+        executeGame(LinkedInGame.WEND, WendPage::new, game -> game.solve());
+    }
+
+    public void solvePatches(PatchesRequest request) {
+        executeGame(LinkedInGame.PATCHES, PatchesPage::new, game -> game.solve());
     }
 }
