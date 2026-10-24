@@ -15,7 +15,7 @@ import com.achhecode.browserpilotdto.dto.Direction;
 import com.achhecode.browserpilotdto.dto.WendResponse;
 import com.achhecode.browserpilotdto.dto.WendResult;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.pinpointservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 

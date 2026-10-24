@@ -14,7 +14,7 @@ import com.achhecode.browserpilotdto.dto.Direction;
 import com.achhecode.browserpilotdto.dto.PatchResult;
 import com.achhecode.browserpilotdto.dto.PatchesResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.pinpointservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -195,8 +195,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResp
         return new PatchResult(actualSize, coordinates, start, paths);
     }
 
-    private List<List<Direction>> findAllPaths(List<Coordinates> patchCoordinates, Coordinates start,
-            Coordinates end) {
+    private List<List<Direction>> findAllPaths(List<Coordinates> patchCoordinates, Coordinates start, Coordinates end) {
         Set<Coordinates> patchCells = new HashSet<>(patchCoordinates);
 
         List<List<Direction>> paths = new ArrayList<>();
@@ -209,8 +208,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResp
     }
 
     private void findPathsDfs(Coordinates current, Coordinates end, Set<Coordinates> patchCells,
-            Set<Coordinates> visited, List<Direction> currentPath,
-            List<List<Direction>> paths) {
+            Set<Coordinates> visited, List<Direction> currentPath, List<List<Direction>> paths) {
         if (current.equals(end)) {
             paths.add(new ArrayList<>(currentPath));
             return;
@@ -230,9 +228,9 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResp
         visited.remove(current);
     }
 
-    private void tryDirection(Coordinates current, Coordinates end, int rowDelta, int colDelta,
-            Direction direction, Set<Coordinates> patchCells, Set<Coordinates> visited,
-            List<Direction> currentPath, List<List<Direction>> paths) {
+    private void tryDirection(Coordinates current, Coordinates end, int rowDelta, int colDelta, Direction direction,
+            Set<Coordinates> patchCells, Set<Coordinates> visited, List<Direction> currentPath,
+            List<List<Direction>> paths) {
         Coordinates next = new Coordinates(current.row() + rowDelta, current.column() + colDelta);
 
         if (!patchCells.contains(next) || visited.contains(next)) {

@@ -1,4 +1,4 @@
-package com.achhecode.playwrightservice.handler;
+package com.achhecode.pinpointservice.handler;
 
 import com.microsoft.playwright.Page;
 

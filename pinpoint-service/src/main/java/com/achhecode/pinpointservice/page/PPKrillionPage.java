@@ -1,7 +1,7 @@
 package com.achhecode.pinpointservice.page;
 
 import com.achhecode.pinpointservice.PinpointanswerUrls;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.pinpointservice.handler.WebsitePage;
 import com.microsoft.playwright.Page;
 
 public class PPKrillionPage extends WebsitePage implements AnswerPage<String> {

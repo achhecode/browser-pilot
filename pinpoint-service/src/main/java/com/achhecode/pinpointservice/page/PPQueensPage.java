@@ -7,7 +7,7 @@ import java.util.List;
 import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.browserpilotdto.dto.QueensResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
-import com.achhecode.playwrightservice.handler.WebsitePage;
+import com.achhecode.pinpointservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
