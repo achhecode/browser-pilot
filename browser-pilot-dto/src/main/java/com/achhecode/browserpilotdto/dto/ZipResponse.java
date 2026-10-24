@@ -2,5 +2,5 @@ package com.achhecode.browserpilotdto.dto;
 
 import java.util.List;
 
-public record ZipResponse(List<String> answer) {
+public record ZipResponse(List<String> response) {
 }

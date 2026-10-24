@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.browserpilotdto.dto.Direction;
+import com.achhecode.browserpilotdto.dto.PatchResult;
 import com.achhecode.browserpilotdto.dto.PatchesResponse;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.playwrightservice.handler.WebsitePage;
@@ -63,7 +64,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResp
         return gridSize;
     }
 
-    public List<PatchesResponse.PatchResult> getPatches() {
+    public List<PatchResult> getPatches() {
         clickRevealAll();
 
         // Wait for the reveal operation to finish updating the board.
@@ -117,7 +118,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResp
             patchesById.computeIfAbsent(patchId, ignored -> new ArrayList<>()).add(cell);
         }
 
-        List<PatchesResponse.PatchResult> results = new ArrayList<>();
+        List<PatchResult> results = new ArrayList<>();
 
         for (Map.Entry<Integer, List<Cell>> entry : patchesById.entrySet()) {
 
@@ -161,7 +162,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResp
      */
 
     @SuppressWarnings("null")
-    private PatchesResponse.PatchResult buildPatch(int patchId, List<Cell> cells) {
+    private PatchResult buildPatch(int patchId, List<Cell> cells) {
         Integer clueSize = null;
         List<Coordinates> coordinates = new ArrayList<>();
 
@@ -191,7 +192,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResp
 
         List<List<Direction>> paths = findAllPaths(coordinates, start, end);
 
-        return new PatchesResponse.PatchResult(actualSize, coordinates, start, paths);
+        return new PatchResult(actualSize, coordinates, start, paths);
     }
 
     private List<List<Direction>> findAllPaths(List<Coordinates> patchCoordinates, Coordinates start,

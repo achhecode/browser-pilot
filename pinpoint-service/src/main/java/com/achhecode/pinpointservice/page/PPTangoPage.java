@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.achhecode.browserpilotdto.dto.Coordinates;
 import com.achhecode.browserpilotdto.dto.TangoResponse;
+import com.achhecode.browserpilotdto.dto.TangoResult;
 import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.playwrightservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
@@ -31,7 +32,7 @@ public class PPTangoPage extends WebsitePage implements AnswerPage<TangoResponse
 
     @Override
     public TangoResponse getAnswer() {
-        return getTangoSunAndMoonForCoordinates();
+        return new TangoResponse(getTangoSunAndMoonForCoordinates());
     }
 
     public void clickRevealAll() {
@@ -57,11 +58,11 @@ public class PPTangoPage extends WebsitePage implements AnswerPage<TangoResponse
         return gridSize;
     }
 
-    public TangoResponse getTangoSunAndMoonForCoordinates() {
+    public List<TangoResult> getTangoSunAndMoonForCoordinates() {
         clickRevealAll();
 
         int gridSize = calculateGridSize();
-        List<TangoResponse.TangoResult> results = new ArrayList<>();
+        List<TangoResult> results = new ArrayList<>();
 
         for (int row = 1; row <= gridSize; row++) {
             for (int col = 1; col <= gridSize; col++) {
@@ -88,10 +89,10 @@ public class PPTangoPage extends WebsitePage implements AnswerPage<TangoResponse
 
                 Coordinates coordinates = new Coordinates(row, col);
 
-                results.add(new TangoResponse.TangoResult(value, coordinates));
+                results.add(new TangoResult(value, coordinates));
             }
         }
 
-        return new TangoResponse(results);
+        return results;
     }
 }

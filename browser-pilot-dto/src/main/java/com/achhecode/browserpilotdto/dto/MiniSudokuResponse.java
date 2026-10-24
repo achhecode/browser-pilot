@@ -3,7 +3,5 @@ package com.achhecode.browserpilotdto.dto;
 
 import java.util.List;
 
-public record MiniSudokuResponse(
-        List<Cell> cells
-) {
+public record MiniSudokuResponse(List<Cell> response) {
 }
