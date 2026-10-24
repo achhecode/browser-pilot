@@ -14,13 +14,13 @@ import com.achhecode.browserpilotdto.dto.WendRequest;
 import com.achhecode.browserpilotdto.dto.ZipRequest;
 import com.achhecode.linkedinservice.LinkedInGame;
 import com.achhecode.linkedinservice.LinkedInPageResolver;
-import com.achhecode.linkedinservice.page.ZipPage;
 import com.achhecode.linkedinservice.page.games.MiniSudokuPage;
 import com.achhecode.linkedinservice.page.games.PatchesPage;
 import com.achhecode.linkedinservice.page.games.PinpointPage;
 import com.achhecode.linkedinservice.page.games.QueensPage;
 import com.achhecode.linkedinservice.page.games.TangoPage;
 import com.achhecode.linkedinservice.page.games.WendPage;
+import com.achhecode.linkedinservice.page.games.ZipPage;
 import com.microsoft.playwright.Page;
 
 @Service
