@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
-import com.achhecode.playwrightcore.config.PlaywrightCoreConfiguration;
+import com.achhecode.playwright.config.PlaywrightCoreConfiguration;
 
 @SpringBootApplication
 @EnableConfigurationProperties(InstahyreProperties.class)

@@ -73,10 +73,9 @@
 
         <dependency>
             <groupId>com.achhecode</groupId>
-            <artifactId>playwright-core</artifactId>
-            <version>1.0.1</version>
+            <artifactId>achhecode-playwright</artifactId>
+            <version>1.0.0</version>
         </dependency>
-
 
         <!-- Shared DTO library -->
         <dependency>
