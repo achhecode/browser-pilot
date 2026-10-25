@@ -73,8 +73,8 @@
 
         <dependency>
             <groupId>com.achhecode</groupId>
-            <artifactId>playwright-service</artifactId>
-            <version>${project.version}</version>
+            <artifactId>playwright-core</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
 

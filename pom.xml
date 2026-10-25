@@ -44,20 +44,6 @@
                 <version>${playwright.version}</version>
             </dependency>
 
-            <!-- Java Native Access -->
-            <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna</artifactId>
-                <version>${jna.version}</version>
-            </dependency>
-
-            <!-- Global keyboard and mouse hooks -->
-            <dependency>
-                <groupId>com.github.kwhat</groupId>
-                <artifactId>jnativehook</artifactId>
-                <version>${jnativehook.version}</version>
-            </dependency>
-
             <!-- Springdoc OpenAPI UI -->
             <dependency>
                 <groupId>org.springdoc</groupId>
@@ -88,7 +74,6 @@
         <!-- <module>keyboard-service</module> -->
         <module>linkedin-service</module>
         <module>pinpoint-service</module>
-        <module>playwright-service</module>
     </modules>
 
     <!-- Shared build configuration -->

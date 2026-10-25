@@ -1,7 +1,7 @@
 package com.achhecode.instahyreservice;
 
 import com.achhecode.instahyreservice.handler.WebsitePageResolver;
-import com.achhecode.playwrightservice.browser.BrowserPageResolver;
+import com.achhecode.playwrightcore.browser.BrowserPageResolver;
 import com.microsoft.playwright.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,6 +14,6 @@ public class InstahyrePageResolver implements WebsitePageResolver {
 
     @Override
     public Page findPage() {
-        return browserPageResolver.findOrOpenPlaywrightPage(InstahyreUrls.INSTAHYRE_URL_PREFIX);
+        return browserPageResolver.findOrOpenPage(InstahyreUrls.INSTAHYRE_URL_PREFIX);
     }
 }
