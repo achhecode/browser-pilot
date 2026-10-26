@@ -31,6 +31,15 @@
       "group": "test",
       "problemMatcher": [],
       "isBackground": true
+    },
+    {
+      "label": "Stop All Three",
+      "type": "shell",
+      "command": "pkill -f 'linkedin-service|pinpoint-service|game-orchestrator' || true",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
     }
   ]
 }
