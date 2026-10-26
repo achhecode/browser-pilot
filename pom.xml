@@ -28,8 +28,6 @@
 
         <lombok.version>1.18.42</lombok.version>
         <playwright.version>1.63.0</playwright.version>
-        <jna.version>5.19.1</jna.version>
-        <jnativehook.version>2.2.2</jnativehook.version>
         <springdoc.version>3.1.1</springdoc.version>
     </properties>
 
@@ -70,8 +68,6 @@
     <!-- Child services -->
     <modules>
         <module>browser-pilot-dto</module>
-        <module>instahyre-service</module>
-        <!-- <module>keyboard-service</module> -->
         <module>linkedin-service</module>
         <module>pinpoint-service</module>
     </modules>
