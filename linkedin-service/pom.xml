@@ -71,11 +71,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.microsoft.playwright</groupId>
-            <artifactId>playwright</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.achhecode</groupId>
             <artifactId>achhecode-playwright</artifactId>
             <version>1.0.0</version>
