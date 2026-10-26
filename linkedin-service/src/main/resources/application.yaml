@@ -28,11 +28,6 @@ logging:
 
 playwright:
   browser:
-    mode: ATTACH
-    headless: false
-    executable-path: ""
-    attach:
-      host: 127.0.0.1
-      port: 9222
-  capture:
-    dir: ./captures
+    mode: ATTACHED
+    host: 127.0.0.1
+    port: 9222
