@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build All Services",
+      "label": "Build All Three",
       "type": "shell",
-      "command": "./mvnw clean package",
+      "command": "./mvnw -pl linkedin-service,pinpoint-service,game-orchestrator -am clean package",
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -12,9 +12,9 @@
       "problemMatcher": []
     },
     {
-      "label": "Build Shared DTO",
+      "label": "Clean All Three",
       "type": "shell",
-      "command": "./mvnw -pl browser-pilot-dto -am clean package",
+      "command": "./mvnw -pl linkedin-service,pinpoint-service,game-orchestrator -am clean",
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -22,131 +22,9 @@
       "problemMatcher": []
     },
     {
-      "label": "Build Instahyre",
+      "label": "Run All Three",
       "type": "shell",
-      "command": "./mvnw -pl instahyre-service -am clean package",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build LinkedIn",
-      "type": "shell",
-      "command": "./mvnw -pl linkedin-service -am clean package",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build Pinpoint",
-      "type": "shell",
-      "command": "./mvnw -pl pinpoint-service -am clean package",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Build Playwright",
-      "type": "shell",
-      "command": "./mvnw -pl playwright-service -am clean package",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean and Reinstall All Dependencies",
-      "type": "shell",
-      "command": "./mvnw clean install -DskipTests",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean and Reinstall Shared DTO Dependencies",
-      "type": "shell",
-      "command": "./mvnw -pl browser-pilot-dto -am clean install -DskipTests",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean and Reinstall Instahyre Dependencies",
-      "type": "shell",
-      "command": "./mvnw -pl instahyre-service -am clean install -DskipTests",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean and Reinstall LinkedIn Dependencies",
-      "type": "shell",
-      "command": "./mvnw -pl linkedin-service -am clean install -DskipTests",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean and Reinstall Pinpoint Dependencies",
-      "type": "shell",
-      "command": "./mvnw -pl pinpoint-service -am clean install -DskipTests",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean and Reinstall Playwright Dependencies",
-      "type": "shell",
-      "command": "./mvnw -pl playwright-service -am clean install -DskipTests",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Run Instahyre",
-      "type": "shell",
-      "command": "./mvnw -pl instahyre-service -am install -DskipTests && ./mvnw -pl instahyre-service spring-boot:run",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "test",
-      "problemMatcher": [],
-      "isBackground": true
-    },
-    {
-      "label": "Run LinkedIn",
-      "type": "shell",
-      "command": "./mvnw -pl linkedin-service -am install -DskipTests && ./mvnw -pl linkedin-service spring-boot:run",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "test",
-      "problemMatcher": [],
-      "isBackground": true
-    },
-    {
-      "label": "Run Pinpoint",
-      "type": "shell",
-      "command": "./mvnw -pl pinpoint-service -am install -DskipTests && ./mvnw -pl pinpoint-service spring-boot:run",
+      "command": "./mvnw -pl linkedin-service,pinpoint-service,game-orchestrator -am install -DskipTests && ./mvnw -pl linkedin-service,pinpoint-service,game-orchestrator -DskipTests spring-boot:run",
       "options": {
         "cwd": "${workspaceFolder}"
       },
