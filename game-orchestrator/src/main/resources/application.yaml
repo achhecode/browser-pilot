@@ -1,3 +1,18 @@
 spring:
   application:
     name: game-orchestrator
+
+server:
+  port: 8080
+
+services:
+  pinpoint:
+    base-url: ${PINPOINT_URL:http://localhost:8081}
+  linkedin:
+    base-url: ${LINKEDIN_URL:http://localhost:8082}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

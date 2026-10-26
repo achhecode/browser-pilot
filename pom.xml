@@ -70,6 +70,7 @@
         <module>browser-pilot-dto</module>
         <module>linkedin-service</module>
         <module>pinpoint-service</module>
+        <module>game-orchestrator</module>
     </modules>
 
     <!-- Shared build configuration -->
