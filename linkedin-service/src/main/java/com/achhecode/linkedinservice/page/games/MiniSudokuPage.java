@@ -100,6 +100,9 @@ public class MiniSudokuPage extends WebsitePage {
 
         waitUntilReady();
 
+        if (gameSolved())
+            return;
+
         int totalCells = totalCellIndex();
         if (totalCells != GRID_SIZE * GRID_SIZE) {
             throw new IllegalStateException(
@@ -248,5 +251,9 @@ public class MiniSudokuPage extends WebsitePage {
             throw new IllegalArgumentException(
                     "Invalid Sudoku value: " + value + ". Valid values are 1-" + GRID_SIZE + ".");
         }
+    }
+
+    private boolean gameSolved() {
+        return page.locator("//button[contains(normalize-space(.), 'See results')]").count() > 0;
     }
 }

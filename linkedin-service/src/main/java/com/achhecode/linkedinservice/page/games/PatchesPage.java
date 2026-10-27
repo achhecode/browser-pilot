@@ -18,9 +18,10 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
-public class PatchesPage extends WebsitePage {
+import lombok.extern.slf4j.Slf4j;
 
-    private static final Logger LOGGER = Logger.getLogger(PatchesPage.class.getName());
+@Slf4j
+public class PatchesPage extends WebsitePage {
 
     private static final String BOARD_SELECTOR = "xpath=//div[@data-game-content-root and @data-testid='patches-game-container']";
 
@@ -51,11 +52,17 @@ public class PatchesPage extends WebsitePage {
      */
     public void solve(List<PatchResult> patches) {
         if (patches == null || patches.isEmpty()) {
-            LOGGER.warning("Patches answer is empty; nothing to solve.");
+            log.warn("Patches answer is empty; nothing to solve.");
             return;
         }
 
         waitUntilReady();
+
+        if (gameSolved()) {
+            log.info("Game is already solved");
+            return;
+        }
+
         int gridSize = gridSize();
 
         // Phase 1: validate and plan, no input yet.
@@ -143,7 +150,7 @@ public class PatchesPage extends WebsitePage {
             }
         }
         if (seen.size() != gridSize * gridSize) {
-            LOGGER.warning("Patches cover " + seen.size() + " cells but the board has " + gridSize * gridSize);
+            log.warn("Patches cover " + seen.size() + " cells but the board has " + gridSize * gridSize);
         }
     }
 
@@ -162,12 +169,12 @@ public class PatchesPage extends WebsitePage {
     public void clickCell(int row, int column) {
         int gridSize = gridSize();
         if (row < 1 || row > gridSize || column < 1 || column > gridSize) {
-            LOGGER.warning("Invalid cell coordinates: row " + row + ", column " + column);
+            log.warn("Invalid cell coordinates: row " + row + ", column " + column);
             return;
         }
         Locator cell = getCell(toCellIndex(row, column, gridSize));
         if (cell.count() == 0) {
-            LOGGER.warning("Cell not found: row " + row + ", column " + column);
+            log.warn("Cell not found: row " + row + ", column " + column);
             return;
         }
         cell.click();
@@ -188,7 +195,7 @@ public class PatchesPage extends WebsitePage {
         if (button.count() > 0) {
             button.first().click();
         } else {
-            LOGGER.warning("Could not find the Patches button: " + namePattern);
+            log.warn("Could not find the Patches button: " + namePattern);
         }
     }
 
@@ -202,5 +209,9 @@ public class PatchesPage extends WebsitePage {
 
     private boolean inBounds(Coordinates c, int gridSize) {
         return c != null && c.row() >= 1 && c.row() <= gridSize && c.column() >= 1 && c.column() <= gridSize;
+    }
+
+    private boolean gameSolved() {
+        return page.locator("//div[a[contains(@href, '/results')]]").count() > 0;
     }
 }

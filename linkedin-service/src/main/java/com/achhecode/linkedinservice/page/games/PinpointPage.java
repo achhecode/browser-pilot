@@ -54,6 +54,9 @@ public class PinpointPage extends WebsitePage {
             throw new IllegalStateException("Pinpoint game board is not ready.");
         }
 
+        if (gameSolved())
+            return;
+
         Locator guessInput = page.locator(GUESS_INPUT_SELECTOR);
 
         guessInput.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE));
@@ -85,5 +88,9 @@ public class PinpointPage extends WebsitePage {
 
         guessInput.fill(request.request());
         guessInput.press("Enter");
+    }
+
+    private boolean gameSolved() {
+        return page.locator("//button[contains(normalize-space(.), 'See results')]").count() > 0;
     }
 }

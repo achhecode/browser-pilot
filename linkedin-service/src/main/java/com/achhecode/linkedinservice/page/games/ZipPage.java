@@ -10,6 +10,9 @@ import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j 
 public class ZipPage extends WebsitePage {
 
     private static final String BOARD_SELECTOR = "xpath=//div[@data-testid='zip-game-container']";
@@ -59,6 +62,11 @@ public class ZipPage extends WebsitePage {
 
         waitUntilReady();
 
+        if (gameSolved()) {
+            log.info("Game is already solved");
+            return;
+        }
+
         MinDurationPacer pacer = MinDurationPacer.start(page, MIN_SOLVE_MS + SAFETY_MARGIN_MS, keys.size());
 
         for (int i = 0; i < keys.size(); i++) {
@@ -90,5 +98,9 @@ public class ZipPage extends WebsitePage {
             keys.add(key);
         }
         return keys;
+    }
+
+    private boolean gameSolved() {
+        return page.locator("//div[a[contains(@href, '/results')]]").count() > 0;
     }
 }

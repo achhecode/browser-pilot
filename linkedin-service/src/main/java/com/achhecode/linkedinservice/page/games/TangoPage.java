@@ -13,6 +13,9 @@ import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j 
 public class TangoPage extends WebsitePage {
 
     private static final String BOARD_SELECTOR = "xpath=//div[@data-testid='tango-game-container']";
@@ -103,6 +106,11 @@ public class TangoPage extends WebsitePage {
         }
 
         waitUntilReady();
+
+        if (gameSolved()) {
+            log.info("Game is already solved");
+            return;
+        }
 
         // Phase 2: skip locked cells. DOM reads happen here, not in the timed loop.
         List<Step> pending = new ArrayList<>(steps.size());
@@ -216,5 +224,9 @@ public class TangoPage extends WebsitePage {
      */
     private int getCellIndex(int row, int column) {
         return (row - 1) * GRID_SIZE + (column - 1);
+    }
+
+    private boolean gameSolved() {
+        return page.locator("//div[a[contains(@href, '/results')]]").count() > 0;
     }
 }

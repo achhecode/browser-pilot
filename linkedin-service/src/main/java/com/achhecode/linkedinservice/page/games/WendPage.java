@@ -13,6 +13,9 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j 
 public class WendPage extends WebsitePage {
 
     private static final Logger LOGGER = Logger.getLogger(WendPage.class.getName());
@@ -52,6 +55,12 @@ public class WendPage extends WebsitePage {
         }
 
         waitUntilReady();
+
+        if (gameSolved()) {
+            log.info("Game is already solved");
+            return;
+        }
+
         int gridSize = gridSize();
 
         // Phase 1: validate and plan, no input yet.
@@ -148,5 +157,9 @@ public class WendPage extends WebsitePage {
 
     private boolean inBounds(int row, int column, int gridSize) {
         return row >= 1 && row <= gridSize && column >= 1 && column <= gridSize;
+    }
+
+    private boolean gameSolved() {
+        return page.locator("//div[a[contains(@href, '/results')]]").count() > 0;
     }
 }

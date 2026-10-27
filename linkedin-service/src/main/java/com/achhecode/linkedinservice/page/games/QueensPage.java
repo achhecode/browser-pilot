@@ -15,6 +15,9 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j 
 public class QueensPage extends WebsitePage {
 
     private static final Logger LOGGER = Logger.getLogger(QueensPage.class.getName());
@@ -74,6 +77,11 @@ public class QueensPage extends WebsitePage {
         }
 
         waitUntilReady();
+
+        if (gameSolved()) {
+            log.info("Game is already solved");
+            return;
+        }
 
         int gridSize = gridSize();
 
@@ -253,5 +261,9 @@ public class QueensPage extends WebsitePage {
             LOGGER.warning("Cell coordinate mismatch. Expected row " + expectedRow + ", column " + expectedColumn
                     + " but aria-label says row " + actualRow + ", column " + actualColumn + ". Continuing.");
         }
+    }
+
+    private boolean gameSolved() {
+        return page.locator("//div[a[contains(@href, '/results')]]").count() > 0;
     }
 }
