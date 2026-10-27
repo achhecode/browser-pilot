@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import com.achhecode.browserpilotdto.dto.Direction;
 import com.achhecode.browserpilotdto.dto.WendResult;
-import com.achhecode.linkedinservice.LinkedInGame;
+import com.achhecode.browserpilotdto.enums.LinkedInGame;
 import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;

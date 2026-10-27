@@ -1,4 +1,4 @@
 package com.achhecode.browserpilotdto.dto;
 
-public record PinpointRequest() {
+public record PinpointRequest(String request) {
 }

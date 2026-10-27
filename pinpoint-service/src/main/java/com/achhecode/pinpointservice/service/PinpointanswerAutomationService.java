@@ -5,12 +5,14 @@ import com.achhecode.pinpointservice.PinpointanswerUrls;
 import com.achhecode.pinpointservice.page.AnswerPage;
 import com.achhecode.pinpointservice.page.PPMiniSudokuPage;
 import com.achhecode.pinpointservice.page.PPPatchesPage;
+import com.achhecode.pinpointservice.page.PPPinpointAnswerPage;
 import com.achhecode.pinpointservice.page.PPQueensPage;
 import com.achhecode.pinpointservice.page.PPTangoPage;
 import com.achhecode.pinpointservice.page.PPWendPage;
 import com.achhecode.pinpointservice.page.PPZipPage;
 import com.achhecode.browserpilotdto.dto.MiniSudokuResponse;
 import com.achhecode.browserpilotdto.dto.PatchesResponse;
+import com.achhecode.browserpilotdto.dto.PinpointResponse;
 import com.achhecode.browserpilotdto.dto.QueensResponse;
 import com.achhecode.browserpilotdto.dto.TangoResponse;
 import com.achhecode.browserpilotdto.dto.WendResponse;
@@ -54,6 +56,12 @@ public class PinpointanswerAutomationService {
     public MiniSudokuResponse retrieveMiniSudokuAnswer() {
         return retrieveAnswer(PinpointanswerUrls.MINI_SUDOKU, PPMiniSudokuPage::new);
     }
+
+    public PinpointResponse retrievePinpointAnswer() {
+        return retrieveAnswer(PinpointanswerUrls.PINPOINT, PPPinpointAnswerPage::new);
+    }
+
+    // retrievePinpointAnswer
 
     private <T, P extends AnswerPage<T>> T retrieveAnswer(String url, Function<Page, P> pageFactory) {
         Page page = pageResolver.findPage();

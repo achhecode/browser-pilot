@@ -1,8 +1,10 @@
 
 package com.achhecode.gameorchestrator.controller;
 
+import com.achhecode.browserpilotdto.enums.LinkedInGame;
 import com.achhecode.gameorchestrator.service.GameOrchestrationService;
 
+import jakarta.validation.Valid;
 import tools.jackson.databind.JsonNode;
 
 import org.springframework.http.MediaType;
@@ -19,7 +21,7 @@ public class GameController {
     }
 
     @PostMapping("/{game}/solve")
-    public JsonNode solveGame(@PathVariable String game) {
+    public JsonNode solveGame(@Valid @PathVariable LinkedInGame game) {
         return orchestrationService.solveAndApply(game);
     }
 }

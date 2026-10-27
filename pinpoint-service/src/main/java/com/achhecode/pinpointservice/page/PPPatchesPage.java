@@ -68,7 +68,7 @@ public class PPPatchesPage extends WebsitePage implements AnswerPage<PatchesResp
         clickRevealAll();
 
         // Wait for the reveal operation to finish updating the board.
-        page.waitForTimeout(1000);
+        page.waitForTimeout(2_000);
 
         Locator buttons = page.locator(TOTAL_CELL_XPATH);
         int totalCells = buttons.count();

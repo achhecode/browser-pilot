@@ -1,6 +1,6 @@
 package com.achhecode.linkedinservice.page;
 
-import com.achhecode.linkedinservice.LinkedInGame;
+import com.achhecode.browserpilotdto.enums.LinkedInGame;
 import com.achhecode.linkedinservice.LinkedInUrls;
 import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;

@@ -15,5 +15,6 @@ public final class PinpointanswerUrls {
     public static final String WEND = "https://www.linkedinpinpointanswer.today/linkedin-wend-answer-today";
     public static final String PATCHES = "https://www.linkedinpinpointanswer.today/linkedin-patches-answer-today";
     public static final String KRILLION = "https://www.linkedinpinpointanswer.today/krillion-answers";
+    public static final String PINPOINT = "https://www.linkedinpinpointanswer.today/linkedin-pinpoint-answer";
 
 }

@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.achhecode.browserpilotdto.dto.MiniSudokuRequest;
 import com.achhecode.browserpilotdto.dto.PatchesRequest;
+import com.achhecode.browserpilotdto.dto.PinpointRequest;
 import com.achhecode.browserpilotdto.dto.QueensRequest;
 import com.achhecode.browserpilotdto.dto.TangoRequest;
 import com.achhecode.browserpilotdto.dto.WendRequest;
 import com.achhecode.browserpilotdto.dto.ZipRequest;
-import com.achhecode.linkedinservice.LinkedInGame;
+import com.achhecode.browserpilotdto.enums.LinkedInGame;
 import com.achhecode.linkedinservice.LinkedInPageResolver;
 import com.achhecode.linkedinservice.page.games.MiniSudokuPage;
 import com.achhecode.linkedinservice.page.games.PatchesPage;
@@ -53,8 +54,8 @@ public class LinkedInWebGameAutomationService {
         executeGame(LinkedInGame.MINI_SUDOKU, MiniSudokuPage::new, game -> game.solve(request));
     }
 
-    public void solvePinpoint() {
-        executeGame(LinkedInGame.PINPOINT, PinpointPage::new, game -> game.solve());
+    public void solvePinpoint(PinpointRequest request) {
+        executeGame(LinkedInGame.PINPOINT, PinpointPage::new, game -> game.solve(request));
     }
 
     public void solveTango(TangoRequest request) {

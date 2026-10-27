@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.achhecode.browserpilotdto.dto.MiniSudokuRequest;
 import com.achhecode.browserpilotdto.dto.PatchesRequest;
+import com.achhecode.browserpilotdto.dto.PinpointRequest;
 import com.achhecode.browserpilotdto.dto.QueensRequest;
 import com.achhecode.browserpilotdto.dto.TangoRequest;
 import com.achhecode.browserpilotdto.dto.WendRequest;
@@ -54,6 +55,12 @@ public class LinkedInWebGameController {
     @PostMapping("/patches/solve")
     public ResponseEntity<Void> solveTango(@RequestBody PatchesRequest request) {
         linkedInWebGameAutomationService.solvePatches(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/pinpoint/solve")
+    public ResponseEntity<Void> solveTango(@RequestBody PinpointRequest request) {
+        linkedInWebGameAutomationService.solvePinpoint(request);
         return ResponseEntity.ok().build();
     }
 }

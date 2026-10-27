@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.achhecode.browserpilotdto.dto.Coordinates;
-import com.achhecode.linkedinservice.LinkedInGame;
+import com.achhecode.browserpilotdto.enums.LinkedInGame;
 import com.achhecode.linkedinservice.handler.WebsitePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;

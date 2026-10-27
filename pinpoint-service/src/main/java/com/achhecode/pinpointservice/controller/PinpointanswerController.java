@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.achhecode.browserpilotdto.dto.MiniSudokuResponse;
 import com.achhecode.browserpilotdto.dto.PatchesResponse;
+import com.achhecode.browserpilotdto.dto.PinpointResponse;
 import com.achhecode.browserpilotdto.dto.QueensResponse;
 import com.achhecode.browserpilotdto.dto.TangoResponse;
 import com.achhecode.browserpilotdto.dto.WendResponse;
@@ -54,6 +55,12 @@ public class PinpointanswerController {
     @PostMapping("/patches/solve")
     public ResponseEntity<PatchesResponse> solvePatches() {
         PatchesResponse answer = automationService.retrievePatchesAnswer();
+        return ResponseEntity.ok(answer);
+    }
+
+    @PostMapping("/pinpoint/solve")
+    public ResponseEntity<PinpointResponse> solvePinpoint() {
+        PinpointResponse answer = automationService.retrievePinpointAnswer();
         return ResponseEntity.ok(answer);
     }
 }

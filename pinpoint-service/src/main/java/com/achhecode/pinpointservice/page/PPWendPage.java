@@ -73,7 +73,7 @@ public class PPWendPage extends WebsitePage implements AnswerPage<WendResponse> 
         clickRevealAll();
 
         // Wait for the reveal animation and word list to finish loading.
-        page.waitForTimeout(30_000);
+        page.waitForTimeout(10_000);
 
         calculateGridSize();
 

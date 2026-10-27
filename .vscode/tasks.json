@@ -24,7 +24,7 @@
     {
       "label": "Run All Three",
       "type": "shell",
-      "command": "./mvnw -pl linkedin-service,pinpoint-service,game-orchestrator -am install -DskipTests && ./mvnw -pl linkedin-service,pinpoint-service,game-orchestrator -DskipTests spring-boot:run",
+      "command": "./mvnw -pl linkedin-service,pinpoint-service,game-orchestrator -am install -DskipTests && (./mvnw -pl linkedin-service spring-boot:run -DskipTests > /tmp/linkedin-service.log 2>&1 & echo $! > /tmp/linkedin-service.pid; ./mvnw -pl pinpoint-service spring-boot:run -DskipTests > /tmp/pinpoint-service.log 2>&1 & echo $! > /tmp/pinpoint-service.pid; ./mvnw -pl game-orchestrator spring-boot:run -DskipTests > /tmp/game-orchestrator.log 2>&1 & echo $! > /tmp/game-orchestrator.pid; wait)",
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -35,11 +35,41 @@
     {
       "label": "Stop All Three",
       "type": "shell",
-      "command": "pkill -f 'linkedin-service|pinpoint-service|game-orchestrator' || true",
+      "command": "for service in linkedin-service pinpoint-service game-orchestrator; do pidfile=\"/tmp/$service.pid\"; if [ -f \"$pidfile\" ]; then pid=$(cat \"$pidfile\"); if kill -0 \"$pid\" 2>/dev/null; then pkill -TERM -P \"$pid\" 2>/dev/null || true; kill -TERM \"$pid\" 2>/dev/null || true; fi; rm -f \"$pidfile\"; fi; done",
       "options": {
         "cwd": "${workspaceFolder}"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "View LinkedIn Service Logs",
+      "type": "shell",
+      "command": "tail -n 100 -f /tmp/linkedin-service.log",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "View Pinpoint Service Logs",
+      "type": "shell",
+      "command": "tail -n 100 -f /tmp/pinpoint-service.log",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "View Game Orchestrator Logs",
+      "type": "shell",
+      "command": "tail -n 100 -f /tmp/game-orchestrator.log",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "isBackground": true
     }
   ]
 }

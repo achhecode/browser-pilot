@@ -1,4 +1,4 @@
-package com.achhecode.linkedinservice;
+package com.achhecode.browserpilotdto.dto;
 
 public record GridLocation(int x, int y) {
 

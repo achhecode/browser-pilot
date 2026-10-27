@@ -1,6 +1,7 @@
 
 package com.achhecode.gameorchestrator.service;
 
+import com.achhecode.browserpilotdto.enums.LinkedInGame;
 import com.achhecode.gameorchestrator.exception.GameOrchestrationException;
 
 import tools.jackson.databind.JsonNode;
@@ -22,9 +23,6 @@ public class GameOrchestrationService {
     private final RestClient linkedinClient;
     private final ObjectMapper objectMapper;
 
-    private static final Map<String, String> GAME_ENDPOINTS = Map.of("zip", "zip", "wend", "wend", "tango", "tango",
-            "queens", "queens", "patches", "patches", "mini-sudoku", "mini-sudoku");
-
     public GameOrchestrationService(@Qualifier("pinpointClient") RestClient pinpointClient,
             @Qualifier("linkedinClient") RestClient linkedinClient, ObjectMapper objectMapper) {
 
@@ -33,22 +31,13 @@ public class GameOrchestrationService {
         this.objectMapper = objectMapper;
     }
 
-    public JsonNode solveAndApply(String game) {
-
-        String normalizedGame = game == null ? "" : game.toLowerCase().trim();
-
-        String gameEndpoint = GAME_ENDPOINTS.get(normalizedGame);
-
-        if (gameEndpoint == null) {
-            throw new IllegalArgumentException(
-                    "Unsupported game: " + game + ". Supported games: " + GAME_ENDPOINTS.keySet());
-        }
+    public JsonNode solveAndApply(LinkedInGame game) {
 
         // Step 1: Ask Pinpoint to solve the game.
         JsonNode pinpointResult;
 
         try {
-            pinpointResult = pinpointClient.post().uri("/api/pinpointanswer/{game}/solve", gameEndpoint)
+            pinpointResult = pinpointClient.post().uri("/api/pinpointanswer/{game}/solve", game.keyName())
                     .accept(MediaType.APPLICATION_JSON).retrieve().body(JsonNode.class);
 
         } catch (RestClientResponseException ex) {
@@ -76,7 +65,7 @@ public class GameOrchestrationService {
         JsonNode applicationResult;
 
         try {
-            applicationResult = linkedinClient.post().uri("/api/linkedin-games/{game}/solve", gameEndpoint)
+            applicationResult = linkedinClient.post().uri("/api/linkedin-games/{game}/solve", game.keyName())
                     .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).body(linkedinRequest)
                     .retrieve().body(JsonNode.class);
 
@@ -92,7 +81,7 @@ public class GameOrchestrationService {
         // Step 4: Return the combined result.
         ObjectNode result = objectMapper.createObjectNode();
 
-        result.put("game", gameEndpoint);
+        result.put("game", game.name());
         result.put("status", "COMPLETED");
         result.set("solution", solution.deepCopy());
 

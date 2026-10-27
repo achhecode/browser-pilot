@@ -84,6 +84,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jackson</artifactId>
 		</dependency>
+
+		<!-- Shared DTO library -->
+        <dependency>
+            <groupId>com.achhecode</groupId>
+            <artifactId>browser-pilot-dto</artifactId>
+        </dependency>
+		
 	</dependencies>
 
 	<build>
