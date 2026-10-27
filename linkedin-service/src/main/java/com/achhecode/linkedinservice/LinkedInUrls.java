@@ -9,7 +9,7 @@ public final class LinkedInUrls {
             "https://www.linkedin.com/";
 
     public static final String HOME =
-            "https://www.linkedin.com";
+            "https://www.linkedin.com/";
 
 
     public static final String FEED =
@@ -17,5 +17,5 @@ public final class LinkedInUrls {
 
 
     public static final String MY_NETWORK =
-            "https://www.linkedin.com/mynetwork";
+            "https://www.linkedin.com/mynetwork/";
 }

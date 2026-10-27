@@ -22,7 +22,10 @@ import com.achhecode.linkedinservice.page.games.QueensPage;
 import com.achhecode.linkedinservice.page.games.TangoPage;
 import com.achhecode.linkedinservice.page.games.WendPage;
 import com.achhecode.linkedinservice.page.games.ZipPage;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.TimeoutError;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 @Service
 public class LinkedInWebGameAutomationService {
@@ -38,8 +41,33 @@ public class LinkedInWebGameAutomationService {
         Page page = pageResolver.findPage();
         page.navigate(game.url());
 
+        // Handle the pre-game screen if it appears.
+        handleGameStartScreen(page, game);
+
         T gamePage = pageFactory.apply(page);
         action.accept(gamePage);
+    }
+
+    /**
+     * Clicks Start game if LinkedIn displays the pre-game screen. If the user is
+     * already logged in and the game is accessible, the existing flow continues
+     * without clicking anything.
+     */
+    private void handleGameStartScreen(Page page, LinkedInGame game) {
+        String startGameXPath = "//a[contains(@href, '/games/" + game.keyName() + "/')"
+                + " and contains(@href, 'skipStartScreen=true')]/span";
+
+        Locator startGameButton = page.locator(startGameXPath);
+
+        try {
+            startGameButton.first()
+                    .waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE).setTimeout(3_000));
+
+            startGameButton.first().click();
+
+        } catch (TimeoutError e) {
+            // No pre-game screen appeared; continue with the existing flow.
+        }
     }
 
     public void solveZip(ZipRequest request) {
