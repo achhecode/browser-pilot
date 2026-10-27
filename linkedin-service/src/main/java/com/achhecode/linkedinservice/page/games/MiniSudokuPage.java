@@ -8,10 +8,13 @@ import java.util.Set;
 import com.achhecode.browserpilotdto.dto.Cell;
 import com.achhecode.browserpilotdto.dto.MiniSudokuRequest;
 import com.achhecode.linkedinservice.handler.WebsitePage;
+import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 public class MiniSudokuPage extends WebsitePage {
+
+    private Frame gameFrame;
 
     private static final String BOARD_SELECTOR = "xpath=//section//div[contains(@class, 'sudoku-cell') "
             + "and @data-cell-idx]";
@@ -23,7 +26,7 @@ public class MiniSudokuPage extends WebsitePage {
 
     private static final int GRID_SIZE = 6;
 
-    private static final double DEFAULT_TIMEOUT_MS = 10_000;
+    private static final long DEFAULT_TIMEOUT_MS = 5_000L;
 
     /** Minimum solve time (2 s) plus a margin for network/render latency. */
     private static final long MIN_SOLVE_MS = 2_000;
@@ -46,14 +49,29 @@ public class MiniSudokuPage extends WebsitePage {
      * Wait until the Sudoku board and its cells are ready.
      */
     public void waitUntilReady() {
-        page.locator(BOARD_SELECTOR).first().waitFor(new Locator.WaitForOptions().setTimeout(DEFAULT_TIMEOUT_MS));
+        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(DEFAULT_TIMEOUT_MS);
+
+        while (System.nanoTime() < deadline) {
+            for (Frame frame : page.frames()) {
+                Locator cells = frame.locator(BOARD_SELECTOR);
+
+                if (cells.count() == GRID_SIZE * GRID_SIZE && cells.first().isVisible()) {
+                    gameFrame = frame;
+                    return;
+                }
+            }
+
+            page.waitForTimeout(200);
+        }
+
+        throw new IllegalStateException("Sudoku board not ready in any frame. URL: " + page.url());
     }
 
     /**
      * Returns the total number of cells currently rendered.
      */
     public int totalCellIndex() {
-        return page.locator(BOARD_SELECTOR).count();
+        return boardLocator().count();
     }
 
     /**
@@ -193,7 +211,15 @@ public class MiniSudokuPage extends WebsitePage {
     }
 
     private Locator getCell(int cellIndex) {
-        return page.locator(BOARD_SELECTOR).nth(cellIndex);
+        return boardLocator().nth(cellIndex);
+    }
+
+    private Locator boardLocator() {
+        if (gameFrame == null) {
+            throw new IllegalStateException("Sudoku frame has not been resolved. Call waitUntilReady() first.");
+        }
+
+        return gameFrame.locator(BOARD_SELECTOR);
     }
 
     private boolean isPrefilled(Locator cell) {

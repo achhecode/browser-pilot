@@ -22,13 +22,19 @@ import com.achhecode.linkedinservice.page.games.QueensPage;
 import com.achhecode.linkedinservice.page.games.TangoPage;
 import com.achhecode.linkedinservice.page.games.WendPage;
 import com.achhecode.linkedinservice.page.games.ZipPage;
+import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.options.WaitForSelectorState;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class LinkedInWebGameAutomationService {
+
+    private static final String MINI_SUDOKU_START_BUTTON = "//button[@id='launch-footer-start-button']";
 
     private final LinkedInPageResolver pageResolver;
 
@@ -54,20 +60,46 @@ public class LinkedInWebGameAutomationService {
      * without clicking anything.
      */
     private void handleGameStartScreen(Page page, LinkedInGame game) {
-        String startGameXPath = "//a[contains(@href, '/games/" + game.keyName() + "/')"
-                + " and contains(@href, 'skipStartScreen=true')]/span";
 
-        Locator startGameButton = page.locator(startGameXPath);
+        if (game == LinkedInGame.MINI_SUDOKU) {
+            clickMiniSudokuStartButton(page);
+            return;
+        }
+
+        String startGameXPath = "//a[contains(@href, '/games/" + game.keyName()
+                + "/') and contains(@href, 'skipStartScreen=true')]/span";
+
+        Locator startGameButton = page.locator(startGameXPath).first();
 
         try {
-            startGameButton.first()
+            startGameButton
                     .waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE).setTimeout(3_000));
 
-            startGameButton.first().click();
+            startGameButton.click();
 
         } catch (TimeoutError e) {
             // No pre-game screen appeared; continue with the existing flow.
         }
+    }
+
+    private void clickMiniSudokuStartButton(Page page) {
+
+        // Allow LinkedIn to render the game-launch UI.
+        page.waitForTimeout(1_000);
+
+        for (Frame frame : page.frames()) {
+            Locator button = frame.locator(MINI_SUDOKU_START_BUTTON);
+
+            if (button.count() == 0) {
+                continue;
+            }
+
+            button.first().click();
+
+            return;
+        }
+
+        throw new IllegalStateException("Mini Sudoku start button not found in any frame. URL: " + page.url());
     }
 
     public void solveZip(ZipRequest request) {
