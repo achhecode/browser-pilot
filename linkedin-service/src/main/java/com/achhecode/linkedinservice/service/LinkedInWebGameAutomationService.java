@@ -1,4 +1,3 @@
-
 package com.achhecode.linkedinservice.service;
 
 import java.util.function.Consumer;
@@ -22,9 +21,9 @@ import com.achhecode.linkedinservice.page.games.QueensPage;
 import com.achhecode.linkedinservice.page.games.TangoPage;
 import com.achhecode.linkedinservice.page.games.WendPage;
 import com.achhecode.linkedinservice.page.games.ZipPage;
-import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.options.WaitForSelectorState;
 
@@ -34,7 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LinkedInWebGameAutomationService {
 
-    private static final String MINI_SUDOKU_START_BUTTON = "//button[@id='launch-footer-start-button']";
+    private static final String MINI_SUDOKU_START_BUTTON = "button#launch-footer-start-button";
+
+    private static final int MINI_SUDOKU_BUTTON_TIMEOUT_MS = 1_000;
+    private static final int OTHER_GAME_START_TIMEOUT_MS = 3_000;
 
     private final LinkedInPageResolver pageResolver;
 
@@ -45,9 +47,9 @@ public class LinkedInWebGameAutomationService {
     private <T> void executeGame(LinkedInGame game, Function<Page, T> pageFactory, Consumer<T> action) {
 
         Page page = pageResolver.findPage();
+
         page.navigate(game.url());
 
-        // Handle the pre-game screen if it appears.
         handleGameStartScreen(page, game);
 
         T gamePage = pageFactory.apply(page);
@@ -55,9 +57,10 @@ public class LinkedInWebGameAutomationService {
     }
 
     /**
-     * Clicks Start game if LinkedIn displays the pre-game screen. If the user is
-     * already logged in and the game is accessible, the existing flow continues
-     * without clicking anything.
+     * Handles an optional pre-game screen.
+     *
+     * Mini Sudoku may open directly when the user is logged in. Other games retain
+     * the existing start-screen behavior.
      */
     private void handleGameStartScreen(Page page, LinkedInGame game) {
 
@@ -72,8 +75,8 @@ public class LinkedInWebGameAutomationService {
         Locator startGameButton = page.locator(startGameXPath).first();
 
         try {
-            startGameButton
-                    .waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE).setTimeout(3_000));
+            startGameButton.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE)
+                    .setTimeout(OTHER_GAME_START_TIMEOUT_MS));
 
             startGameButton.click();
 
@@ -82,24 +85,37 @@ public class LinkedInWebGameAutomationService {
         }
     }
 
+    /**
+     * Attempts to click the Mini Sudoku start button if it is present.
+     *
+     * The button may be absent for logged-in users. LinkedIn may also navigate or
+     * replace the document after the button is clicked. Neither situation should
+     * fail this optional step.
+     */
     private void clickMiniSudokuStartButton(Page page) {
 
-        // Allow LinkedIn to render the game-launch UI.
-        page.waitForTimeout(1_000);
+        try {
+            Locator button = page.locator(MINI_SUDOKU_START_BUTTON).first();
 
-        for (Frame frame : page.frames()) {
-            Locator button = frame.locator(MINI_SUDOKU_START_BUTTON);
+            // Wait briefly for the button to appear.
+            button.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE)
+                    .setTimeout(MINI_SUDOKU_BUTTON_TIMEOUT_MS));
 
-            if (button.count() == 0) {
-                continue;
-            }
+            // Do not use deprecated IsVisibleOptions or setNoWaitAfter.
+            button.click(new Locator.ClickOptions().setTimeout(2_000));
 
-            button.first().click();
+            log.debug("Clicked the Mini Sudoku start button.");
 
-            return;
+        } catch (TimeoutError e) {
+            // Expected when the button is absent for logged-in users.
+            log.debug("Mini Sudoku start button is not displayed; continuing.");
+        } catch (PlaywrightException e) {
+            // The document or frame may have navigated while clicking.
+            // The actual board readiness check will determine whether
+            // the game is available.
+            log.debug("Mini Sudoku start button could not be clicked; " + "continuing to board detection. Reason: {}",
+                    e.getMessage());
         }
-
-        throw new IllegalStateException("Mini Sudoku start button not found in any frame. URL: " + page.url());
     }
 
     public void solveZip(ZipRequest request) {
