@@ -13,7 +13,7 @@ public class GameCacheProperties {
 
     private Path directory = Path.of("./data/pinpoint-solutions");
 
-    private LocalTime dayStart = LocalTime.of(0, 35);
+    private LocalTime dayStart = LocalTime.of(12, 35);
 
     private String zoneId = "Asia/Kolkata";
 

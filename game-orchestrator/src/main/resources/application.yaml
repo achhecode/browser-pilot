@@ -19,5 +19,5 @@ management:
 
 game-cache:
   directory: ${GAME_CACHE_DIRECTORY:./data/pinpoint-solutions}
-  day-start: ${GAME_CACHE_DAY_START:00:35}
+  day-start: ${GAME_CACHE_DAY_START:12:35}
   zone-id: ${GAME_CACHE_ZONE_ID:Asia/Kolkata}
