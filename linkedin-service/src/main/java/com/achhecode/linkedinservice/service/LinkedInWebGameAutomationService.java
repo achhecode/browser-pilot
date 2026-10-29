@@ -36,7 +36,7 @@ public class LinkedInWebGameAutomationService {
     private static final String MINI_SUDOKU_START_BUTTON = "button#launch-footer-start-button";
 
     private static final int MINI_SUDOKU_BUTTON_TIMEOUT_MS = 1_000;
-    private static final int OTHER_GAME_START_TIMEOUT_MS = 500;
+    private static final int OTHER_GAME_START_TIMEOUT_MS = 1_00;
 
     private final LinkedInPageResolver pageResolver;
 
